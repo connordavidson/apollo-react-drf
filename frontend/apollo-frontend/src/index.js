@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 
 import authReducer from "./store/reducers/auth";
-//implement this at https://youtu.be/0JOl3ckfGAM?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1247
+//import this at https://youtu.be/0JOl3ckfGAM?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1247
 import cartReducer from './store/reducers/cart';
 
 const composeEnhances = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -19,11 +19,20 @@ import { logout } from "../store/actions/auth";
 
 class CustomLayout extends React.Component {
 
+
+  // state = {
+  //   username: null,
+  // }
+
+
   componentDidMount() {
     //grabs the cart data every time the layout is rendered
     this.props.fetchCart();
 
+    //this.handleSetUsername(this.props.username)
+
   }
+
 
   renderVariations = (orderItem) => {
     let text = '';
@@ -35,10 +44,17 @@ class CustomLayout extends React.Component {
     return text;
   }
 
+  // handleSetUsername = (username) => {
+  //   this.setState({
+  //     username: this.props.username
+  //   })
+  // }
 
   render() {
     //instantiates constants from the props
-    const { authenticated, cart, loading } = this.props;
+    const { authenticated, cart, loading, username  } = this.props;
+
+
 
 
     return (
@@ -49,12 +65,6 @@ class CustomLayout extends React.Component {
               <Menu.Item header>Apollo</Menu.Item>
             </Link>
 
-            {/*
-            <Link to="/products">
-              <Menu.Item header>Products</Menu.Item>
-            </Link>
-            */}
-
             <Menu.Menu position='right'>
             {/*displays the logout button if the user is logged in*/}
             {authenticated ? (
@@ -62,9 +72,16 @@ class CustomLayout extends React.Component {
               <React.Fragment>
 
                 <Link to='/profile'>
+                  {username !== null ?
+                    <Menu.Item >
+                      Hello, {username} !
+                    </Menu.Item>
+                  :
                   <Menu.Item >
-                    Hello, __insert name here__ !
+                    Hello!
                   </Menu.Item>
+                  }
+
                 </Link>
 
                 <Menu.Item header onClick={() => logout()}>
@@ -200,12 +217,12 @@ class CustomLayout extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     authenticated: state.auth.token !== null,
     cart: state.cart.shoppingCart,
     loading: state.cart.loading,
-
+    username: state.auth.username
   };
 };
 

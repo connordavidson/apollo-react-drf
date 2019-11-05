@@ -17,7 +17,6 @@ import {
 import axios from 'axios';
 import {connect} from 'react-redux';
 
-
 import {productListURL, addToCartURL} from '../constants'
 import {authAxios} from '../utils';
 import {fetchCart} from '../store/actions/cart';

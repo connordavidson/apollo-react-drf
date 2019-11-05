@@ -1,52 +1,40 @@
-import React , {Component} from 'react';
+import React, { Component } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-// import {
-//   Container,
-//   Divider,
-//   Dropdown,
-//   Grid,
-//   Header,
-//   Image,
-//   List,
-//   Menu,
-//   Segment
-// } from "semantic-ui-react";
-
-
+import { connect } from "react-redux";
+import BaseRouter from "./routes";
+import * as actions from "./store/actions/auth";
+import "semantic-ui-css/semantic.min.css";
+import CustomLayout from "./containers/Layout";
 
 class App extends Component {
+  componentDidMount() {
+    this.props.onTryAutoSignup();
+  }
 
-
-  render(){
-    return(
+  render() {
+    return (
       <Router>
-        <h1>Hello world!</h1>
+        <CustomLayout {...this.props}>
+          <BaseRouter />
+        </CustomLayout>
       </Router>
-    )
+    );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
 
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState())
+  };
+};
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Apollo boiiii
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Buy stuff with us
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-export default App;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

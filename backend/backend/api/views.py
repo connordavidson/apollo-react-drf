@@ -59,6 +59,12 @@ class AddToCartView(APIView):
         variations = request.data.get('variations', [])
         print("variations: " + str(variations) )
 
+        quantity = 1
+
+        if request.data.get('quantity') is not None:
+            quantity = int( request.data.get('quantity') )
+
+        print('quantity: ' + str(quantity))
         if slug is None:
             return Response( { "message": "Invalid request, slug = None"}, status=HTTP_400_BAD_REQUEST )
         #this is what happens if there is a Slug
@@ -89,14 +95,20 @@ class AddToCartView(APIView):
         #if that item with the specific variations exists, increase the quantity of that item in the cart by 1
         if order_item_qs.exists():
             order_item = order_item_qs.first()
-            order_item.quantity += 1
+
+            print('quantity: ' + str(quantity))
+            order_item.quantity += quantity
+            print('quantity: ' + str(quantity))
+
             order_item.save()
         #if it doesn't exist in the cart, add the new item to the cart
         else:
             order_item = OrderItem.objects.create(
                 item=item,
                 user=request.user,
-                ordered=False
+                ordered=False,
+                quantity=quantity,
+                
             )
             #adds the variations to the order. (the * means all and means we don't have to loop through it. ex: for each variation)
             order_item.item_variations.add(*variations)
@@ -147,6 +159,40 @@ class OrderItemDeleteView(DestroyAPIView):
     queryset = OrderItem.objects.all()
 
 
+#made at https://youtu.be/8UEZsm4tCpY?t=975
+class OrderQuantityUpdateView(APIView):
+    def post(self, request, *args, **kwargs):
+        slug = request.data.get('slug', None)
+        if slug is None:
+            return Response({"message": "Invalid Data"}, status=HTTP_400_BAD_REQUEST)
+        item = get_object_or_404(Item, slug=slug)
+        #get the order and filter based on the current user
+        order_qs = Order.objects.filter(
+            user=request.user,
+            ordered=False
+        )
+        #if the order exists
+        if order_qs.exists():
+            order = order_qs[0]
+            # check if the order item is in the order
+            if order.items.filter(item__slug=item.slug).exists():
+                #filters by the item and the user
+                order_item = OrderItem.objects.filter(
+                    item=item,
+                    user=request.user,
+                    ordered=False
+                )[0]
+                #if the quantity is greater than 1, decrement. quantity is 1, remove
+                if order_item.quantity > 1:
+                    order_item.quantity -= 1
+                    order_item.save()
+                else:
+                    order.items.remove(order_item)
+                return Response(status=HTTP_200_OK)
+            else:
+                return Response({"message": "This item was not in your cart"}, status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
 
 

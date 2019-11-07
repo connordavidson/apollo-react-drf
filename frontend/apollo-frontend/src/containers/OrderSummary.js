@@ -16,6 +16,7 @@ import {
 import {connect} from 'react-redux';
 import { Link, Redirect} from 'react-router-dom';
 import { authAxios } from '../utils';
+
 import {
   orderSummaryURL,
   orderItemDeleteURL,
@@ -24,16 +25,27 @@ import {
 
  } from '../constants';
 
+
+
+ /*
+ fix issue where page refresh redirects to home.js on page refresh. has something to do with authentication
+ fix issue where the page will display even if there are no items in the cart... need to find sizeof(order) in OrderQuantityUpdateView and then delete the order when it is 0
+
+ */
+
 class OrderSummary extends React.Component {
 
     state = {
       data: null,
       error: null,
-      loading: false
+      loading: false,
+      decreased: false,
+      increased: false
     }
 
     componentDidMount(){
       this.handleFetchOrder();
+      console.log(this.state.data)
     }
 
 
@@ -68,7 +80,7 @@ class OrderSummary extends React.Component {
       //loop through all the variations of the orderItem
       orderItem.item_variations.forEach(iv => {
         //ex: color: red , size: small
-        text += `${iv.variation.name}: ${iv.value} | ` ;
+        text += `${iv.variation.name}: ${iv.value}, ` ;
       })
       return text;
     }
@@ -85,7 +97,7 @@ class OrderSummary extends React.Component {
 
     //made at https://youtu.be/8UEZsm4tCpY?t=581
     //explanation around https://youtu.be/8UEZsm4tCpY?t=510
-    handleAddToCart = (slug, itemVariations) => {
+    handleAddToCart = (slug, itemVariations, title) => {
       this.setState({ loading: true });
       //filters  the data into the correct format fot the backend
       const variations = this.handleFormatData(itemVariations);
@@ -95,7 +107,7 @@ class OrderSummary extends React.Component {
       .then(res => {
         console.log(res.data, addToCartURL, "add to cart succeeded");
         this.handleFetchOrder();
-        this.setState({ loading: false });
+        this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
       })
       .catch(err => {
         this.setState({ error: err, loading: false });
@@ -105,13 +117,14 @@ class OrderSummary extends React.Component {
 
     //made around https://youtu.be/8UEZsm4tCpY?t=815
     //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
-    handleRemoveQuantityFromCart = (slug) => {
+    handleRemoveQuantityFromCart = (slug , title) => {
       //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
       authAxios
       .post( orderItemUpdateQuantityURL, { slug } )
       .then(res => {
         //callback
         this.handleFetchOrder();
+        this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
       })
       .catch(err => {
           this.setState( {error: err} );
@@ -134,13 +147,15 @@ class OrderSummary extends React.Component {
 
     render(){
 
-      const {data, error, loading} = this.state;
+      const {data, error, loading, increased, decreased} = this.state;
       //redirects the user if they aren't authenticated (if their login times out)
       const {isAuthenticated} = this.props ;
-      if(!isAuthenticated){
-        return <Redirect to='/login' />;
-        console.log("you were redirected becuase you were not authenticated");
-      }
+
+      //for some reason, this redirects to home.js on page refresh
+      // if(!isAuthenticated){
+      //   return <Redirect to='/login' />;
+      //   console.log("you were redirected becuase you were not authenticated");
+      // }
 
       console.log("data: ", data);
 
@@ -167,6 +182,25 @@ class OrderSummary extends React.Component {
           }
 
           {
+            increased &&
+            <Message
+              positive
+              header="Thanks!"
+              content={increased}
+            />
+          }
+
+          {
+            decreased &&
+            <Message
+              error
+              header="Changed your mind?"
+              content={decreased}
+            />
+          }
+
+
+          {
             data
 
             &&
@@ -191,15 +225,16 @@ class OrderSummary extends React.Component {
                   return (
                     <Table.Row key={orderItem.id}>
                       <Table.Cell>{i + 1}</Table.Cell>
-                      <Table.Cell>{orderItem.item.title} - | {this.renderVariations(orderItem)}</Table.Cell>
+                      <Table.Cell>{orderItem.item.title} [{this.renderVariations(orderItem)}]</Table.Cell>
                       <Table.Cell>${orderItem.item.price}</Table.Cell>
                       <Table.Cell textAlign='center'>
+
 
                         <Icon
                           name='minus'
                           style={{float: 'left', cursor: 'pointer'}}
                           onClick={ () =>
-                            this.handleRemoveQuantityFromCart(orderItem.item.slug)}
+                            this.handleRemoveQuantityFromCart(orderItem.item.slug, orderItem.item.title)}
                         />
                         {orderItem.quantity}
                         <Icon
@@ -208,7 +243,8 @@ class OrderSummary extends React.Component {
                           onClick={ () =>
                             this.handleAddToCart(
                               orderItem.item.slug,
-                              orderItem.item_variations
+                              orderItem.item_variations,
+                              orderItem.item.title
                             )}
                         />
                       </Table.Cell>

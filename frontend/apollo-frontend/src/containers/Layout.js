@@ -39,7 +39,7 @@ class CustomLayout extends React.Component {
     .then(res => {
       //callback
       this.handleFetchOrder();
-      
+
 
     })
     .catch(err => {
@@ -91,7 +91,7 @@ class CustomLayout extends React.Component {
 
                 </Link>
 
-                <Menu.Item header onClick={() => logout()}>
+                <Menu.Item header onClick={ () => logout() }>
                   Logout
                 </Menu.Item>
 

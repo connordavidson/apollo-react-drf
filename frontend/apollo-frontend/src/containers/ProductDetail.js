@@ -21,7 +21,7 @@ import {
   Divider,
   Dropdown,
   Select,
-  Comment
+  Comment,
 
 } from 'semantic-ui-react';
 
@@ -60,6 +60,7 @@ class ProductDetail extends React.Component {
     data: [],
     formData: {},
     quantity: '1',
+    submitted: false,
 
   }
 
@@ -94,22 +95,22 @@ class ProductDetail extends React.Component {
 
 
 
-  handleAddToCart = (slug) => {
+  handleAddToCart = (slug, quantity) => {
     this.setState({ loading: true });
     const {formData} = this.state;
     //filters  the data into the correct format fot the backend
     const variations = this.handleFormatData(formData);
     //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
     authAxios
-    .post( addToCartURL , { slug, variations } )
+    .post( addToCartURL , { slug, variations, quantity} )
     .then(res => {
       //console.log(res.data, addToCartURL, "add to cart succeeded");
       this.props.fetchCart();
-      this.setState({ loading: false });
+      this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
     })
     .catch(err => {
       this.setState({ error: err, loading: false });
-      //console.log(err , 'add-to-cart failed ');
+      console.log(err.message , 'add-to-cart failed ');
     });
   }
 
@@ -130,7 +131,7 @@ class ProductDetail extends React.Component {
   }
 
 
-  //used to increase the product quantity in the State 
+  //used to increase the product quantity in the State
   changeValue = (newValue) => {
         this.setState({ quantity: newValue });
   }
@@ -148,6 +149,8 @@ class ProductDetail extends React.Component {
           formVisible,
           loading,
           quantity,
+          submitted,
+
         } = this.state;
 
 
@@ -160,8 +163,20 @@ class ProductDetail extends React.Component {
               (
                 <Message
                   error
-                  header='There was some errors with your submission'
-                  content={ JSON.stringify(error) }
+                  header='It appears that there was an error with your submission. Please double check that you selected all required variations'
+                  content={ JSON.stringify(error.message) }
+                />
+
+              )
+            }
+            {
+              //if there's an error then display a message component
+              submitted &&
+              (
+                <Message
+                  positive
+                  header='Thanks!'
+                  content={ submitted }
                 />
               )
             }
@@ -300,11 +315,6 @@ class ProductDetail extends React.Component {
 
 
 
-
-
-
-
-
                     </Grid.Column>
 
 
@@ -324,7 +334,7 @@ class ProductDetail extends React.Component {
                             fluid
                             basic
                             color='green'
-                            onClick={ () => this.handleAddToCart(this.state.data.slug) }
+                            onClick={ () => this.handleAddToCart(this.state.data.slug, this.state.quantity ) }
                           >
                             Add to Cart
                           </Button>

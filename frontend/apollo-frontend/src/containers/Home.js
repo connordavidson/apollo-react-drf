@@ -36,7 +36,6 @@ class DesktopContainer extends Component {
   render() {
     const { children } = this.props;
     const { fixed } = this.state;
-
     return (
       <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
         <Visibility
@@ -60,6 +59,8 @@ class MobileContainer extends Component {
   handleSidebarHide = () => this.setState({ sidebarOpened: false });
 
   handleToggle = () => this.setState({ sidebarOpened: true });
+
+
 
   render() {
     const { children } = this.props;
@@ -95,6 +96,8 @@ ResponsiveContainer.propTypes = {
 
 //renders the homepage
 const HomepageLayout = () => (
+
+
 
   <ResponsiveContainer>
 

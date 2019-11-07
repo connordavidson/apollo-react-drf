@@ -7,7 +7,7 @@ import {
 } from 'semantic-ui-react'
 
 import BuyTab from './BuyTab';
-
+import {withRouter} from 'react-router';
 
 
 const panes = [
@@ -20,6 +20,7 @@ const panes = [
 
 class NavigationTabs extends React.Component {
   render(){
+
     return(
       <Container textAlign='center'>
         <Tab panes={panes} />
@@ -30,4 +31,4 @@ class NavigationTabs extends React.Component {
 
 
 
-export default NavigationTabs;
+export default withRouter(NavigationTabs);

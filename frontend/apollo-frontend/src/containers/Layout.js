@@ -8,22 +8,21 @@ import {
   Image,
   List,
   Menu,
-  Segment
+  Segment,
+  Button,
+  Card,
+  Icon
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchCart } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
 
+import { authAxios } from '../utils';
+import {orderItemDeleteURL } from '../constants';
 
 
 class CustomLayout extends React.Component {
-
-
-  // state = {
-  //   username: null,
-  // }
-
 
   componentDidMount() {
     //grabs the cart data every time the layout is rendered
@@ -33,29 +32,37 @@ class CustomLayout extends React.Component {
 
   }
 
+  //made at https://youtu.be/8UEZsm4tCpY?t=150
+  handleRemoveItem = (itemID) => {
+    authAxios
+    .delete( orderItemDeleteURL(itemID) )
+    .then(res => {
+      //callback
+      this.handleFetchOrder();
+      
+
+    })
+    .catch(err => {
+        this.setState( {error: err} );
+    });
+
+
+
+  }
 
   renderVariations = (orderItem) => {
     let text = '';
     //loop through all the variations of the orderItem
     orderItem.item_variations.forEach(iv => {
       //ex: color: red , size: small
-      text += `${iv.variation.name}: ${iv.value} |` ;
+      text += `${iv.variation.name}: ${iv.value} ` ;
     })
     return text;
   }
 
-  // handleSetUsername = (username) => {
-  //   this.setState({
-  //     username: this.props.username
-  //   })
-  // }
-
   render() {
     //instantiates constants from the props
-    const { authenticated, cart, loading, username  } = this.props;
-
-
-
+    const { authenticated, cart, loading, username } = this.props;
 
     return (
       <div>
@@ -105,22 +112,45 @@ class CustomLayout extends React.Component {
               )}
 
               {/* displays the cart dropdown  */}
-              <Dropdown
-                  icon='cart'
-                  loading= {loading}
-                  // displays the number of items in the cart
-                  text= { `${ cart!== null ? cart.order_items.length : 0} ` }
-                  pointing
-                  className='link item'
-                >
+
+                <Dropdown
+                    icon='cart'
+                    loading= {loading}
+                    // displays the number of items in the cart
+                    text= { `${ cart!== null ? cart.order_items.length : 0} ` }
+                    pointing
+                    className='link item'
+                  >
+
                   <Dropdown.Menu>
                     { cart !== null ? (
                         <React.Fragment>
                           {
                             cart.order_items.map(order_item => {
                               return(
-                                <Dropdown.Item key={order_item.id}>
-                                  {order_item.quantity} x {order_item.item.title} - | {this.renderVariations(order_item)}
+                                <Dropdown.Item
+                                  key={order_item.id}
+                                >
+                                  <Card >
+                                    <Card.Content>
+                                      <Card.Header onClick={() => this.props.history.push(`/products/${order_item.item.id}`)} >
+                                        {order_item.item.title}
+                                      </Card.Header>
+
+                                      <Card.Meta>Quantity: {order_item.quantity}</Card.Meta>
+
+                                      <Card.Description>
+                                        {this.renderVariations(order_item)}
+                                      </Card.Description>
+
+                                      <Icon
+                                        name='trash'
+                                        color='red'
+                                        style={{float: 'right', cursor: 'pointer'}}
+                                        onClick={ () => this.handleRemoveItem(order_item.id) }
+                                      />
+                                    </Card.Content>
+                                  </Card>
                                 </Dropdown.Item>
                               );
                             })

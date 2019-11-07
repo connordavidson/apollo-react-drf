@@ -12,11 +12,12 @@ import OrderSummary from './containers/OrderSummary';
 import Checkout from './containers/Checkout';
 import ProductDetail from './containers/ProductDetail';
 import Profile from './containers/Profile';
+import BuyTab from './containers/BuyTab';
 
 const BaseRouter = () => (
   <Hoc>
 
-    <Route exact path="/products" component={ProductList} />
+    <Route exact path="/buyTab" component={BuyTab} />
     <Route exact path="/order-summary" component={OrderSummary} />
     <Route exact path="/checkout" component={Checkout} />
 

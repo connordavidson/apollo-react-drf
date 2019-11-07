@@ -127,10 +127,8 @@ class AddressForm extends React.Component {
   componentDidMount(){
     const {address, formType, } = this.props;
     if(formType === UPDATE_FORM){
-      //makes at anonymous callback at https://youtu.be/QDKHL83tpSE?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=883
-      this.setState({ formData: address}, () => {
-        console.log(this.state);
-      })
+      //(removed, but leaving this comment in case i need it) makes at anonymous callback at https://youtu.be/QDKHL83tpSE?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=883 (because the setState takes a second and the console.log was printing before it was done)
+      this.setState({ formData: address})
     }
   }
 
@@ -177,7 +175,6 @@ class AddressForm extends React.Component {
     this.setState({ saving: true })
     e.preventDefault();
     const {formType} = this.props;
-    console.log(formType);
     if (formType === UPDATE_FORM) {
       this.handleUpdateAddress();
     } else {
@@ -454,7 +451,6 @@ class Profile extends React.Component {
         userID,
 
       } = this.state;
-    console.log("this.state: ", this.state);
 
     return (
 
@@ -525,16 +521,13 @@ class Profile extends React.Component {
         error,
         loading
       } = this.state;
-      console.log("this.state: ", this.state);
 
 
     //made at https://youtu.be/QDKHL83tpSE?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1645
     //checks that the user is authenticated before displaying the page
     const {isAuthenticated} = this.props;
-    console.log("isauthenticated??: ", isAuthenticated);
     if(!isAuthenticated){
-      console.log("!isauthenticated: ", !isAuthenticated);
-      console.log("redirected");
+
       return (<Redirect to='/login'/>)
     }
 
@@ -614,7 +607,6 @@ class Profile extends React.Component {
 
 // made at https://youtu.be/QDKHL83tpSE?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1615
 const mapStateToProps = (state) => {
-  console.log("state.auth.token: ", state.auth.token );
   return {
     isAuthenticated: state.auth.token !== null
   }

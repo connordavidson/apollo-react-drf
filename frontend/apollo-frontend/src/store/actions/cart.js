@@ -40,7 +40,6 @@ export const cartFail = error => {
 export const fetchCart = () => {
   return dispatch => {
     dispatch(cartStart());
-
     authAxios
       .get(orderSummaryURL)
       .then(res => {

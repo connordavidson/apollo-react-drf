@@ -8,6 +8,9 @@ from .models import (
         OrderItem,
         Order,
         Address,
+        #Refund,
+        Coupon,
+        Payment,
 
 )
 
@@ -116,8 +119,10 @@ class AddressAdmin(admin.ModelAdmin):
 #made at https://youtu.be/Zg-bzjZuRa0?t=1090
 admin.site.register(ItemVariation, ItemVariationAdmin)
 admin.site.register(Variation, VariationAdmin)
-
 admin.site.register(Item)
 
+
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Payment)
 admin.site.register(Address, AddressAdmin)
+admin.site.register(Coupon)

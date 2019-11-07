@@ -32,7 +32,7 @@ export const checkoutURL = 'http://127.0.0.1:8000/api/checkout/';
 export const addCouponURL = 'http://127.0.0.1:8000/api/add-coupon/';
 
 //added at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1082
-export const addressListURL = (addressType) => `http://127.0.0.1:8000/api/addresses/?address_type=${addressType}`;
+export const addressListURL  = `http://127.0.0.1:8000/api/addresses/`;
 
 //added at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1360
 export const addressCreateURL = 'http://127.0.0.1:8000/api/addresses/create/';

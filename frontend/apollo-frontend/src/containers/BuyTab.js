@@ -125,7 +125,9 @@ class BuyTab extends React.Component {
         <Grid.Row>
           <Grid.Column width={8}>
               <Input
-              fluid icon='search'
+              focus
+              fluid
+              icon='search'
               placeholder='Search...'
               onKeyPress={this.handleSearchEnterPress}
               onChange={

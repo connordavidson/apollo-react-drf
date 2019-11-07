@@ -183,7 +183,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 #returns all the items and quantities in an order (also used for the cart)
 class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField()
-    total = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()  
     coupon = serializers.SerializerMethodField()
 
     class Meta:

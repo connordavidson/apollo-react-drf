@@ -26,7 +26,9 @@ from .models import (
     OrderItem,
     Order,
     Variation,
-    ItemVariation
+    ItemVariation,
+    Coupon,
+    
 )
 
 # Create your views here.
@@ -59,8 +61,10 @@ class AddToCartView(APIView):
         variations = request.data.get('variations', [])
         print("variations: " + str(variations) )
 
+        #sets quantity to 1, then checks if there is a 'quantity' value in the post request.
+        #   if there is a quantity, then it is coming from the productView
+        #   if quantity is None, it is getting updated from the product summary page when the user presses the + button
         quantity = 1
-
         if request.data.get('quantity') is not None:
             quantity = int( request.data.get('quantity') )
 
@@ -96,9 +100,7 @@ class AddToCartView(APIView):
         if order_item_qs.exists():
             order_item = order_item_qs.first()
 
-            print('quantity: ' + str(quantity))
             order_item.quantity += quantity
-            print('quantity: ' + str(quantity))
 
             order_item.save()
         #if it doesn't exist in the cart, add the new item to the cart
@@ -108,7 +110,7 @@ class AddToCartView(APIView):
                 user=request.user,
                 ordered=False,
                 quantity=quantity,
-                
+
             )
             #adds the variations to the order. (the * means all and means we don't have to loop through it. ex: for each variation)
             order_item.item_variations.add(*variations)
@@ -194,6 +196,21 @@ class OrderQuantityUpdateView(APIView):
         else:
             return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
+#added at https://youtu.be/Vm9Z6mm2kcU?t=927
+#this changes the total for the order/cart in the backend.
+class AddCouponView(APIView):
+    def post(self, request, *args, **kwargs):
+        code = request.data.get('code', None)
+        if code is None:
+            return Response( { 'message': "Invalid data received" } , status=HTTP_400_BAD_REQUEST)
+
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        #gets the coupon or returns a 404 if it is wrong
+        coupon = get_object_or_404(Coupon, code=code)
+        #assigns the coupon to the order..
+        order.coupon = coupon
+        order.save()
+        return Response(status=HTTP_200_OK)
 
 
 
@@ -245,3 +262,17 @@ class PaymentView(APIView):
             return Response( { 'message': "A serious error has occurred. We have been notified." } , status=HTTP_400_BAD_REQUEST)
 
         return Response( { 'message': "Invalid data" } , status=HTTP_400_BAD_REQUEST)
+
+
+#created at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=910
+class AddressListView(ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        #made big changes to this at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=3030
+        address_type = self.request.query_params.get('address_type', None)
+        qs = Address.objects.all()
+        if address_type is None:
+            return qs
+        return qs.filter(user=self.request.user, address_type=address_type)

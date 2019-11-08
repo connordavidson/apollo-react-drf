@@ -156,18 +156,15 @@ class ProductDetail extends React.Component {
 
       return (
 
-        <Container>
+        <Container fluid >
             {
-              //if there's an error then display a message component
               error &&
-              (
+
                 <Message
                   error
                   header='It appears that there was an error with your submission. Please double check that you selected all required variations'
                   content={ JSON.stringify(error.message) }
                 />
-
-              )
             }
             {
               //if there's an error then display a message component
@@ -384,8 +381,8 @@ class ProductDetail extends React.Component {
 
               )
             }
-          </Container>
 
+        </Container>
     );
   }
 }

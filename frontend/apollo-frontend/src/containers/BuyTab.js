@@ -125,7 +125,6 @@ class BuyTab extends React.Component {
         <Grid.Row>
           <Grid.Column width={8}>
               <Input
-              focus
               fluid
               icon='search'
               placeholder='Search...'

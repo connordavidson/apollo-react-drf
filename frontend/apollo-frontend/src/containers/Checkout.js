@@ -28,13 +28,17 @@ import {
 
   } from 'react-router-dom';
 
+import NumberInput from 'semantic-ui-react-numberinput';
+
+
 import {authAxios} from '../utils';
 
 import {
     checkoutURL,
     orderSummaryURL,
     addCouponURL,
-    addressListURL
+    addressListURL,
+    countryListURL,
 
   } from '../constants';
 
@@ -50,70 +54,61 @@ planning on making each part of the breadcrumbs it's own component
 
 
 
-
-
-
 //made this file at https://youtu.be/z7Kq6bHxEcI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=426
 //made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
-//made this class at https://youtu.be/Vm9Z6mm2kcU?t=1779
-const OrderPreview = (props) => {
+class OrderReview extends Component {
 
-    const { data } = props;
+  render(){
     return(
-      <div>
-        <React.Fragment>
-          {
-              data &&
-              //fill out this item group around https://youtu.be/Vm9Z6mm2kcU?t=577
-              <React.Fragment>
+      <React.Fragment>
+        <Header>Order review</Header>
+        <Card.Group>
+          <Card>
+            <Card.Content>
+              <Card.Header>iPhone 4s 16gb </Card.Header>
+              <Card.Meta>$99.99</Card.Meta>
+              <Card.Description>
+                this is a brick lmao
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+              <NumberInput  float='center' size='mini' value={1} minValue={1} />
+            </Card.Content>
+          </Card>
 
-                <Item.Group relaxed>
-                  {/*loops through the items in the cart and displays them 1 by 1*/}
-                  {data.order_items.map((orderItem, i) => {
-                    return (
-                      <Item key={i}>
-                        <Item.Image
-                          size='tiny'
-                          src={`http://127.0.0.1:8000${orderItem.item.image}`}
-                        />
+          <Card>
+            <Card.Content>
+              <Card.Header>Family pack of Goldfish snack crackers</Card.Header>
+              <Card.Meta>$9.99</Card.Meta>
+              <Card.Description>
+                This is a pack of goldfish crackers that is designed to be able to feed an entire family
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+              <NumberInput  float='center' size='mini' value={14} minValue={1} />
+            </Card.Content>
+          </Card>
 
-                        <Item.Content verticalAlign='middle'>
-                          <Item.Header as='a'>
-                            {orderItem.quantity} x {orderItem.item.title}
-                          </Item.Header>
-                          <Item.Extra>
-                            <Label>${orderItem.final_price}</Label>
-                          </Item.Extra>
-                        </Item.Content>
+          <Card>
+            <Card.Content>
+              <Card.Header>A refridgerator</Card.Header>
+              <Card.Meta>$299.99</Card.Meta>
+              <Card.Description>
+                this will keep your snacks cold
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+              <NumberInput  float='center' size='mini' value={1} minValue={1} />
+            </Card.Content>
+          </Card>
 
-                      </Item>
-                    );
-                  })}
-                </Item.Group>
+        </Card.Group>
+      </React.Fragment>
 
+    )
+  }
 
-                <Item.Group>
-                  <Item>
-                    <Item.Content>
-                      <Item.Header>
-                        Order Total: ${data.total}
-                        {
-                          data.coupon &&
-                          <Label color="green" style= {{marginLeft:'10px'}}>
-                            Current coupon: {data.coupon.code} for ${data.coupon.amount}
-                          </Label>
-                        }
-                      </Item.Header>
-                    </Item.Content>
-                  </Item>
-                </Item.Group>
-
-            </React.Fragment>
-            }
-        </React.Fragment>
-      </div>
-  )
 }
 
 
@@ -175,17 +170,175 @@ class CouponForm extends Component {
   }
 }
 
+class PaymentForm extends Component {
+  //insert logic to retrieve available payment optins for the order total info given in the previous breadcrumbs
+
+  render(){
+    return(
+
+      <React.Fragment>
+        <Header>Select a currency</Header>
+        <Card.Group>
+          <Card>
+            <Card.Content>
+              <Card.Header>Bitcoin</Card.Header>
+              <Card.Meta>click to display a scannable QR code</Card.Meta>
+              <Card.Description>
+                <Input
+                  action={{
+                    icon: 'copy',
+                  }}
+                  defaultValue='47dm93050jd02jm,ka7ifa'
+                />
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $429104/<Label color='yellow'>₿1.3349103</Label>
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>Litecoin</Card.Header>
+              <Card.Meta>click to display a scannable QR code</Card.Meta>
+              <Card.Description>
+                <Input
+                  action={{
+                    icon: 'copy',
+                  }}
+                  defaultValue='158df8asdf50jd02jm,ka7ifa'
+                />
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $429104/ <Label color='blue'>Ł 19.3349103</Label>
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>Ethereum ETH</Card.Header>
+              <Card.Meta>click to display a scannable QR code</Card.Meta>
+              <Card.Description>
+                <Input
+                  action={{
+                    icon: 'copy',
+                  }}
+                  defaultValue='asdf791jfa9012jasdf09asd90f'
+                />
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $429104/ <Label color='teal'>4.3349103 ETH</Label>
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>Ripple XRP</Card.Header>
+              <Card.Meta>click to display a scannable QR code</Card.Meta>
+              <Card.Description>
+                <Input
+                  action={{
+                    icon: 'copy',
+                  }}
+                  defaultValue='a123asdfjakea9012jasdf09asd90f'
+                />
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $429104/ <Label color='grey'>4821.3349103 XRP</Label>
+            </Card.Content>
+          </Card>
+
+        </Card.Group>
+      </React.Fragment>
+    )
+  }
+}
+
+
+
+
+
+class ShippingForm extends Component {
+  //insert logic to retrieve available shipping optins for the address given in the previous breadcrumb
+
+  render() {
+    return(
+      <React.Fragment>
+        <Header>Select a shipping option</Header>
+        <Card.Group>
+          <Card>
+            <Card.Content>
+              <Card.Header>2 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 2 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $75.16
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>3-5 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 3-5 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $50.16
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>7-10 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 7-10 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                FREE.99 boiiii
+            </Card.Content>
+          </Card>
+
+        </Card.Group>
+      </React.Fragment>
+
+
+    )
+  }
+}
+
+
+
+
+
+
+
 
 class AddressForm extends Component {
   state = {
     shippingAddresses: [],
     selectedShippingAddress: '',
+    loading: false,
+    countries: [],
+    formData: [],
+
   }
 
   componentDidMount(){
     this.setState({
       shippingAddresses: this.handleFetchShippingAddresses(),
-      selectedShippingAddress: this.handleGetDefaultAddress()
+      //selectedShippingAddress: this.handleGetDefaultAddress()
+      countries: this.handleFetchCountries(),
+
     })
   }
 
@@ -214,13 +367,230 @@ class AddressForm extends Component {
       });
   }
 
+  //made at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1763
+  handleFormatCountries = (countries) => {
+    //want to get all the object keys of the countrioes object
+    const keys = Object.keys(countries);
+    //makes a new multidimensional, associative array of countries
+    //"for every country, return it's key (read: country code), text (read: name), and value (read: country code)"
+
+    //console.log('KEYS: ', keys)
+    return keys.map(k => {
+      return{
+        key: k,
+        text: countries[k],
+        value: k
+      }
+    })
+  }
+
+  handleFetchCountries = () => {
+    authAxios
+    .get(countryListURL)
+    .then(res => {
+
+      //console.log(this.handleFormatCountries(res.data))
+      this.setState({ countries: this.handleFormatCountries(res.data) });
+
+
+      //console.log('countries.length: ', this.state.countries.length);
+    })
+    .catch(err => {
+      this.setState({ error: err });
+    })
+  }
+
   //made at https://youtu.be/NaJ-b0ZaSoI?t=875
-  handleGetDefaultAddress = (addresses) => {
-    const filteredAddresses = addresses.filter( el => el.default === true )
-    if(filteredAddresses.length > 0){
-      return filteredAddresses[0].id;
+  // handleGetDefaultAddress = (addresses) => {
+  //   const filteredAddresses = addresses.filter( el => el.default === true )
+  //   if(filteredAddresses.length > 0){
+  //     return filteredAddresses[0].id;
+  //   }
+  //   return '';
+  // }
+
+  handleSelectChange = (e, {name, value} ) => {
+    const {formData} = this.state;
+    const updatedFormData = {
+      ...formData,
+      [name]: value
+    };
+    this.setState({
+      formData: updatedFormData
+    })
+    console.log("form data", this.state.formData)
+  }
+
+
+
+  render(){
+
+    const {
+      shippingAddresses,
+      selectedShippingAddress,
+      loading,
+      countries,
+      formData,
+
+    } = this.state;
+
+
+    return(
+
+        <React.Fragment>
+          <Header>Enter your name and shipping address</Header>
+          <Form loading={loading}>
+
+            <Form.Group>
+              <Form.Field required width={8}>
+                <label>Name</label>
+                <input placeholder='Full Name' />
+              </Form.Field>
+
+              <Form.Field required width={8}>
+                <label>Email</label>
+                <input placeholder='Email' />
+              </Form.Field>
+            </Form.Group>
+
+            <Form.Field required>
+              <label>Address</label>
+              <input placeholder='Address' />
+            </Form.Field>
+
+            <Form.Group>
+
+              <Form.Field required width={4}>
+                <label>City</label>
+                <input placeholder='City' />
+              </Form.Field>
+
+              <Form.Field required width={3}>
+                <label>State</label>
+                <input placeholder='State' />
+              </Form.Field>
+
+              <Form.Field required width={3}>
+                <label>Zip Code</label>
+                <input placeholder='Zip' />
+              </Form.Field>
+
+              <Form.Field required width={7}>
+                <label>Country</label>
+                <Select
+                  loading={loading}
+                  fluid
+                  clearable
+                  search
+                  options={ countries }
+                  name='country'
+                  placeholder='Country'
+                  onChange={this.handleSelectChange}
+                  value={formData.country}
+                />
+              </Form.Field>
+
+            </Form.Group>
+
+
+          </Form>
+
+        </React.Fragment>
+    )
+  }
+}
+
+
+
+
+class CheckoutBreadCrumbs extends React.Component {
+
+  state= {
+    activeCrumb: '',
+    information: true,
+    shipping  : false,
+    orderReview : false,
+    payment : false,
+  };
+
+
+  handleBreadcrumbClick = (e, data) =>{
+    //console.log('BC CLICK: ', data)
+    //switch that changes which breadcrumb title is selected when clicking on it
+    switch(data.id){
+      case 'info':
+        this.setState({
+          information : true,
+          shipping  : false,
+          orderReview : false,
+          payment : false,
+        })
+        console.log('info: ', this.state)
+      break;
+
+      case 'ship':
+        this.setState({
+          information : false,
+          shipping  : true,
+          orderReview : false,
+          payment : false,
+        })
+        console.log('ship: ', this.state)
+      break;
+
+      case 'review':
+        this.setState({
+          information : false,
+          shipping  : false,
+          orderReview : true,
+          payment : false,
+        })
+        console.log('review: ', this.state)
+      break;
+
+      case 'payment':
+        this.setState({
+          information : false,
+          shipping  : false,
+          orderReview : false,
+          payment : true,
+        })
+        console.log('payment: ', this.state)
+      break;
+
+      default:
+        console.log("something went wrong in the switch case for breadcrumb clicks")
     }
-    return '';
+  }
+
+
+
+  renderForm = () => {
+    const {
+      information,
+      shipping,
+      orderReview,
+      payment,
+    } = this.state;
+
+
+    if( information){
+      return(
+        <AddressForm />
+      )
+    }else if(shipping){
+      return(
+        <ShippingForm />
+      )
+    }else if(orderReview){
+      return(
+        <OrderReview />
+      )
+    }else if(payment){
+      return(
+        <PaymentForm />
+      )
+    }
   }
 
 
@@ -228,37 +598,62 @@ class AddressForm extends Component {
   render(){
 
     return(
-        <React.Fragment>
+      <React.Fragment>
+      <Breadcrumb>
+        <Breadcrumb.Section
+          id='info'
+          active={this.state.information}
+          as='div'
+          style={{cursor: 'pointer'}}
+          onClick={(e, data) => { this.handleBreadcrumbClick(e, data) } }
+        >
+          Information
+        </Breadcrumb.Section>
 
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section
+          id='ship'
+          active={this.state.shipping}
+          as='div'
+          style={{cursor: 'pointer'}}
+          onClick={(e, data) => { this.handleBreadcrumbClick(e, data) } }>
+          Shipping
+        </Breadcrumb.Section>
 
-  
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section
+          id='review'
+          active={this.state.orderReview}
+          as='div'
+          style={{cursor: 'pointer'}}
+          onClick={(e, data) => { this.handleBreadcrumbClick(e, data) } }
+          >
+          Order Review
+        </Breadcrumb.Section>
 
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section
+          id='payment'
+          active={this.state.payment}
+          as='div'
+          style={{cursor: 'pointer'}}
+          onClick={(e, data) => { this.handleBreadcrumbClick(e, data) } }
+          >
+          Payment
+        </Breadcrumb.Section>
 
-          {
-          /*
-          <Header>Select a shipping address [{this.state.shippingAddresses.length}]</Header>
-          {
-            //checks if there are no billing addresses and suggests a redirection
-            this.state.shippingAddresses.length > 0 ?
-            //changed name to value at https://youtu.be/NaJ-b0ZaSoI?t=1160 so that you can reselect an address
-            <Select
-              name='selectedShippingAddress'
-              value={this.state.selectedShippingAddress}
-              clearable
-              options={this.state.shippingAddresses}
-              selection
-              onChange={this.handleSelectChange}
-              /> :
-              <p>
-                You nede 2 <Link to='/profile'>add an shipring ardreses</Link> plz
-              </p>
-          }
-          <Divider />
-          */}
-        </React.Fragment>
+      </Breadcrumb>
+
+      {this.renderForm()}
+    </React.Fragment>
+
     )
   }
+
 }
+
+
+
 
 
 
@@ -327,6 +722,9 @@ class CheckoutForm extends Component {
       console.log("SUBMIT FUNCTION");
     }
 
+
+
+
   render() {
     const {
         data,
@@ -340,6 +738,9 @@ class CheckoutForm extends Component {
 
     console.log('data ', data);
     console.log(data);
+
+
+
 
     return (
       <React.Fragment>
@@ -355,18 +756,7 @@ class CheckoutForm extends Component {
               />
             )
           }
-          {
-            //if loading is true then render the spinner component
-            loading
-            &&
-            (
-            <Segment>
-                <Dimmer active inverted>
-                  <Loader inverted>Loading</Loader>
-                </Dimmer>
-            </Segment>
-            )
-          }
+
           {
             success && (
             <Message positive>
@@ -379,58 +769,91 @@ class CheckoutForm extends Component {
           }
         </div>
 
-        {/*grid to hold the checkout info*/}
-        <Grid>
-          <Grid.Row>
 
-            {/*grid to hold the breadcrumbs for checkout info*/}
-            <Grid.Column width={12}>
-              <Breadcrumb>
-                <Breadcrumb.Section link>Information</Breadcrumb.Section>
-                <Breadcrumb.Divider />
-                <Breadcrumb.Section link>Shipping</Breadcrumb.Section>
-                <Breadcrumb.Divider />
-                <Breadcrumb.Section active>Order Review</Breadcrumb.Section>
-                <Breadcrumb.Divider />
-                <Breadcrumb.Section link>Payment</Breadcrumb.Section>
+        {
+          //if loading is true then render the spinner component
+          loading
+          ?
+          (
+          <Segment>
+              <Dimmer active inverted>
+                <Loader inverted>Loading</Loader>
+              </Dimmer>
+          </Segment>
+          ) : (
 
-              </Breadcrumb>
-            </Grid.Column>
+            <React.Fragment>
+              {/*grid to hold the checkout info*/}
+              <Grid>
 
-            <Divider />
+                <Grid.Row>
+                  {/*literally just to display "complete your order" abve the breadcrumbs and total.... probably a better way to do this*/}
+                  <Grid.Column width={3}>
+                  </Grid.Column>
+                  <Grid.Column width={9}>
+                    <h1>Complete your order</h1>
+                    <Divider/>
+                  </Grid.Column>
+                  <Grid.Column width={4}>
+                  </Grid.Column>
+                </Grid.Row>
 
-            {/*grid for holding the price info*/}
-            <Grid.Column width={4}>
-              <Card>
-                <Card.Content>
-                  <Card.Header>Price: </Card.Header>
-                    <Card.Description>
-                      subtotal: _______
-                    </Card.Description>
-                    <Card.Description>
-                      tax: ______
-                    </Card.Description>
-                    <Card.Description>
-                      shipping: _______
-                    </Card.Description>
-                    <Card.Description>
-                      Total: ______
-                    </Card.Description>
 
-                </Card.Content>
-              </Card>
+                <Grid.Row>
+                    {/*empty filler column to help with spacing of the rest of the page, probably can do this with some type of offset, not sure though*/}
+                  <Grid.Column width={3}>
+                  </Grid.Column>
 
-              <Card>
-                <Card.Content>
-                  <Card.Header>Coupon</Card.Header>
-                  <CouponForm />
-                </Card.Content>
-              </Card>
-            </Grid.Column>
 
-          </Grid.Row>
+                  {/*column to hold the breadcrumbs for checkout info*/}
+                  <Grid.Column width={9}>
+                    <CheckoutBreadCrumbs />
 
-        </Grid>
+                  </Grid.Column>
+                  {/*for some reason this divider doesn't want to work lol*/}
+                  <Divider vertical />
+
+
+                  {/*column for holding the price info*/}
+                  <Grid.Column width={4}>
+                    <Card>
+                      <Card.Content>
+                        <Card.Header>Price: </Card.Header>
+                          <Card.Description>
+                            subtotal: _______
+                          </Card.Description>
+                          <Card.Description>
+                            tax: ______
+                          </Card.Description>
+                          <Card.Description>
+                            shipping: _______
+                          </Card.Description>
+                          <Card.Description>
+                            Total: ______
+                          </Card.Description>
+
+                      </Card.Content>
+                    </Card>
+
+                    <Card>
+                      <Card.Content>
+                        <Card.Header>Coupon</Card.Header>
+                        <CouponForm />
+                      </Card.Content>
+                    </Card>
+                  </Grid.Column>
+
+                </Grid.Row>
+
+              </Grid>
+
+            </React.Fragment>
+
+          )
+        }
+
+
+
       </React.Fragment>
 
 
@@ -443,11 +866,11 @@ class CheckoutForm extends Component {
 
 
 const WrappedForm = () => (
-  <Container text>
-      <h1>Complete your order</h1>
+
+
       <CheckoutForm />
 
-  </Container>
+
 
 )
 

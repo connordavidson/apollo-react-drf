@@ -353,7 +353,6 @@ class Profile extends React.Component {
       return "Shipping Address";
     }
     return "Payment History";
-
   }
 
 

@@ -22,9 +22,7 @@ class NavigationTabs extends React.Component {
   render(){
 
     return(
-      <Container textAlign='center'>
         <Tab panes={panes} />
-      </Container>
     )
   }
 }

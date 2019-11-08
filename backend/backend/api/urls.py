@@ -9,6 +9,7 @@ from .views import (
     OrderQuantityUpdateView,
     AddressListView,
     AddCouponView,
+    CountryListView,
     
 )
 
@@ -23,5 +24,6 @@ urlpatterns = [
     path( 'order-item/update-quantity/', OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
     path( 'addresses/', AddressListView.as_view(), name='address-list'),
     path( 'add-coupon/', AddCouponView.as_view(), name='add-coupon'),
+    path( 'countries/', CountryListView.as_view(), name='country-list' ),
 
 ]

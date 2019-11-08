@@ -28,7 +28,7 @@ from .models import (
     Variation,
     ItemVariation,
     Coupon,
-    
+
 )
 
 # Create your views here.
@@ -276,3 +276,10 @@ class AddressListView(ListAPIView):
         if address_type is None:
             return qs
         return qs.filter(user=self.request.user, address_type=address_type)
+
+
+
+#created at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1591
+class CountryListView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response(countries, status=HTTP_200_OK)

@@ -26,9 +26,8 @@ LABEL_CHOICES = (
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
     one_click_purchasing = models.BooleanField(default=False)
-
+    email = models.CharField(max_length=30, null=True)
     def __str__(self):
         return self.user.username
 
@@ -112,6 +111,7 @@ class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
+
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     #added around https://youtu.be/qJN1_2ZwqeA?t=173
@@ -143,6 +143,7 @@ class Order(models.Model):
     # (possibly store in state if they aren't logged in, then add them in checkout process if they decide to log in )
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
+    #email = models.CharField(max_length=30, default='')
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)

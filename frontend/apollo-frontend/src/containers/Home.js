@@ -100,11 +100,7 @@ const HomepageLayout = () => (
 
 
   <ResponsiveContainer>
-
-    <Container textAlign='center'>
       <NavigationTabs />
-    </Container>
-
   </ResponsiveContainer>
 
 );

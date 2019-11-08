@@ -66,60 +66,25 @@ class CustomLayout extends React.Component {
 
     return (
       <div>
-        <Menu inverted>
-          <Container>
+        <Menu inverted size='huge'>
+
             <Link to="/">
-              <Menu.Item header>Apollo</Menu.Item>
+              <Menu.Item header><h1>Apollo</h1></Menu.Item>
             </Link>
 
-            <Menu.Menu position='right'>
-            {/*displays the logout button if the user is logged in*/}
-            {authenticated ? (
 
-              <React.Fragment>
 
-                <Link to='/profile'>
-                  {username !== null ?
-                    <Menu.Item >
-                      Hello, {username} !
-                    </Menu.Item>
-                  :
-                  <Menu.Item >
-                    Hello!
-                  </Menu.Item>
-                  }
-
-                </Link>
-
-                <Menu.Item header onClick={ () => logout() }>
-                  Logout
-                </Menu.Item>
-
-              </React.Fragment>
-
-            ) : (
-              // displays the login/signup buttons if the user is not logged in
-              <React.Fragment>
-
-                <Link to="/login">
-                  <Menu.Item header>Login</Menu.Item>
-                </Link>
-                <Link to="/signup">
-                  <Menu.Item header>Signup</Menu.Item>
-                </Link>
-
-              </React.Fragment>
-              )}
+            <Menu.Menu position='right' >
 
               {/* displays the cart dropdown  */}
 
                 <Dropdown
                     icon='cart'
                     loading= {loading}
-                    // displays the number of items in the cart
                     text= { `${ cart!== null ? cart.order_items.length : 0} ` }
                     pointing
                     className='link item'
+                    direction='left'
                   >
 
                   <Dropdown.Menu>
@@ -173,8 +138,37 @@ class CustomLayout extends React.Component {
                     }
                   </Dropdown.Menu>
               </Dropdown>
+
+
+            {/*displays the logout button if the user is logged in*/}
+            {authenticated ? (
+
+              <React.Fragment>
+                <Menu.Item onClick={() => this.props.history.push(`/profile`)}>
+                  Account
+                </Menu.Item>
+                <Menu.Item onClick={ () => logout() }>
+                  Logout
+                </Menu.Item>
+              </React.Fragment>
+
+            ) : (
+              // displays the login/signup buttons if the user is not logged in
+              <React.Fragment>
+
+                <Link to="/login">
+                  <Menu.Item header>Login</Menu.Item>
+                </Link>
+                <Link to="/signup">
+                  <Menu.Item header>Signup</Menu.Item>
+                </Link>
+
+              </React.Fragment>
+              )}
+
+
             </Menu.Menu>
-          </Container>
+
         </Menu>
 
 

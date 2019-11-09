@@ -18,6 +18,9 @@ import {
   Loader,
   Image,
   Input,
+  Form,
+  Checkbox,
+  Icon,
 
 } from 'semantic-ui-react';
 import axios from 'axios';
@@ -118,12 +121,9 @@ class BuyTab extends React.Component {
 
     return(
 
-
-
       <Grid>
-
         <Grid.Row>
-          <Grid.Column width={8}>
+          <Grid.Column width={5}>
               <Input
               fluid
               icon='search'
@@ -142,7 +142,7 @@ class BuyTab extends React.Component {
         </Grid.Row>
 
 
-        <Grid.Column width={4}>
+        <Grid.Column width={3}>
           <Header>Categories</Header>
 
           {loading ? (
@@ -155,23 +155,32 @@ class BuyTab extends React.Component {
               </Segment>
             ) : (
               //displays the active categories.. styling needs work
-              <List divided relaxed>
 
-              {//prints all the categories
-                categories.map(category => {
-                  return(
-                    <List.Item>
-                      <List.Header>
-                        <Radio floated='left' label={category} />
-                      </List.Header>
-                    </List.Item>
-                  )
-              })}
-              </List>
+              <Card.Group>
+                <Card>
+                  <List divided relaxed>
+                    {//prints all the categories
+                      categories.map(category => {
+                        return(
+                          <React.Fragment>
+                            <Form.Field
+                              float='middle'
+                              control={Checkbox}
+                              label={<label>{category}</label>}
+                            />
+                            <br/>
+                          </React.Fragment>
+                        )
+                    })}
+                  </List>
+                </Card>
+              </Card.Group>
+
           )}
 
         </Grid.Column>
 
+        <Divider vertical/>
 
         <Grid.Column width={10}>
 
@@ -187,30 +196,42 @@ class BuyTab extends React.Component {
 
             <React.Fragment>
               <Header>Products</Header>
-              <Item.Group>
+              <Divider />
+              <Item.Group divided>
 
                 { //prints out all the items
                   data.map(item => {
                   return (
-                    <Card fluid className="ui segment centered">
+
                       <Item key={item.id}>
-                        <Item.Image size='small' src={item.image} />
-                        <Item.Content verticalAlign='middle'>
-                          <Header
+                        <Item.Image src={item.image} />
+
+                        <Item.Content>
+                          <Item.Header
                             onClick={() => this.props.history.push(`/products/${item.id}`)}
                             style={{cursor: 'pointer'}}
                           >
                             {item.title}
-                            <Label floated='left'>{item.price}</Label>
-                          </Header>
-                          <Item.Description>{item.description}</Item.Description>
-
+                          </Item.Header>
+                          <Item.Meta>
+                            <span className='cinema'>{item.price}</span>
+                          </Item.Meta>
+                          <Item.Description>
+                              {item.description}
+                          </Item.Description>
                           <Item.Extra>
-                            <Button floated='right'>Add to Cart</Button>
+                            {/*make this a "quick add", but only if there are no variations to choose from */}
+                            <Button primary floated='right' icon >
+                              Add to cart
+                              <Icon name='cart plus' floated='right' />
+                            </Button>
                           </Item.Extra>
                         </Item.Content>
                       </Item>
-                    </Card>
+
+
+
+
                   )
                 })}
 

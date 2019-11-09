@@ -137,10 +137,7 @@ class ProductDetail extends React.Component {
   }
 
 
-
-
   render() {
-
 
       const {
           data,
@@ -167,7 +164,7 @@ class ProductDetail extends React.Component {
                 />
             }
             {
-              //if there's an error then display a message component
+              //displays a message when the user adds the item to their cart
               submitted &&
               (
                 <Message
@@ -195,123 +192,94 @@ class ProductDetail extends React.Component {
               (
 
 
-                <Grid columns={2} celled>
+                <Grid columns={3} >
+
+                  <Grid.Column width={4} floated='right' >
+
+                      <Header as='h1' dividing>
+                        {data.title}
+                        {
+                          data.discount_price !== null ? (
+                             <React.Fragment>
+                              <Label className='price' style={{ textDecorationLine: 'line-through' }}>${data.price}</Label>
+                              <Label className='stay' >{data.discount_price}</Label>
+                            </React.Fragment>
+                          ) : (
+                            <React.Fragment>
+                              <Label className='price' >${data.price}</Label>
+                            </React.Fragment>
+                          )
+                        }
+                      </Header>
+
+                      <Card>
+                        <Image src={data.image} />
+                        <Card.Content>
+                          <Card.Description>
+                            try to put a image carousel in here for multiple images
+                          </Card.Description>
+                        </Card.Content>
+                      </Card>
+
+
+                  </Grid.Column>
+
+
+
+
+
                     {/*column for displaying the product info AND reviews*/}
-                    <Grid.Column width={12}>
-                      {/*Row for the product information*/}
-                      <Grid.Row>
-                        {/*column for the images & title*/}
-                        <Grid.Column >
+                    <Grid.Column width={8}>
 
-                          <Container >
-                            {/*card for holding the name of the product and it's price*/}
-                            <Card>
-                              <Card.Content>
-                                <Header >
-                                  {data.title}
-                                </Header>
-                                <Container textAlign='left'>
-                                  <Card.Description>
-                                    {
-                                      data.discount_price !== null ? (
-                                         <React.Fragment>
-                                          <span className='price' style={{ textDecorationLine: 'line-through' }}>${data.price}</span>
-                                          <span className='stay' >{data.discount_price}</span>
-                                        </React.Fragment>
-                                      ) : (
-                                        <React.Fragment>
-                                          <span className='price' >${data.price}</span>
-                                        </React.Fragment>
-                                      )
-                                    }
-                                  </Card.Description>
+                      <Container text>
+                        <Header>
+                          Product Information
+                        </Header>
+                        <Item.Description>{data.description}</Item.Description>
+                      </Container>
 
-                                </Container>
-                              </Card.Content>
-                            </Card>
-                          </Container>
+                      <Divider />
 
 
-                          <Card>
-                            <Image src={data.image} />
-                            <Card.Content>
-                              <Card.Description>
-                                try to put a image carousel in here for multiple images
-                              </Card.Description>
-                            </Card.Content>
-                          </Card>
+                      <Container text>
 
-
-                        </Grid.Column>
-
-
-                        <Divider />
-                        {/*Column for displaying the item description*/}
-                        <Grid.Column>
-                          <Header>
-                            Product Information
+                        <Comment.Group >
+                          <Header as='h3' dividing>
+                            Customer Reviews
                           </Header>
-                          <Container text>
-                            <Item.Description>{data.description}</Item.Description>
-                          </Container>
 
-                        </Grid.Column>
+                          <Comment>
+                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+                            <Comment.Content>
+                              <Comment.Author as='a'>User 1</Comment.Author>
+                              <Comment.Metadata>
+                                <div>Today at 5:40PM</div>
+                              </Comment.Metadata>
+                              <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' />
+                              <Comment.Text>This is an amazing smart speaker!! I love it and it makes a great addition to our home! I already have ordered another one and you should too!</Comment.Text>
+                              <Comment.Actions>
+                                <Comment.Action>Reply</Comment.Action>
+                              </Comment.Actions>
+                            </Comment.Content>
+                          </Comment>
+                          <Comment>
+                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
+                            <Comment.Content>
+                              <Comment.Author as='a'>User 2</Comment.Author>
+                              <Comment.Metadata>
+                                <div>Today at 5:42PM</div>
+                              </Comment.Metadata>
+                              <Icon name='star' />
+                              <Comment.Text>I hate this smart speaker, it is constantly listening in on my conversations and I can tell that it is judging me!</Comment.Text>
+                              <Comment.Actions>
+                                <Comment.Action>Reply</Comment.Action>
+                              </Comment.Actions>
+                            </Comment.Content>
+                          </Comment>
 
-                      </Grid.Row>
+                        </Comment.Group>
 
-
-                      <Divider/>
-
-
-
-
-                      {/*row to hold the comments data*/}
-                      <Grid.Row >
-
-                        <Container fluid >
-                          <Comment.Group >
-                            <Header as='h3' dividing>
-                              Customer Reviews
-                            </Header>
-
-                            <Comment>
-                              <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                              <Comment.Content>
-                                <Comment.Author as='a'>User 1</Comment.Author>
-                                <Comment.Metadata>
-                                  <div>Today at 5:40PM</div>
-                                </Comment.Metadata>
-                                <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' />
-                                <Comment.Text>This is an amazing smart speaker!! I love it and it makes a great addition to our home! I already have ordered another one and you should too!</Comment.Text>
-                                <Comment.Actions>
-                                  <Comment.Action>Reply</Comment.Action>
-                                </Comment.Actions>
-                              </Comment.Content>
-                            </Comment>
-                            <Comment>
-                              <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
-                              <Comment.Content>
-                                <Comment.Author as='a'>User 2</Comment.Author>
-                                <Comment.Metadata>
-                                  <div>Today at 5:42PM</div>
-                                </Comment.Metadata>
-                                <Icon name='star' />
-                                <Comment.Text>I hate this smart speaker, it is constantly listening in on my conversations and I can tell that it is judging me!</Comment.Text>
-                                <Comment.Actions>
-                                  <Comment.Action>Reply</Comment.Action>
-                                </Comment.Actions>
-                              </Comment.Content>
-                            </Comment>
-
-                          </Comment.Group>
-                        </Container>
-
-                      </Grid.Row>
-
-
-
-
-
+                      </Container>
                     </Grid.Column>
 
 
@@ -342,39 +310,40 @@ class ProductDetail extends React.Component {
 
 
                       {/* "if variations exists, then display this for every variation" */}
-                      <Card>
+
                         {
                           data.variations &&
                           (
                             data.variations.map(variation => {
                               return(
-                                <Card.Content>
-                                  <Card.Header>{variation.name}</Card.Header>
-                                  <Form.Field>
-                                    <Select
-                                      fluid
-                                      name={variation.name}
-                                      onChange={this.handleChange}
-                                      options={
-                                          variation.item_variations.map(item=>{
-                                            return {
-                                              key: item.id,
-                                              text: `${item.value}`,
-                                              value: item.id,
-                                            }
-                                          })
-                                        }
-                                      placeholder={`choose a ${variation.name}`}
-                                      selection
-                                      value={formData[variation.name]}
-                                    />
-                                  </Form.Field>
-                                </Card.Content>
+                                <Card>
+                                  <Card.Content>
+                                    <Card.Header>{variation.name}</Card.Header>
+                                    <Form.Field>
+                                      <Select
+                                        fluid
+                                        name={variation.name}
+                                        onChange={this.handleChange}
+                                        options={
+                                            variation.item_variations.map(item=>{
+                                              return {
+                                                key: item.id,
+                                                text: `${item.value}`,
+                                                value: item.id,
+                                              }
+                                            })
+                                          }
+                                        placeholder={`choose a ${variation.name}`}
+                                        selection
+                                        value={formData[variation.name]}
+                                      />
+                                    </Form.Field>
+                                  </Card.Content>
+                                </Card>
                               )
                             })
                           )
                         }
-                      </Card>
 
                     </Grid.Column>
                 </Grid>

@@ -21,7 +21,10 @@ const BaseRouter = () => (
     <Route exact path="/order-summary" component={OrderSummary} />
     <Route exact path="/checkout" component={Checkout} />
 
+
+
     <Route exact path="/products/:productID" component={ProductDetail} />
+
 
 
     <Route path="/profile" component={Profile} />

@@ -11,7 +11,7 @@ from .models import (
         #Refund,
         Coupon,
         Payment,
-
+        ItemReview
 )
 
 
@@ -121,7 +121,7 @@ admin.site.register(ItemVariation, ItemVariationAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(Item)
 
-
+admin.site.register(ItemReview)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)
 admin.site.register(Address, AddressAdmin)

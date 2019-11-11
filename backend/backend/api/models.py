@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django_countries.fields import CountryField
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -60,6 +61,19 @@ class Item(models.Model):
         return reverse("core:remove-from-cart", kwargs={
             'slug': self.slug
         })
+
+#model for a review of an item. should have the user that reviewed it and the content of the review
+class ItemReview(models.Model):
+    #links the variation to the specific item that it is a variation of
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    #the foreign key has issues with linking to a user in the users table.
+    #user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default='')
+    user = models.CharField(max_length=25)
+    review_content = models.CharField(max_length=250)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.review_content
 
 
 #added this at https://youtu.be/Zg-bzjZuRa0?t=705
@@ -247,3 +261,11 @@ class Refund(models.Model):
 
     def __str__(self):
         return f"{self.pk}"
+
+
+
+def userprofile_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        userprofile = UserProfile.objects.create(user=instance)
+
+post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)

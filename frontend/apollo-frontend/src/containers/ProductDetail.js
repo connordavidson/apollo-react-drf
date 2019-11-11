@@ -33,7 +33,7 @@ import {connect} from 'react-redux';
 
 
 //don't really use this at all
-import {productDetailURL, addToCartURL} from '../constants'
+import {productDetailURL, addToCartURL, productReviewListURL} from '../constants'
 import {authAxios} from '../utils';
 import {fetchCart} from '../store/actions/cart';
 
@@ -61,12 +61,12 @@ class ProductDetail extends React.Component {
     formData: {},
     quantity: '1',
     submitted: false,
-
+    reviews: []
   }
 
   componentDidMount() {
     this.handleFetchItem();
-
+    this.handleFetchReviews();
   }
 
   //retrieves the product info from the database
@@ -82,6 +82,20 @@ class ProductDetail extends React.Component {
       .catch(err =>{
         this.setState({error: err, loading: false});
       });
+  }
+
+  handleFetchReviews = () => {
+    const productID = this.props.match.params.productID;
+    this.setState({loading: true});
+    axios
+    .get(productReviewListURL(productID))
+    .then(res => {
+      console.log('REVIEWS: ' , res.data)
+      this.setState({reviews: res.data, loading: false});
+    })
+    .catch(err => {
+      this.setState({error: err, loading: false});
+    })
   }
 
   //made at https://youtu.be/qJN1_2ZwqeA?t=1386
@@ -147,9 +161,11 @@ class ProductDetail extends React.Component {
           loading,
           quantity,
           submitted,
+          reviews,
 
         } = this.state;
 
+        console.log('reviews chile: ', reviews)
 
       return (
 
@@ -226,12 +242,10 @@ class ProductDetail extends React.Component {
 
 
 
-
-
                     {/*column for displaying the product info AND reviews*/}
                     <Grid.Column width={8}>
 
-                      <Container text>
+                      <Container text style={{paddingTop: '5%'}}>
                         <Header>
                           Product Information
                         </Header>
@@ -241,43 +255,53 @@ class ProductDetail extends React.Component {
                       <Divider />
 
 
-                      <Container text>
+                      <Container text style={{paddingTop: '3%'}}>
 
-                        <Comment.Group >
-                          <Header as='h3' dividing>
-                            Customer Reviews
-                          </Header>
 
-                          <Comment>
-                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                            <Comment.Content>
-                              <Comment.Author as='a'>User 1</Comment.Author>
-                              <Comment.Metadata>
-                                <div>Today at 5:40PM</div>
-                              </Comment.Metadata>
-                              <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' /> <Icon name='star' />
-                              <Comment.Text>This is an amazing smart speaker!! I love it and it makes a great addition to our home! I already have ordered another one and you should too!</Comment.Text>
-                              <Comment.Actions>
-                                <Comment.Action>Reply</Comment.Action>
-                              </Comment.Actions>
-                            </Comment.Content>
-                          </Comment>
-                          <Comment>
-                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
-                            <Comment.Content>
-                              <Comment.Author as='a'>User 2</Comment.Author>
-                              <Comment.Metadata>
-                                <div>Today at 5:42PM</div>
-                              </Comment.Metadata>
-                              <Icon name='star' />
-                              <Comment.Text>I hate this smart speaker, it is constantly listening in on my conversations and I can tell that it is judging me!</Comment.Text>
-                              <Comment.Actions>
-                                <Comment.Action>Reply</Comment.Action>
-                              </Comment.Actions>
-                            </Comment.Content>
-                          </Comment>
+                          {
+                            reviews !== null ?
 
-                        </Comment.Group>
+
+                            <Comment.Group >
+                              <Header as='h3' dividing>
+                                Customer Reviews
+                              </Header>
+
+                              {
+                              reviews.map(review => {
+                                var date = new Date( review.date );
+                                console.log("REVIEW DATE: ", date)
+                                var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+                                return(
+                                  <Comment>
+                                    {/* <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' /> */}
+                                    <Comment.Content>
+                                      <Comment.Author as='a'>{review.user}</Comment.Author>
+                                      <Comment.Metadata>
+                                        <div>{dateString}</div>
+                                      </Comment.Metadata>
+                                      <Comment.Text>
+                                        {review.review_content}
+                                      </Comment.Text>
+                                      <Comment.Actions>
+                                        <Comment.Action>Reply</Comment.Action>
+                                      </Comment.Actions>
+                                    </Comment.Content>
+                                  </Comment>
+                                )
+                              })
+                              }
+                            </Comment.Group>
+
+
+
+                            :
+
+                            <h3>there are currently no current customer reviews, but we think that this product is great!</h3>
+
+                          }
+
+
 
                       </Container>
                     </Grid.Column>
@@ -285,31 +309,32 @@ class ProductDetail extends React.Component {
 
                     {/*Column for holding the add-to-cart widget and the different variations of the product*/}
                     <Grid.Column width={4}>
+                      <Container style={{paddingTop: '5%'}}>
 
-                      <Card>
-                        <Card.Content>
+                        <Card >
+                          <Card.Content>
 
-                          <Card.Header>Quantity:</Card.Header>
-                          <NumberInput  float='right' size='mini' value={this.state.quantity} minValue={1}  onChange={this.changeValue} doubleClickStepAmount={3} />
+                            <Card.Header>Quantity:</Card.Header>
+                            <NumberInput  float='right' size='mini' value={this.state.quantity} minValue={1}  onChange={this.changeValue} doubleClickStepAmount={3} />
 
-                        </Card.Content>
-                        <Card.Content extra>
+                          </Card.Content>
+                          <Card.Content extra>
 
-                          <Button
-                            fluid
-                            basic
-                            color='green'
-                            onClick={ () => this.handleAddToCart(this.state.data.slug, this.state.quantity ) }
-                          >
-                            Add to Cart
-                          </Button>
+                            <Button
+                              fluid
+                              basic
+                              color='green'
+                              onClick={ () => this.handleAddToCart(this.state.data.slug, this.state.quantity ) }
+                            >
+                              Add to Cart
+                            </Button>
 
-                        </Card.Content>
-                      </Card>
+                          </Card.Content>
+                        </Card>
 
 
 
-                      {/* "if variations exists, then display this for every variation" */}
+                        {/* "if variations exists, then display this for every variation" */}
 
                         {
                           data.variations &&
@@ -344,6 +369,8 @@ class ProductDetail extends React.Component {
                             })
                           )
                         }
+
+                      </Container>
 
                     </Grid.Column>
                 </Grid>

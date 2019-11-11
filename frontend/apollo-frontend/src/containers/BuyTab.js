@@ -21,6 +21,7 @@ import {
   Form,
   Checkbox,
   Icon,
+  Message,
 
 } from 'semantic-ui-react';
 import axios from 'axios';
@@ -31,11 +32,6 @@ import { withRouter } from "react-router";
 import {ProductList} from './ProductList';
 
 import {productListURL} from '../constants';
-
-/*
-  Got the search bar from https://react.semantic-ui.com/modules/search/#types-standard
-*/
-
 
 
 
@@ -54,9 +50,13 @@ class BuyTab extends React.Component {
 
   componentDidMount() {
 
+
+
+
     this.setState({
       loading: true
     });
+
 
     //gets the products from the database and stores them in the state or it returns the error
     axios
@@ -120,6 +120,8 @@ class BuyTab extends React.Component {
 
 
     return(
+
+
 
       <Grid>
         <Grid.Row>

@@ -10,7 +10,8 @@ from .views import (
     AddressListView,
     AddCouponView,
     CountryListView,
-    
+    ItemReviewsView,
+
 )
 
 
@@ -25,5 +26,5 @@ urlpatterns = [
     path( 'addresses/', AddressListView.as_view(), name='address-list'),
     path( 'add-coupon/', AddCouponView.as_view(), name='add-coupon'),
     path( 'countries/', CountryListView.as_view(), name='country-list' ),
-
+    path( 'products/<pk>/reviews', ItemReviewsView.as_view(), name='product-reviews' ),
 ]

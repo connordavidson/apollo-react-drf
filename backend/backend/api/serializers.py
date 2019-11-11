@@ -11,6 +11,7 @@ from .models import (
     Address,
     Payment,
     Coupon,
+    ItemReview,
 
 )
 
@@ -40,6 +41,19 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_label(self, obj):
         return obj.get_label_display()
+
+
+
+class ItemReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemReview
+        fields = (
+            'item',
+            'user',
+            'review_content',
+            'date',
+        )
+
 
 
 #made at https://youtu.be/Zg-bzjZuRa0?t=1317
@@ -93,7 +107,8 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'slug',
             'description',
             'image',
-            'variations'
+            'variations',
+
         )
 
     def get_category(self, obj):
@@ -105,6 +120,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     def get_variations(self, obj):
         #gets all the variations for this specific item (ex. returns 'size', 'color', 'other_variation' for the 't-shirt' item )
         return VariationSerializer(obj.variation_set.all(), many=True).data
+
 
 
 #made at https://youtu.be/Vm9Z6mm2kcU?t=1507
@@ -183,7 +199,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 #returns all the items and quantities in an order (also used for the cart)
 class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField()
-    total = serializers.SerializerMethodField()  
+    total = serializers.SerializerMethodField()
     coupon = serializers.SerializerMethodField()
 
     class Meta:

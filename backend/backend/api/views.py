@@ -17,6 +17,8 @@ from .serializers import (
     ItemDetailSerializer,
     AddressSerializer,
     OrderSerializer,
+    ItemReviewsSerializer,
+
 )
 
 from .models import (
@@ -28,6 +30,7 @@ from .models import (
     Variation,
     ItemVariation,
     Coupon,
+    ItemReview,
 
 )
 
@@ -215,12 +218,10 @@ class AddCouponView(APIView):
 
 
 #will need to change this to work with payment api
-
 #created at https://youtu.be/z7Kq6bHxEcI?t=829
 class PaymentView(APIView):
 
     def post(self, request, *args, **kwargs):
-
 
         order = Order.objects.get(user=self.request.user, ordered=False)
 
@@ -278,8 +279,19 @@ class AddressListView(ListAPIView):
         return qs.filter(user=self.request.user, address_type=address_type)
 
 
-
 #created at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1591
 class CountryListView(APIView):
     def get(self, request, *args, **kwargs):
         return Response(countries, status=HTTP_200_OK)
+
+
+#might need to change the inheritence later, LISTAPIVIEW is only for retriving information, not for adding (users can't add a review with this inheritence)
+class ItemReviewsView(ListAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = ItemReviewsSerializer
+
+    def get_queryset(self):
+        qs = ItemReview.objects.all()
+        item = self.kwargs['pk']
+        #filters all the itemreviews by the given primary key and returns them
+        return qs.filter(item=item)

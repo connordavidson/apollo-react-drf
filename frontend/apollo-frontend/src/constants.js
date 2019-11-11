@@ -57,3 +57,5 @@ export const orderItemUpdateQuantityURL = 'http://127.0.0.1:8000/api/order-item/
 
 //created at https://youtu.be/cZw2Mp5ep5g?t=190
 export const paymentListURL = 'http://127.0.0.1:8000/api/payments/';
+
+export const productReviewListURL = (id) => `http://127.0.0.1:8000/api/products/${id}/reviews`;

@@ -31,8 +31,9 @@ import { withRouter } from "react-router";
 
 import {ProductList} from './ProductList';
 
-import {productListURL} from '../constants';
+import {productListURL, addToCartURL} from '../constants';
 
+import {authAxios} from '../utils';
 
 
 
@@ -64,12 +65,35 @@ class BuyTab extends React.Component {
     .then(response => {
       //console.log("response.data: " , response.data);
       this.setState({data: response.data, loading: false});
+      console.log('resonse data: ', response.data)
     })
     .catch(error => {
       this.setState({error: error, loading: false});
     })
 
   };
+
+
+
+  handleAddToCart = (slug, quantity) => {
+    this.setState({ loading: true });
+    const {formData} = this.state;
+    //filters  the data into the correct format fot the backend
+    const variations = []
+    //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
+    authAxios
+    .post( addToCartURL , { slug, variations, quantity} )
+    .then(res => {
+      //console.log(res.data, addToCartURL, "add to cart succeeded");
+      this.props.fetchCart();
+      this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
+    })
+    .catch(err => {
+      this.setState({ error: err, loading: false });
+      console.log(err.message , 'add-to-cart failed ');
+    });
+  }
+
 
   //if the user presses enter on the search bar, it'll search for the value (currently stored in this.state.value)
   handleSearchEnterPress = (event) => {
@@ -203,8 +227,7 @@ class BuyTab extends React.Component {
 
                 { //prints out all the items
                   data.map(item => {
-                  return (
-
+                    return (
                       <Item key={item.id}>
                         <Item.Image src={item.image} />
 
@@ -221,21 +244,34 @@ class BuyTab extends React.Component {
                           <Item.Description>
                               {item.description}
                           </Item.Description>
-                          <Item.Extra>
-                            {/*make this a "quick add", but only if there are no variations to choose from */}
-                            <Button primary floated='right' icon >
-                              Add to cart
-                              <Icon name='cart plus' floated='right' />
-                            </Button>
-                          </Item.Extra>
+                          {
+                            item.variations.length === 0 ?
+                            <Item.Extra>
+                              {/*make this a "quick add", but only if there are no variations to choose from */}
+                              <Button
+                                primary
+                                floated='left'
+                                icon
+                                onClick={ () => this.handleAddToCart(item.slug, 1 ) }
+                                >
+                                Quick Add
+                                <Icon name='cart plus' floated='right' />
+                              </Button>
+                            </Item.Extra>
+                            :
+                            <Item.Extra>
+                              {/*make this a "quick add", but only if there are no variations to choose from */}
+                              <Label primary floated='right' icon >
+                                You need to select a {item.variations[0].name} option before you can order this
+                              </Label>
+                            </Item.Extra>
+                          }
+
                         </Item.Content>
                       </Item>
-
-
-
-
-                  )
-                })}
+                    )
+                  })
+                }
 
               </Item.Group>
             </React.Fragment>

@@ -21,6 +21,7 @@ from django_countries.serializer_fields import CountryField
 class ItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
+    variations = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
@@ -33,7 +34,8 @@ class ItemSerializer(serializers.ModelSerializer):
             'label',
             'slug',
             'description',
-            'image'
+            'image',
+            'variations'
         )
 
     def get_category(self, obj):
@@ -42,7 +44,11 @@ class ItemSerializer(serializers.ModelSerializer):
     def get_label(self, obj):
         return obj.get_label_display()
 
-
+    #doesn't neccesarily need to return all the different variations, just needs to know if the item has one.
+    #change in future pls, I'm just not sure how to do that right now
+    def get_variations(self, obj):
+        #gets all the variations for this specific item (ex. returns 'size', 'color', 'other_variation' for the 't-shirt' item )
+        return VariationSerializer(obj.variation_set.all(), many=True).data
 
 class ItemReviewsSerializer(serializers.ModelSerializer):
     class Meta:

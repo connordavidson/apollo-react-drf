@@ -28,8 +28,7 @@ import {
 
   } from 'react-router-dom';
 
-import NumberInput from 'semantic-ui-react-numberinput';
-
+//import ShippingForm from './ShippingForm';
 
 import {authAxios} from '../utils';
 
@@ -52,8 +51,6 @@ planning on making each part of the breadcrumbs it's own component
 
 
 
-
-
 //made this file at https://youtu.be/z7Kq6bHxEcI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=426
 //made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
@@ -72,9 +69,7 @@ class OrderReview extends Component {
                 this is a brick lmao
               </Card.Description>
             </Card.Content>
-            <Card.Content>
-              <NumberInput  float='center' size='mini' value={1} minValue={1} />
-            </Card.Content>
+
           </Card>
 
           <Card>
@@ -85,9 +80,7 @@ class OrderReview extends Component {
                 This is a pack of goldfish crackers that is designed to be able to feed an entire family
               </Card.Description>
             </Card.Content>
-            <Card.Content>
-              <NumberInput  float='center' size='mini' value={14} minValue={1} />
-            </Card.Content>
+
           </Card>
 
           <Card>
@@ -98,9 +91,7 @@ class OrderReview extends Component {
                 this will keep your snacks cold
               </Card.Description>
             </Card.Content>
-            <Card.Content>
-              <NumberInput  float='center' size='mini' value={1} minValue={1} />
-            </Card.Content>
+
           </Card>
 
         </Card.Group>
@@ -114,6 +105,65 @@ class OrderReview extends Component {
 
 
 
+ class ShippingForm extends Component {
+  //insert logic to retrieve available shipping optins for the address given in the previous breadcrumb
+
+  render() {
+    return(
+      <React.Fragment>
+        <Header>Select a shipping option</Header>
+        <Card.Group>
+          <Card>
+            <Card.Content>
+              <Card.Header>2 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 2 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $75.16
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>3-5 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 3-5 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                $50.16
+            </Card.Content>
+          </Card>
+
+          <Card>
+            <Card.Content>
+              <Card.Header>7-10 Day Shipping</Card.Header>
+              <Card.Meta>Friends of Elliot</Card.Meta>
+              <Card.Description>
+                arrives in 7-10 business days
+              </Card.Description>
+            </Card.Content>
+            <Card.Content>
+                FREE.99 boiiii
+            </Card.Content>
+          </Card>
+
+        </Card.Group>
+      </React.Fragment>
+
+
+    )
+  }
+}
+
+
+
+
+
 
 //made at https://youtu.be/Vm9Z6mm2kcU?t=1187
 class CouponForm extends Component {
@@ -121,15 +171,19 @@ class CouponForm extends Component {
     code: ''
   };
 
+
+
   //made at https://youtu.be/Vm9Z6mm2kcU?t=1431
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({
       code: e.target.value
     });
+
   };
 
   //for adding a coupon
   handleAddCoupon = (e, code) => {
+    console.log("HELLO?????")
     e.preventDefault();
     this.setState({ loading: true });
 
@@ -143,13 +197,19 @@ class CouponForm extends Component {
     });
   };
 
+
   //handleAddCoupon comes from the Checkout form component.. gets passed in
   handleSubmit = (e) => {
     const { code } = this.state;
     this.handleAddCoupon(e, code);
     //resets the form with the code.. without this, the code stays in the textbox after page refresh
     this.setState({code: ''});
+
+    console.log("handleaddcoupon : " , this.state.data)
+
   };
+
+
 
   render(){
     const {code} = this.state;
@@ -261,60 +321,6 @@ class PaymentForm extends Component {
 
 
 
-class ShippingForm extends Component {
-  //insert logic to retrieve available shipping optins for the address given in the previous breadcrumb
-
-  render() {
-    return(
-      <React.Fragment>
-        <Header>Select a shipping option</Header>
-        <Card.Group>
-          <Card>
-            <Card.Content>
-              <Card.Header>2 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 2 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $75.16
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>3-5 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 3-5 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $50.16
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>7-10 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 7-10 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                FREE.99 boiiii
-            </Card.Content>
-          </Card>
-
-        </Card.Group>
-      </React.Fragment>
-
-
-    )
-  }
-}
 
 
 
@@ -322,7 +328,7 @@ class ShippingForm extends Component {
 
 
 
-
+{/* FOR FORM VALIDATION: https://mdbootstrap.com/docs/react/forms/validation/*/}
 class AddressForm extends Component {
   state = {
     shippingAddresses: [],
@@ -537,7 +543,7 @@ class CheckoutBreadCrumbs extends React.Component {
         })
         console.log('ship: ', this.state)
       break;
-
+      //should never be the case (changed the layout to display the order review on the righthand side)
       case 'review':
         this.setState({
           information : false,
@@ -582,6 +588,7 @@ class CheckoutBreadCrumbs extends React.Component {
       return(
         <ShippingForm />
       )
+    //should not be the case ever bc ui design changes
     }else if(orderReview){
       return(
         <OrderReview />
@@ -621,6 +628,7 @@ class CheckoutBreadCrumbs extends React.Component {
         </Breadcrumb.Section>
 
         <Breadcrumb.Divider />
+        {/*
         <Breadcrumb.Section
           id='review'
           active={this.state.orderReview}
@@ -632,6 +640,7 @@ class CheckoutBreadCrumbs extends React.Component {
         </Breadcrumb.Section>
 
         <Breadcrumb.Divider />
+        */}
         <Breadcrumb.Section
           id='payment'
           active={this.state.payment}
@@ -662,14 +671,14 @@ class CheckoutBreadCrumbs extends React.Component {
 
 
 
-class CheckoutForm extends Component {
+class CheckoutForm extends React.Component {
 
   state = {
     data: null,
     loading: false,
     error: null,
     success: false,
-
+    total: null
   }
 
   componentDidMount(){
@@ -687,8 +696,9 @@ class CheckoutForm extends Component {
       .get(orderSummaryURL)
       .then(res => {
         //dispatches the cartSuccess method with data
-        this.setState( {data: res.data, loading: false} );
-        console.log("data: fetchorder" , this.state.data);
+        this.setState( {data: res.data, total: res.data.total , loading: false} );
+
+        console.log("data: fetchorder" , this.state.data.total);
       })
       .catch(err => {
         //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
@@ -733,16 +743,16 @@ class CheckoutForm extends Component {
         success,
         shippingAddresses,
         selectedShippingAddress,
+        total,
 
       } = this.state;
 
-    console.log('data ', data);
-    console.log(data);
-
-
-
+    console.log('data inside render(): ', data);
+    console.log('data.total: ', data);
 
     return (
+
+
       <React.Fragment>
         <div>
           {
@@ -816,11 +826,31 @@ class CheckoutForm extends Component {
 
                   {/*column for holding the price info*/}
                   <Grid.Column width={4}>
-                    <Card>
+
+
+                    <Header>Order Review</Header>
+                    <Card.Group>
+                      <Card>
+
+                          {
+                            data &&
+                            data.order_items.map(item => {
+                              console.log('item id: ', item.item.id)
+                              return (
+                                <Card.Content>
+                                  <Card.Header>
+                                    {item.item.title} [{item.quantity}]
+                                  </Card.Header>
+                                  <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
+                                </Card.Content>
+                              )
+                            })
+                          }
+
                       <Card.Content>
                         <Card.Header>Price: </Card.Header>
                           <Card.Description>
-                            subtotal: _______
+                            subtotal: ${total}
                           </Card.Description>
                           <Card.Description>
                             tax: ______
@@ -831,16 +861,22 @@ class CheckoutForm extends Component {
                           <Card.Description>
                             Total: ______
                           </Card.Description>
-
                       </Card.Content>
-                    </Card>
+                      </Card>
+                      </Card.Group>
 
-                    <Card>
-                      <Card.Content>
-                        <Card.Header>Coupon</Card.Header>
-                        <CouponForm />
-                      </Card.Content>
-                    </Card>
+                      <Card>
+                        <Card.Content>
+                          <Card.Header>Coupon</Card.Header>
+                          {   data &&
+                              data.coupon !== null ?
+                                <Label color='green'><Icon name='check circle' color='grey'/> applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
+                                null
+                          }
+                          <CouponForm />
+                        </Card.Content>
+                      </Card>
+
                   </Grid.Column>
 
                 </Grid.Row>

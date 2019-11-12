@@ -36,10 +36,14 @@ from .models import (
 
 # Create your views here.
 
+
+#doesn't neccesarily need to return all the different variations, just needs to know if the item has one.
+#change in future pls
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
+
 
 
 class UserIDView(APIView):

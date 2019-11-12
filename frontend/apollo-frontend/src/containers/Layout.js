@@ -11,7 +11,9 @@ import {
   Segment,
   Button,
   Card,
-  Icon
+  Icon,
+  Message,
+
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -95,31 +97,31 @@ class CustomLayout extends React.Component {
                               return(
                                 <Dropdown.Item
                                   key={order_item.id}
+                                  style={{ cursor: 'auto'}}
                                 >
-                                  <Card >
-                                    <Card.Content>
-                                      <Card.Header onClick={() => this.props.history.push(`/products/${order_item.item.id}`)} >
-                                        {order_item.item.title}
-                                      </Card.Header>
-
-                                      <Card.Meta>Quantity: {order_item.quantity}</Card.Meta>
-
-                                      <Card.Description>
-                                        {this.renderVariations(order_item)}
-                                      </Card.Description>
-
+                                  <Message fluid>
+                                    <Message.Header
+                                      onClick={() => this.props.history.push(`/products/${order_item.item.id}`)}
+                                      style={{cursor: 'pointer'}}
+                                    >
+                                      {order_item.item.title}
+                                    </Message.Header>
+                                    <p>
+                                      Quantity: {order_item.quantity}
                                       <Icon
                                         name='trash'
                                         color='red'
                                         style={{float: 'right', cursor: 'pointer'}}
                                         onClick={ () => this.handleRemoveItem(order_item.id) }
                                       />
-                                    </Card.Content>
-                                  </Card>
+                                    </p>
+
+                                  </Message>
                                 </Dropdown.Item>
                               );
                             })
                           }
+
                           <Dropdown.Divider />
                           {/* link to the checkout page */}
                           <Dropdown.Item

@@ -90,7 +90,6 @@ class ProductDetail extends React.Component {
     axios
     .get(productReviewListURL(productID))
     .then(res => {
-      console.log('REVIEWS: ' , res.data)
       this.setState({reviews: res.data, loading: false});
     })
     .catch(err => {
@@ -164,8 +163,6 @@ class ProductDetail extends React.Component {
           reviews,
 
         } = this.state;
-
-        console.log('reviews chile: ', reviews)
 
       return (
 
@@ -270,7 +267,6 @@ class ProductDetail extends React.Component {
                               {
                               reviews.map(review => {
                                 var date = new Date( review.date );
-                                console.log("REVIEW DATE: ", date)
                                 var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
                                 return(
                                   <Comment>

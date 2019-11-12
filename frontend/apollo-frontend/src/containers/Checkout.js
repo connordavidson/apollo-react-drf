@@ -69,7 +69,6 @@ class OrderReview extends Component {
                 this is a brick lmao
               </Card.Description>
             </Card.Content>
-
           </Card>
 
           <Card>
@@ -752,7 +751,6 @@ class CheckoutForm extends React.Component {
 
     return (
 
-
       <React.Fragment>
         <div>
           {
@@ -814,7 +812,6 @@ class CheckoutForm extends React.Component {
                   <Grid.Column width={3}>
                   </Grid.Column>
 
-
                   {/*column to hold the breadcrumbs for checkout info*/}
                   <Grid.Column width={9}>
                     <CheckoutBreadCrumbs />
@@ -827,26 +824,23 @@ class CheckoutForm extends React.Component {
                   {/*column for holding the price info*/}
                   <Grid.Column width={4}>
 
-
                     <Header>Order Review</Header>
                     <Card.Group>
                       <Card>
-
-                          {
-                            data &&
-                            data.order_items.map(item => {
-                              console.log('item id: ', item.item.id)
-                              return (
-                                <Card.Content>
-                                  <Card.Header>
-                                    {item.item.title} [{item.quantity}]
-                                  </Card.Header>
-                                  <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
-                                </Card.Content>
-                              )
-                            })
-                          }
-
+                        {
+                          data &&
+                          data.order_items.map(item => {
+                            console.log('item id: ', item.item.id)
+                            return (
+                              <Card.Content>
+                                <Card.Header>
+                                  {item.item.title} [{item.quantity}]
+                                </Card.Header>
+                                <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
+                              </Card.Content>
+                            )
+                          })
+                        }
                       <Card.Content>
                         <Card.Header>Price: </Card.Header>
                           <Card.Description>
@@ -887,9 +881,6 @@ class CheckoutForm extends React.Component {
 
           )
         }
-
-
-
       </React.Fragment>
 
 
@@ -902,12 +893,7 @@ class CheckoutForm extends React.Component {
 
 
 const WrappedForm = () => (
-
-
       <CheckoutForm />
-
-
-
 )
 
 export default WrappedForm;

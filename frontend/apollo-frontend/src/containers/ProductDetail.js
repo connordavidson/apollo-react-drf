@@ -91,6 +91,7 @@ class ProductDetail extends React.Component {
     .get(productReviewListURL(productID))
     .then(res => {
       this.setState({reviews: res.data, loading: false});
+      console.log("reviews: ", res)
     })
     .catch(err => {
       this.setState({error: err, loading: false});
@@ -253,18 +254,12 @@ class ProductDetail extends React.Component {
 
 
                       <Container text style={{paddingTop: '3%'}}>
-
-
+                        <Comment.Group >
+                          <Header as='h3' dividing>
+                            Customer Reviews
+                          </Header>
                           {
-                            reviews !== null ?
-
-
-                            <Comment.Group >
-                              <Header as='h3' dividing>
-                                Customer Reviews
-                              </Header>
-
-                              {
+                            reviews.length > 0 ?
                               reviews.map(review => {
                                 var date = new Date( review.date );
                                 var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
@@ -286,19 +281,14 @@ class ProductDetail extends React.Component {
                                   </Comment>
                                 )
                               })
-                              }
-                            </Comment.Group>
-
-
-
-                            :
-
-                            <h3>there are currently no current customer reviews, but we think that this product is great!</h3>
-
+                              :
+                              <Message
+                                style={{backgroundColor: 'white'}}
+                              >
+                                There are no customer reviews for this product yet, but we think that its great! <p>Agree with us? Write a review for this item in your profile</p>
+                              </Message>
                           }
-
-
-
+                        </Comment.Group>
                       </Container>
                     </Grid.Column>
 
@@ -315,7 +305,6 @@ class ProductDetail extends React.Component {
 
                           </Card.Content>
                           <Card.Content extra>
-
                             <Button
                               fluid
                               basic
@@ -324,14 +313,11 @@ class ProductDetail extends React.Component {
                             >
                               Add to Cart
                             </Button>
-
                           </Card.Content>
                         </Card>
 
 
-
                         {/* "if variations exists, then display this for every variation" */}
-
                         {
                           data.variations &&
                           (
@@ -354,7 +340,7 @@ class ProductDetail extends React.Component {
                                               }
                                             })
                                           }
-                                        placeholder={`choose a ${variation.name}`}
+                                        placeholder={`choose a ${variation.name} option`}
                                         selection
                                         value={formData[variation.name]}
                                       />

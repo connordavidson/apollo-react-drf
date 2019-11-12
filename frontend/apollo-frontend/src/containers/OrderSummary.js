@@ -11,13 +11,17 @@ import {
   Segment,
   Dimmer,
   Loader,
-  
+  Grid,
+  Divider,
+  Card,
+
 } from 'semantic-ui-react';
 
 import {connect} from 'react-redux';
 import { Link, Redirect} from 'react-router-dom';
-import { authAxios } from '../utils';
 
+
+import { authAxios } from '../utils';
 import {
   orderSummaryURL,
   orderItemDeleteURL,
@@ -77,11 +81,12 @@ class OrderSummary extends React.Component {
 
     //created at https://youtu.be/qJN1_2ZwqeA?t=2160
     renderVariations = (orderItem) => {
+
       let text = '';
       //loop through all the variations of the orderItem
       orderItem.item_variations.forEach(iv => {
         //ex: color: red , size: small
-        text += `${iv.variation.name}: ${iv.value}, ` ;
+        text += `${iv.variation.name}: ${iv.value} ` ;
       })
       return text;
     }
@@ -161,144 +166,152 @@ class OrderSummary extends React.Component {
       console.log("data: ", data);
 
       return(
-        <Container>
-          <Header as='h3'>Order Summary</Header>
+        <React.Fragment>
+          <div>
+            {
+              error &&
+              <Message
+                error
+                header="There was an error"
+                content={JSON.stringify(error)}
+              />
+            }
+
+            {
+              loading &&
+              <Segment>
+                <Dimmer active inverted>
+                  <Loader inverted>Loading</Loader>
+                </Dimmer>
+              </Segment>
+            }
+
+            {
+              increased &&
+              <Message
+                positive
+                header="Thanks!"
+                content={increased}
+              />
+            }
+
+            {
+              decreased &&
+              <Message
+                error
+                header="Changed your mind?"
+                content={decreased}
+              />
+            }
+          </div>
 
           {
-            error &&
-            <Message
-              error
-              header="There was an error"
-              content={JSON.stringify(error)}
-            />
-          }
+            data&&
+            <React.Fragment>
 
-          {
-            loading &&
-            <Segment>
-              <Dimmer active inverted>
-                <Loader inverted>Loading</Loader>
-              </Dimmer>
-            </Segment>
-          }
+              {/*based on the layout of checkout.js*/}
+              <Grid>
+                {/*row for holding the header*/}
+                <Grid.Row>
+                  <Grid.Column width={3}>
+                  </Grid.Column>
+                  <Grid.Column width={9}>
+                    <h1>Review your cart</h1>
+                    <Divider/>
+                  </Grid.Column>
+                  <Grid.Column width={4}>
+                  </Grid.Column>
+                </Grid.Row>
 
-          {
-            increased &&
-            <Message
-              positive
-              header="Thanks!"
-              content={increased}
-            />
-          }
+                <Grid.Row>
+                  {/*empty filler column to help with spacing of the rest of the page, probably can do this with some type of offset, not sure though*/}
+                  <Grid.Column width={3}>
+                  </Grid.Column>
 
-          {
-            decreased &&
-            <Message
-              error
-              header="Changed your mind?"
-              content={decreased}
-            />
-          }
+                  <Grid.Column width={9}>
+                    <Card.Group>
+                      {
+                        data.order_items.map(item => {
+                          return(
+                            <Card>
+                              <Card.Content>
+                                <Card.Header>
+                                  {item.item.title}
+                                </Card.Header>
 
+                                <Card.Content>
+                                  {item.item_variations ?
+                                    (this.renderVariations(item)) :
+                                    null
+                                  }
+                                </Card.Content>
 
-          {
-            data
+                                {
+                                  item.item.discount_price !== null ?
+                                  <Card.Meta>
+                                    <s>${item.item.price}</s>
+                                    ${item.item.discount_price}
+                                  </Card.Meta> :
+                                  <Card.Meta>
+                                    ${item.item.price}
+                                  </Card.Meta>
+                                }
 
-            &&
+                                <Card.Description >
+                                  <Label>
+                                    <Icon
+                                      name='minus'
+                                      color='red'
+                                      style={{cursor: 'pointer'}}
+                                      onClick={ () =>
+                                        this.handleRemoveQuantityFromCart(item.item.slug, item.item.title)}
+                                    />
+                                    {item.quantity}
+                                    <Label.Detail>
+                                      <Icon
+                                        name='plus'
+                                        color='green'
+                                        style={{cursor: 'pointer'}}
+                                        onClick={ () =>
+                                          this.handleAddToCart(
+                                            item.item.slug,
+                                            item.item_variations,
+                                            item.item.title
+                                          )}
+                                      />
+                                    </Label.Detail>
+                                  </Label>
+                                </Card.Description>
 
-            <Table celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Item #</Table.HeaderCell>
-                <Table.HeaderCell>Item name</Table.HeaderCell>
-                <Table.HeaderCell>Item price</Table.HeaderCell>
-                <Table.HeaderCell>Item quantity</Table.HeaderCell>
-                <Table.HeaderCell>Total item price</Table.HeaderCell>
-
-              </Table.Row>
-            </Table.Header>
-
-
-            <Table.Body>
-
-              { data.order_items.map( (orderItem, i) => {
-
-                  return (
-                    <Table.Row key={orderItem.id}>
-                      <Table.Cell>{i + 1}</Table.Cell>
-                      <Table.Cell>{orderItem.item.title} [{this.renderVariations(orderItem)}]</Table.Cell>
-                      <Table.Cell>${orderItem.item.price}</Table.Cell>
-                      <Table.Cell textAlign='center'>
-
-
-                        <Icon
-                          name='minus'
-                          style={{float: 'left', cursor: 'pointer'}}
-                          onClick={ () =>
-                            this.handleRemoveQuantityFromCart(orderItem.item.slug, orderItem.item.title)}
-                        />
-                        {orderItem.quantity}
-                        <Icon
-                          name='plus'
-                          style={{float: 'right', cursor: 'pointer'}}
-                          onClick={ () =>
-                            this.handleAddToCart(
-                              orderItem.item.slug,
-                              orderItem.item_variations,
-                              orderItem.item.title
-                            )}
-                        />
-                      </Table.Cell>
-                      <Table.Cell>
-
-                        {
-                        orderItem.item.discount_price &&
-                          (
-                          <Label color="green" ribbon>ON DISCOUNT</Label>
+                              </Card.Content>
+                            </Card>
                           )
-                        }
-                        ${orderItem.final_price}
+                        })
+                      }
 
-                        <Icon
-                          name='trash'
-                          color='red'
-                          style={{float: 'right', cursor: 'pointer'}}
-                          onClick={ () => this.handleRemoveItem(orderItem.id) }
-                        />
-                      </Table.Cell>
-                    </Table.Row>
-                  )
-              }) }
+                    </Card.Group>
+                  </Grid.Column>
 
-              <Table.Row>
-                <Table.Cell />
-                <Table.Cell />
-                <Table.Cell />
-                <Table.Cell colSpan='2' textAlign='center'>
-                  Total: ${data.total}
-                </Table.Cell>
-              </Table.Row>
+                  <Grid.Column width={4}>
+                    <Header>Go to checkout</Header>
+                      <Card>
+                        <Card.Content>
+                          <Button
+                            fluid
+                            color='yellow'
+                            onClick={ () => this.props.history.push(`/checkout`) }
+                            >
+                            Checkout
+                          </Button>
+                        </Card.Content>
+                      </Card>
 
-            </Table.Body>
-
-
-
-            <Table.Footer>
-              <Table.Row>
-                <Table.HeaderCell colSpan='5' textAlign='right'>
-                  <Link to='/checkout'>
-                    <Button color='yellow' >
-                      Checkout
-                    </Button>
-                  </Link>
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer>
-
-          </Table>
-
-        }
-        </Container>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </React.Fragment>
+          }
+        </React.Fragment>
       )
     }
 }

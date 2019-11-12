@@ -30,6 +30,7 @@ class LoginForm extends React.Component {
   render() {
     const { error, loading, token } = this.props;
     const { username, password } = this.state;
+    //redirects to the home page
     if (token) {
       return <Redirect to="/" />;
     }

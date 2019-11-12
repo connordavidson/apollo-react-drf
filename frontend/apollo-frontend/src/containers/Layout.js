@@ -13,6 +13,7 @@ import {
   Card,
   Icon,
   Message,
+  Label,
 
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
@@ -21,7 +22,7 @@ import { fetchCart } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
 
 import { authAxios } from '../utils';
-import {orderItemDeleteURL } from '../constants';
+import { orderItemDeleteURL, orderItemUpdateQuantityURL, addToCartURL } from '../constants';
 
 
 class CustomLayout extends React.Component {
@@ -41,16 +42,12 @@ class CustomLayout extends React.Component {
     .then(res => {
       //callback
       this.handleFetchOrder();
-
-
     })
     .catch(err => {
         this.setState( {error: err} );
     });
-
-
-
   }
+
 
   renderVariations = (orderItem) => {
     let text = '';
@@ -61,6 +58,56 @@ class CustomLayout extends React.Component {
     })
     return text;
   }
+
+
+  //made at https://youtu.be/8UEZsm4tCpY?t=675
+  handleFormatData = (itemVariations) => {
+    //returns the keys of the itemVariations array becuase that is what the backend is expecting
+    //convert [{id: 1}, {id: 2}] to [1,2]
+    return Object.keys(itemVariations).map(key =>{
+      //"for every object in the array return the id"
+      return itemVariations[key].id;
+    })
+  }
+
+  //made at https://youtu.be/8UEZsm4tCpY?t=581
+  //explanation around https://youtu.be/8UEZsm4tCpY?t=510
+  handleAddToCart = (slug, itemVariations, title) => {
+    this.setState({ loading: true });
+    //filters  the data into the correct format fot the backend
+    const variations = this.handleFormatData(itemVariations);
+    //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
+    authAxios
+    .post( addToCartURL , { slug, variations } )
+    .then(res => {
+      console.log(res.data, addToCartURL, "add to cart succeeded");
+      this.handleFetchOrder();
+      this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
+    })
+    .catch(err => {
+      this.setState({ error: err, loading: false });
+      console.log(err , 'add-to-cart failed ');
+    });
+  }
+
+
+  //made around https://youtu.be/8UEZsm4tCpY?t=815
+  //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
+  handleRemoveQuantityFromCart = (slug , title) => {
+    //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
+    authAxios
+    .post( orderItemUpdateQuantityURL, { slug } )
+    .then(res => {
+      //callback
+      this.handleFetchOrder();
+      this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
+    })
+    .catch(err => {
+        this.setState( {error: err} );
+    });
+  }
+
+
 
   render() {
     //instantiates constants from the props
@@ -73,8 +120,6 @@ class CustomLayout extends React.Component {
             <Link to="/">
               <Menu.Item header><h1>Apollo</h1></Menu.Item>
             </Link>
-
-
 
             <Menu.Menu position='right' >
 
@@ -99,7 +144,10 @@ class CustomLayout extends React.Component {
                                   key={order_item.id}
                                   style={{ cursor: 'auto'}}
                                 >
-                                  <Message fluid>
+                                  <Message
+                                    fluid
+                                    style={{backgroundColor: 'white'}}
+                                  >
                                     <Message.Header
                                       onClick={() => this.props.history.push(`/products/${order_item.item.id}`)}
                                       style={{cursor: 'pointer'}}
@@ -107,7 +155,33 @@ class CustomLayout extends React.Component {
                                       {order_item.item.title}
                                     </Message.Header>
                                     <p>
-                                      Quantity: {order_item.quantity}
+
+                                      <Label>
+                                        <Icon
+                                          name='minus'
+                                          color='red'
+                                          style={{cursor: 'pointer'}}
+                                          onClick={ () =>
+                                            this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title)}
+                                        />
+                                        {order_item.quantity}
+
+                                        <Label.Detail>
+                                          <Icon
+                                            name='plus'
+                                            color='green'
+                                            style={{cursor: 'pointer'}}
+                                            onClick={ () =>
+                                              this.handleAddToCart(
+                                                order_item.item.slug,
+                                                order_item.item_variations,
+                                                order_item.item.title
+                                              )}
+                                          />
+                                        </Label.Detail>
+
+                                      </Label>
+
                                       <Icon
                                         name='trash'
                                         color='red'
@@ -115,7 +189,6 @@ class CustomLayout extends React.Component {
                                         onClick={ () => this.handleRemoveItem(order_item.id) }
                                       />
                                     </p>
-
                                   </Message>
                                 </Dropdown.Item>
                               );
@@ -126,10 +199,16 @@ class CustomLayout extends React.Component {
                           {/* link to the checkout page */}
                           <Dropdown.Item
                             icon='arrow right'
-                            text='Checkout'
-                            onClick={ () =>
-                              this.props.history.push('/order-summary')
-                            }
+                            onClick={ () => this.props.history.push('/order-summary') }
+                          >
+                            <Message style={{backgroundColor: 'white'}}>
+                              Checkout
+                              <Icon
+                                name='arrow right'
+                              />
+                            </Message>
+
+                          </Dropdown.Item>
                           />
                         </React.Fragment>
                       ) : (

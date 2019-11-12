@@ -28,6 +28,7 @@ import axios from 'axios';
 
 //lets you recieve props from the parent component (in this case, NavigationTabs.js)
 import { withRouter } from "react-router";
+import { Redirect } from "react-router-dom";
 
 import {ProductList} from './ProductList';
 
@@ -50,8 +51,6 @@ class BuyTab extends React.Component {
 
 
   componentDidMount() {
-
-
 
 
     this.setState({
@@ -229,44 +228,67 @@ class BuyTab extends React.Component {
                   data.map(item => {
                     return (
                       <Item key={item.id}>
-                        <Item.Image src={item.image} />
+                        <Item.Image
+                          src={item.image}
+                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                          style={{cursor: 'pointer'}}
+                        />
 
                         <Item.Content>
+
                           <Item.Header
                             onClick={() => this.props.history.push(`/products/${item.id}`)}
                             style={{cursor: 'pointer'}}
                           >
                             {item.title}
                           </Item.Header>
-                          <Item.Meta>
-                            <span className='cinema'>{item.price}</span>
+
+                          <Item.Meta
+                            onClick={() => this.props.history.push(`/products/${item.id}`)}
+                            style={{cursor: 'pointer'}}
+                          >
+                            {
+                              item.discount_price !== null ?
+                              <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                              <span className='cinema'>${item.price}</span>
+                            }
+
                           </Item.Meta>
-                          <Item.Description>
+
+                          <Item.Description
+                            onClick={() => this.props.history.push(`/products/${item.id}`)}
+                            style={{cursor: 'pointer'}}
+                          >
                               {item.description}
                           </Item.Description>
-                          {
-                            item.variations.length === 0 ?
-                            <Item.Extra>
-                              {/*make this a "quick add", but only if there are no variations to choose from */}
-                              <Button
-                                primary
-                                floated='left'
-                                icon
-                                onClick={ () => this.handleAddToCart(item.slug, 1 ) }
-                                >
-                                Quick Add
-                                <Icon name='cart plus' floated='right' />
-                              </Button>
-                            </Item.Extra>
-                            :
-                            <Item.Extra>
-                              {/*make this a "quick add", but only if there are no variations to choose from */}
-                              <Label primary floated='right' icon >
-                                You need to select a {item.variations[0].name} option before you can order this
-                              </Label>
-                            </Item.Extra>
-                          }
 
+                          <Item.Extra>
+                            {
+                              item.variations.length === 0 ?
+                                <Button
+                                  primary
+                                  floated='right'
+                                  icon
+                                  onClick={ () => {
+                                    this.handleAddToCart(item.slug, 1 )
+
+                                    }
+                                  }
+                                  >
+                                  Quick Add
+                                  <Icon name='cart plus' floated='right' />
+                                </Button>
+                                :
+                                <Label
+                                  primary
+                                  icon
+                                  onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                  style={{cursor: 'pointer' , float : 'right' }}
+                                >
+                                  You need to select a {item.variations[0].name} option before you can order this
+                                </Label>
+                            }
+                          </Item.Extra>
                         </Item.Content>
                       </Item>
                     )

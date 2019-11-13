@@ -32,7 +32,7 @@ import { Redirect } from "react-router-dom";
 
 import {ProductList} from './ProductList';
 
-import {productListURL, addToCartURL} from '../constants';
+import {productListURL, addToCartURL, productSearchListURL} from '../constants';
 
 import {authAxios} from '../utils';
 
@@ -51,12 +51,9 @@ class BuyTab extends React.Component {
 
 
   componentDidMount() {
-
-
     this.setState({
       loading: true
     });
-
 
     //gets the products from the database and stores them in the state or it returns the error
     axios
@@ -96,23 +93,29 @@ class BuyTab extends React.Component {
 
   //if the user presses enter on the search bar, it'll search for the value (currently stored in this.state.value)
   handleSearchEnterPress = (event) => {
-    if (event.key === "Enter") {
+    //this.setState({value: data.value});
+    //console.log('data from handleSearchEnterPress: ', data)
+    let search = this.state.value
 
+    console.log('search from handleSearchEnterPress: ', search)
+    if (event.key === "Enter") {
       //if the user hits enter (tries to search) then return the search results.. need to change the views.py for this a little bit
       axios
-      .get(productListURL )
+      .get(productSearchListURL, {
+        params: {
+          search: search
+          }
+        })
       .then(response => {
-        console.log("response.data: " , response.data);
+        console.log("response.data (from search): " , response.data);
         this.setState({data: response.data, loading: false});
       })
       .catch(error => {
         this.setState({error: error, loading: false});
       })
-
-
-      console.log('hey');
-      alert("hey");
+      console.log('enter pressed');
     }
+
   }
 
 
@@ -150,17 +153,36 @@ class BuyTab extends React.Component {
         <Grid.Row>
           <Grid.Column width={5}>
               <Input
-              fluid
-              icon='search'
-              placeholder='Search...'
-              onKeyPress={this.handleSearchEnterPress}
-              onChange={
-                //sets the search value into the value in the state
-                (e,data)=>{
-                  this.setState({value: data.value});
-                  console.log('value ', value);
+                fluid
+                icon='search'
+                placeholder='Search...'
+                onKeyPress={this.handleSearchEnterPress}
+                onChange={
+                  //this.handleSearchEnterPress(e, data)
+                  //sets the search value into the value in the state
+                  (e,data)=>{
+                    this.setState({value: data.value});
+
+                    console.log(this.state.value);
+                    // let search = data.value
+                    // if (e.key === "Enter") {
+                    //   console.log('enter pressed')
+                    //   //if the user hits enter (tries to search) then return the search results.. need to change the views.py for this a little bit
+                    //   axios
+                    //   .get(productSearchListURL , {search} )
+                    //   .then(response => {
+                    //     console.log("response.data 2: " , response.data);
+                    //     this.setState({data: response.data, loading: false});
+                    //   })
+                    //   .catch(error => {
+                    //     this.setState({error: error, loading: false});
+                    //   })
+                    //   console.log('enter pressed');
+                    // }
+                  }
+
+
                 }
-              }
               />
 
             </Grid.Column>
@@ -169,7 +191,6 @@ class BuyTab extends React.Component {
 
         <Grid.Column width={3}>
           <Header>Categories</Header>
-
           {loading ? (
               <Segment>
                   <Dimmer active inverted>
@@ -180,7 +201,6 @@ class BuyTab extends React.Component {
               </Segment>
             ) : (
               //displays the active categories.. styling needs work
-
               <Card.Group>
                 <Card>
                   <List divided relaxed>

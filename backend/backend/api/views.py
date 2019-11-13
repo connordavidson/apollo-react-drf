@@ -5,11 +5,14 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django_countries import countries
 
+from rest_framework import filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 
 from .serializers import (
@@ -35,6 +38,26 @@ from .models import (
 )
 
 # Create your views here.
+
+class ItemSearchListView(ListAPIView):
+    search_fields = ('title', )
+    filter_backends = (filters.SearchFilter,)
+    model = Item
+    serializer_class = ItemSerializer
+    queryset = Item.objects.all()
+
+    # def get_queryset(self):
+    #     qs = Item.objects.all()
+    #     print('qs : ' + str(qs))
+    #     search = self.request.query_params.get("search", None)
+    #     print('title: ' + str(search))
+    #     if search is not None:
+    #         qs = qs.filter(title= $search)
+    #         print('qs inside if: ' + str(qs))
+    #
+    #     print('qs outside if: ' + str(qs))
+    #     return qs
+
 
 
 #doesn't neccesarily need to return all the different variations, just needs to know if the item has one.

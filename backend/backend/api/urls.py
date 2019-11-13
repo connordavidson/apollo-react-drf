@@ -11,6 +11,7 @@ from .views import (
     AddCouponView,
     CountryListView,
     ItemReviewsView,
+    ItemSearchListView,
 
 )
 
@@ -18,6 +19,7 @@ from .views import (
 
 urlpatterns = [
     path( 'products/', ItemListView.as_view(), name='product-list' ),
+    path( 'products/search', ItemSearchListView.as_view(), name='product-search' ),
     path( 'products/<pk>/', ItemDetailView.as_view(), name='product-detail' ),
     path( 'add-to-cart/', AddToCartView.as_view(), name='add-to-cart'),
     path( 'order-summary/', OrderDetailView.as_view(), name='order-summary' ),

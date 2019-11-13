@@ -122,7 +122,24 @@ class BuyTab extends React.Component {
         })
       .then(response => {
         // console.log("response.data.length (from search): " , response.data.length);
-        this.setState({data: response.data, loading: false, productsTitle: `Search results for "${search}" [${response.data.length}]`});
+
+        //if the search bar is empty, make the title say 'featured products'
+        //the issue is if the user searches for something, then erases it from the search bar and hits enter it'll say 'search results for "" []' when it is displaying the featured products
+        if(search === ''){
+          this.setState(
+            {
+              data: response.data,
+              loading: false,
+              productsTitle: 'Featured Products'}
+          );
+        }else{
+          this.setState(
+            {
+              data: response.data,
+              loading: false,
+              productsTitle: `Search results for "${search}" [${response.data.length}]`}
+          );
+        }
       })
       .catch(error => {
         this.setState({error: error, loading: false});

@@ -43,8 +43,10 @@ from .models import (
 class ItemSearchListView(ListAPIView):
     #found help at https://medium.com/swlh/searching-in-django-rest-framework-45aad62e7782
     #also got help at https://stackoverflow.com/questions/26924968/how-to-add-search-parameters-to-get-request-in-django-rest-framework
-    search_fields = ('title', )
-    filter_backends = (filters.SearchFilter,)
+
+    #lets it search the title and description fields in in the table 'Item'
+    search_fields = ('title', 'description')
+    filter_backends = (filters.SearchFilter, )
     model = Item
     serializer_class = ItemSerializer
     queryset = Item.objects.all()

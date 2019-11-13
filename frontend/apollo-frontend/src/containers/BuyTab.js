@@ -46,6 +46,7 @@ class BuyTab extends React.Component {
     data: [],
     categories: [],
     value: '',
+    productsTitle: 'Featured Products',
 
   }
 
@@ -54,21 +55,32 @@ class BuyTab extends React.Component {
     this.setState({
       loading: true
     });
+    this.handleGetProducts();
+  };
 
+
+
+
+  handleGetProducts = () => {
     //gets the products from the database and stores them in the state or it returns the error
     axios
     .get(productListURL)
     .then(response => {
+      //gets the individual categories from the response data
+      let cats = []
+      response.data.map( (item) => {
+        if(!cats.includes(item.category)){
+          cats = cats.concat(item.category)
+        }
+      })
       //console.log("response.data: " , response.data);
-      this.setState({data: response.data, loading: false});
-      console.log('resonse data: ', response.data)
+      this.setState({data: response.data, loading: false, categories: cats});
+
     })
     .catch(error => {
       this.setState({error: error, loading: false});
     })
-
-  };
-
+  }
 
 
   handleAddToCart = (slug, quantity) => {
@@ -91,13 +103,15 @@ class BuyTab extends React.Component {
   }
 
 
+
+
   //if the user presses enter on the search bar, it'll search for the value (currently stored in this.state.value)
   handleSearchEnterPress = (event) => {
     //this.setState({value: data.value});
     //console.log('data from handleSearchEnterPress: ', data)
     let search = this.state.value
 
-    console.log('search from handleSearchEnterPress: ', search)
+    // console.log('search from handleSearchEnterPress: ', search)
     if (event.key === "Enter") {
       //if the user hits enter (tries to search) then return the search results.. need to change the views.py for this a little bit
       axios
@@ -107,13 +121,13 @@ class BuyTab extends React.Component {
           }
         })
       .then(response => {
-        console.log("response.data (from search): " , response.data);
-        this.setState({data: response.data, loading: false});
+        // console.log("response.data.length (from search): " , response.data.length);
+        this.setState({data: response.data, loading: false, productsTitle: `Search results for "${search}" [${response.data.length}]`});
       })
       .catch(error => {
         this.setState({error: error, loading: false});
       })
-      console.log('enter pressed');
+      // console.log('enter pressed');
     }
 
   }
@@ -122,33 +136,19 @@ class BuyTab extends React.Component {
 
   render(){
 
-
     const {
       data,
       error,
       loading,
       categories,
       value,
+      productsTitle,
 
      } = this.state;
 
 
 
-    //console.log("data ", data);
-    //adds every unique category (from data) to the categories in the state
-    data.map( (item, i) => {
-      if(!categories.includes(item.category)){
-        this.setState({
-          categories: this.state.categories.concat(item.category)
-        })
-      }
-    });
-
-
     return(
-
-
-
       <Grid>
         <Grid.Row>
           <Grid.Column width={5}>
@@ -158,30 +158,10 @@ class BuyTab extends React.Component {
                 placeholder='Search...'
                 onKeyPress={this.handleSearchEnterPress}
                 onChange={
-                  //this.handleSearchEnterPress(e, data)
                   //sets the search value into the value in the state
                   (e,data)=>{
                     this.setState({value: data.value});
-
-                    console.log(this.state.value);
-                    // let search = data.value
-                    // if (e.key === "Enter") {
-                    //   console.log('enter pressed')
-                    //   //if the user hits enter (tries to search) then return the search results.. need to change the views.py for this a little bit
-                    //   axios
-                    //   .get(productSearchListURL , {search} )
-                    //   .then(response => {
-                    //     console.log("response.data 2: " , response.data);
-                    //     this.setState({data: response.data, loading: false});
-                    //   })
-                    //   .catch(error => {
-                    //     this.setState({error: error, loading: false});
-                    //   })
-                    //   console.log('enter pressed');
-                    // }
                   }
-
-
                 }
               />
 
@@ -225,6 +205,7 @@ class BuyTab extends React.Component {
 
         </Grid.Column>
 
+        {/*Doesn't work for some reason lol*/}
         <Divider vertical/>
 
         <Grid.Column width={10}>
@@ -240,7 +221,7 @@ class BuyTab extends React.Component {
           ) : (
 
             <React.Fragment>
-              <Header>Products</Header>
+              <Header >{productsTitle}</Header>
               <Divider />
               <Item.Group divided>
 
@@ -291,7 +272,6 @@ class BuyTab extends React.Component {
                                   icon
                                   onClick={ () => {
                                     this.handleAddToCart(item.slug, 1 )
-
                                     }
                                   }
                                   >

@@ -39,25 +39,15 @@ from .models import (
 
 # Create your views here.
 
+#endpoint for searching for products
 class ItemSearchListView(ListAPIView):
+    #found help at https://medium.com/swlh/searching-in-django-rest-framework-45aad62e7782
+    #also got help at https://stackoverflow.com/questions/26924968/how-to-add-search-parameters-to-get-request-in-django-rest-framework
     search_fields = ('title', )
     filter_backends = (filters.SearchFilter,)
     model = Item
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
-
-    # def get_queryset(self):
-    #     qs = Item.objects.all()
-    #     print('qs : ' + str(qs))
-    #     search = self.request.query_params.get("search", None)
-    #     print('title: ' + str(search))
-    #     if search is not None:
-    #         qs = qs.filter(title= $search)
-    #         print('qs inside if: ' + str(qs))
-    #
-    #     print('qs outside if: ' + str(qs))
-    #     return qs
-
 
 
 #doesn't neccesarily need to return all the different variations, just needs to know if the item has one.
@@ -66,7 +56,6 @@ class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
-
 
 
 class UserIDView(APIView):

@@ -36,6 +36,13 @@ import {productListURL, addToCartURL, productSearchListURL} from '../constants';
 
 import {authAxios} from '../utils';
 
+/*
+WORK TO BE DONE:
+  make a 'product item' component so that it can just get passed into the loops that create all the active items, instead of having all that code twice
+
+*/
+
+
 
 
 class BuyTab extends React.Component {
@@ -47,6 +54,8 @@ class BuyTab extends React.Component {
     categories: [],
     value: '',
     productsTitle: 'Featured Products',
+    filterCategory: '',
+    filteredData : [],
 
   }
 
@@ -56,8 +65,9 @@ class BuyTab extends React.Component {
       loading: true
     });
     this.handleGetProducts();
-  };
 
+
+  };
 
 
 
@@ -75,6 +85,10 @@ class BuyTab extends React.Component {
       })
       //console.log("response.data: " , response.data);
       this.setState({data: response.data, loading: false, categories: cats});
+      // console.log('handlegetproducts data: ', response.data)
+      // console.log('handlegetproducts state.data: ', this.state.data)
+
+      // console.log('handlegetproducts categories: ', cats)
 
     })
     .catch(error => {
@@ -142,12 +156,59 @@ class BuyTab extends React.Component {
         }
       })
       .catch(error => {
-        this.setState({error: error, loading: false});
+        this.setState({
+          error: error,
+          loading: false
+        });
       })
       // console.log('enter pressed');
     }
-
   }
+
+
+  handleFilterButtonPressed = (e, data) => {
+    console.log('onclick data: ', data)
+    if(data.checked){
+      //filterCategory is how the checkboxes uncheck when another is checked (the logic is in the 'checked' prop in the checkbox (category === checkedCategory))
+      this.setState({
+        filterCategory : data.name,
+      })
+
+      console.log('handleFilterButtonPressed data.name: ', data.name)
+      //creates an array to hold the filtered items, and loops through the state.data and compares it to the selected checkbox, if they match it is added to  the filteredData array
+      let filteredItems = []
+      this.state.data.map( item => {
+        if(item.category === data.name){
+          filteredItems = filteredItems.concat(item)
+        }
+      })
+
+
+      let newProductsTitle = this.state.productsTitle + ', in the category ' + data.name
+
+      console.log('handlefilterbuttonpressed newProductsTitle: ', newProductsTitle)
+      console.log('handlefilterbuttonpressed filtereditems: ', filteredItems)
+      this.setState({
+        filteredData: filteredItems ,
+        productsTitle: newProductsTitle
+      })
+
+
+    }else if (!data.checked){
+      //sets the filter category to a blank string (this is incase the user checks the same box again )
+      this.setState({
+        filterCategory: ''
+      })
+    }
+  }
+
+
+  //make this so that it will display the product item, should get put in a loop and it should save code
+  makeProductItem = (item) => {
+    console.log('makeproductitem item: ' , item)
+  }
+
+
 
 
 
@@ -160,29 +221,32 @@ class BuyTab extends React.Component {
       categories,
       value,
       productsTitle,
+      filterCategory,
+      filteredData,
 
      } = this.state;
 
 
 
     return(
+
+
       <Grid>
         <Grid.Row>
           <Grid.Column width={5}>
-              <Input
-                fluid
-                icon='search'
-                placeholder='Search...'
-                onKeyPress={this.handleSearchEnterPress}
-                onChange={
-                  //sets the search value into the value in the state
-                  (e,data)=>{
-                    this.setState({value: data.value});
-                  }
+            <Input
+              fluid
+              icon='search'
+              placeholder='Search...'
+              onKeyPress={this.handleSearchEnterPress}
+              onChange={
+                //sets the search value into the value in the state
+                (e,data)=>{
+                  this.setState({value: data.value});
                 }
-              />
-
-            </Grid.Column>
+              }
+            />
+          </Grid.Column>
         </Grid.Row>
 
 
@@ -205,12 +269,17 @@ class BuyTab extends React.Component {
                       categories.map(category => {
                         return(
                           <React.Fragment>
-                            <Form.Field
+                            <Checkbox
+                              label={category}
                               float='middle'
-                              control={Checkbox}
-                              label={<label>{category}</label>}
+                              onClick={(e, data) => {
+                                this.handleFilterButtonPressed(e, data)
+                                console.log('category: ', category)
+                              }}
+                              name={category}
+                              checked={category === filterCategory}
                             />
-                            <br/>
+                            <br />
                           </React.Fragment>
                         )
                     })}
@@ -242,74 +311,148 @@ class BuyTab extends React.Component {
               <Divider />
               <Item.Group divided>
 
+
+
                 { //prints out all the items
-                  data.map(item => {
-                    return (
-                      <Item key={item.id}>
-                        <Item.Image
-                          src={item.image}
-                          onClick={() => this.props.history.push(`/products/${item.id}`)}
-                          style={{cursor: 'pointer'}}
-                        />
-
-                        <Item.Content>
-
-                          <Item.Header
+                  filterCategory !== '' ?
+                  (
+                    filteredData.map(item => {
+                      return (
+                        <Item key={item.id}>
+                          <Item.Image
+                            src={item.image}
                             onClick={() => this.props.history.push(`/products/${item.id}`)}
                             style={{cursor: 'pointer'}}
-                          >
-                            {item.title}
-                          </Item.Header>
+                          />
 
-                          <Item.Meta
-                            onClick={() => this.props.history.push(`/products/${item.id}`)}
-                            style={{cursor: 'pointer'}}
-                          >
-                            {
-                              item.discount_price !== null ?
-                              <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                              <span className='cinema'>${item.price}</span>
-                            }
+                          <Item.Content>
 
-                          </Item.Meta>
+                            <Item.Header
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                              {item.title}
+                            </Item.Header>
 
-                          <Item.Description
-                            onClick={() => this.props.history.push(`/products/${item.id}`)}
-                            style={{cursor: 'pointer'}}
-                          >
-                              {item.description}
-                          </Item.Description>
+                            <Item.Meta
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                              {
+                                item.discount_price !== null ?
+                                <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                                <span className='cinema'>${item.price}</span>
+                              }
 
-                          <Item.Extra>
-                            {
-                              item.variations.length === 0 ?
-                                <Button
-                                  primary
-                                  floated='right'
-                                  icon
-                                  onClick={ () => {
-                                    this.handleAddToCart(item.slug, 1 )
+                            </Item.Meta>
+
+                            <Item.Description
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                                {item.description}
+                            </Item.Description>
+
+                            <Item.Extra>
+                              {
+                                item.variations.length === 0 ?
+                                  <Button
+                                    primary
+                                    floated='right'
+                                    icon
+                                    onClick={ () => {
+                                      this.handleAddToCart(item.slug, 1 )
+                                      }
                                     }
-                                  }
+                                    >
+                                    Quick Add
+                                    <Icon name='cart plus' floated='right' />
+                                  </Button>
+                                  :
+                                  <Label
+                                    primary
+                                    icon
+                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                    style={{cursor: 'pointer' , float : 'right' }}
                                   >
-                                  Quick Add
-                                  <Icon name='cart plus' floated='right' />
-                                </Button>
-                                :
-                                <Label
-                                  primary
-                                  icon
-                                  onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                  style={{cursor: 'pointer' , float : 'right' }}
-                                >
-                                  You need to select a {item.variations[0].name} option before you can order this
-                                </Label>
-                            }
-                          </Item.Extra>
-                        </Item.Content>
-                      </Item>
-                    )
-                  })
+                                    You need to select a {item.variations[0].name} option before you can order this
+                                  </Label>
+                              }
+                            </Item.Extra>
+                          </Item.Content>
+                        </Item>
+                      )
+                    })
+
+                  ):(
+                    data.map(item => {
+                      return (
+                        <Item key={item.id}>
+                          <Item.Image
+                            src={item.image}
+                            onClick={() => this.props.history.push(`/products/${item.id}`)}
+                            style={{cursor: 'pointer'}}
+                          />
+
+                          <Item.Content>
+
+                            <Item.Header
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                              {item.title}
+                            </Item.Header>
+
+                            <Item.Meta
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                              {
+                                item.discount_price !== null ?
+                                <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                                <span className='cinema'>${item.price}</span>
+                              }
+
+                            </Item.Meta>
+
+                            <Item.Description
+                              onClick={() => this.props.history.push(`/products/${item.id}`)}
+                              style={{cursor: 'pointer'}}
+                            >
+                                {item.description}
+                            </Item.Description>
+
+                            <Item.Extra>
+                              {
+                                item.variations.length === 0 ?
+                                  <Button
+                                    primary
+                                    floated='right'
+                                    icon
+                                    onClick={ () => {
+                                      this.handleAddToCart(item.slug, 1 )
+                                      }
+                                    }
+                                    >
+                                    Quick Add
+                                    <Icon name='cart plus' floated='right' />
+                                  </Button>
+                                  :
+                                  <Label
+                                    primary
+                                    icon
+                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                    style={{cursor: 'pointer' , float : 'right' }}
+                                  >
+                                    You need to select a {item.variations[0].name} option before you can order this
+                                  </Label>
+                              }
+                            </Item.Extra>
+                          </Item.Content>
+                        </Item>
+                      )
+                    })
+                  )
                 }
 
               </Item.Group>

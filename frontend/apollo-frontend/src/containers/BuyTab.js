@@ -54,6 +54,7 @@ class BuyTab extends React.Component {
     categories: [],
     value: '',
     productsTitle: 'Featured Products',
+    filterTitle: '',
     filterCategory: '',
     filteredData : [],
 
@@ -184,20 +185,21 @@ class BuyTab extends React.Component {
       })
 
 
-      let newProductsTitle = this.state.productsTitle + ', in the category ' + data.name
+      //let newProductsTitle = this.state.productsTitle + ', in the category ' + data.name
 
-      console.log('handlefilterbuttonpressed newProductsTitle: ', newProductsTitle)
+      //console.log('handlefilterbuttonpressed newProductsTitle: ', newProductsTitle)
       console.log('handlefilterbuttonpressed filtereditems: ', filteredItems)
       this.setState({
         filteredData: filteredItems ,
-        productsTitle: newProductsTitle
+        filterTitle: `, filtered by "${data.name}"`
       })
 
 
     }else if (!data.checked){
       //sets the filter category to a blank string (this is incase the user checks the same box again )
       this.setState({
-        filterCategory: ''
+        filterCategory: '',
+        filterTitle: ''
       })
     }
   }
@@ -223,6 +225,7 @@ class BuyTab extends React.Component {
       productsTitle,
       filterCategory,
       filteredData,
+      filterTitle,
 
      } = this.state;
 
@@ -307,7 +310,7 @@ class BuyTab extends React.Component {
           ) : (
 
             <React.Fragment>
-              <Header >{productsTitle}</Header>
+              <Header >{productsTitle}{filterTitle}</Header>
               <Divider />
               <Item.Group divided>
 

@@ -59,6 +59,7 @@ class OrderSummary extends React.Component {
       authAxios
         .get(orderSummaryURL)
         .then(res => {
+
           //res.data.order_items.data
           console.log("RESPONSE (res.data ): " ,  res.data   );
           //dispatches the cartSuccess method with data
@@ -123,18 +124,23 @@ class OrderSummary extends React.Component {
 
     //made around https://youtu.be/8UEZsm4tCpY?t=815
     //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
-    handleRemoveQuantityFromCart = (slug , title) => {
+    handleRemoveQuantityFromCart = (slug , title, quantity, itemID) => {
       //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
-      authAxios
-      .post( orderItemUpdateQuantityURL, { slug } )
-      .then(res => {
-        //callback
-        this.handleFetchOrder();
-        this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
-      })
-      .catch(err => {
-          this.setState( {error: err} );
-      });
+
+      if(quantity > 1){
+        authAxios
+        .post( orderItemUpdateQuantityURL, { slug } )
+        .then(res => {
+          //callback
+          this.handleFetchOrder();
+          this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
+        })
+        .catch(err => {
+            this.setState( {error: err} );
+        });
+      } else {
+        this.handleRemoveItem(itemID)
+      }
     }
 
     //made at https://youtu.be/8UEZsm4tCpY?t=150
@@ -232,6 +238,7 @@ class OrderSummary extends React.Component {
                     <Card.Group>
                       {
                         data.order_items.map(item => {
+                          console.log('item inside order_items: quantity: ', item.quantity)
                           return(
                             <Card>
                               <Card.Content>
@@ -264,7 +271,7 @@ class OrderSummary extends React.Component {
                                       color='red'
                                       style={{cursor: 'pointer'}}
                                       onClick={ () =>
-                                        this.handleRemoveQuantityFromCart(item.item.slug, item.item.title)}
+                                        this.handleRemoveQuantityFromCart(item.item.slug, item.item.title, item.quantity, item.id)}
                                     />
                                     {item.quantity}
                                     <Label.Detail>
@@ -281,6 +288,12 @@ class OrderSummary extends React.Component {
                                       />
                                     </Label.Detail>
                                   </Label>
+                                  <Icon
+                                    name='trash'
+                                    color='red'
+                                    style={{float: 'right', cursor: 'pointer'}}
+                                    onClick={ () => this.handleRemoveItem(item.id) }
+                                  />
                                 </Card.Description>
 
                               </Card.Content>

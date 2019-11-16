@@ -29,6 +29,8 @@ import axios from 'axios';
 //lets you recieve props from the parent component (in this case, NavigationTabs.js)
 import { withRouter } from "react-router";
 import { Redirect } from "react-router-dom";
+import {connect} from 'react-redux';
+
 
 import {ProductList} from './ProductList';
 
@@ -184,11 +186,9 @@ class BuyTab extends React.Component {
         }
       })
 
-
-      //let newProductsTitle = this.state.productsTitle + ', in the category ' + data.name
-
-      //console.log('handlefilterbuttonpressed newProductsTitle: ', newProductsTitle)
       console.log('handlefilterbuttonpressed filtereditems: ', filteredItems)
+
+      //filterTitle just displays the name of the filter category.. gets appended to the end of the products title on the page
       this.setState({
         filteredData: filteredItems ,
         filterTitle: `, filtered by "${data.name}"`
@@ -471,4 +471,16 @@ class BuyTab extends React.Component {
 }
 
 
-export default withRouter(BuyTab);
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     fetchCart: () => dispatch(fetchCart()),
+//   }
+// }
+
+
+
+
+export default
+  withRouter(
+    (BuyTab)
+  );

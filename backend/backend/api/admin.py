@@ -11,7 +11,8 @@ from .models import (
         #Refund,
         Coupon,
         Payment,
-        ItemReview
+        ItemReview,
+        OrderItem
 )
 
 
@@ -70,31 +71,34 @@ make_refund_accepted.short_description = 'Update orders to refund granted'
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user',
-                    'ordered',
-                    'being_delivered',
-                    'received',
-                    'refund_requested',
-                    'refund_granted',
-                    'shipping_address',
-                    'payment',
-                    'coupon'
-                    ]
+    list_display = [
+        'user',
+        'ordered',
+        'being_delivered',
+        'received',
+        'refund_requested',
+        'refund_granted',
+        'shipping_address',
+        'payment',
+        'coupon'
+        ]
     list_display_links = [
         'user',
         'shipping_address',
         'payment',
         'coupon'
-    ]
-    list_filter = ['ordered',
-                   'being_delivered',
-                   'received',
-                   'refund_requested',
-                   'refund_granted']
+        ]
+    list_filter = [
+        'ordered',
+        'being_delivered',
+        'received',
+        'refund_requested',
+        'refund_granted'
+        ]
     search_fields = [
         'user__username',
         'ref_code'
-    ]
+        ]
     actions = [make_refund_accepted]
 
 
@@ -120,7 +124,7 @@ class AddressAdmin(admin.ModelAdmin):
 admin.site.register(ItemVariation, ItemVariationAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(Item)
-
+admin.site.register(OrderItem)
 admin.site.register(ItemReview)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)

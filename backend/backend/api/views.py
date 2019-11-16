@@ -120,9 +120,7 @@ class AddToCartView(APIView):
         #if that item with the specific variations exists, increase the quantity of that item in the cart by 1
         if order_item_qs.exists():
             order_item = order_item_qs.first()
-
             order_item.quantity += quantity
-
             order_item.save()
         #if it doesn't exist in the cart, add the new item to the cart
         else:
@@ -205,6 +203,9 @@ class OrderQuantityUpdateView(APIView):
                     user=request.user,
                     ordered=False
                 )[0]
+                print('order_item: ' + str(order_item))
+                print('order_item quantity: ' + str(order_item.quantity))
+
                 #if the quantity is greater than 1, decrement. quantity is 1, remove
                 if order_item.quantity > 1:
                     order_item.quantity -= 1

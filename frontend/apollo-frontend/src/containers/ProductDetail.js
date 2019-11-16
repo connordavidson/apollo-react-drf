@@ -309,7 +309,10 @@ class ProductDetail extends React.Component {
                               fluid
                               basic
                               color='green'
-                              onClick={ () => this.handleAddToCart(this.state.data.slug, this.state.quantity ) }
+                              onClick={() => {
+                                this.handleAddToCart(this.state.data.slug, this.state.quantity )
+                                }
+                              }
                             >
                               Add to Cart
                             </Button>
@@ -369,8 +372,6 @@ class ProductDetail extends React.Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchCart: () => dispatch(fetchCart()),
-
-
   }
 }
 

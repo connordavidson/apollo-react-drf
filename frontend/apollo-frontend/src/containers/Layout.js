@@ -93,18 +93,23 @@ class CustomLayout extends React.Component {
 
   //made around https://youtu.be/8UEZsm4tCpY?t=815
   //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
-  handleRemoveQuantityFromCart = (slug , title) => {
+  handleRemoveQuantityFromCart = (slug , title, quantity, itemID) => {
     //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
-    authAxios
-    .post( orderItemUpdateQuantityURL, { slug } )
-    .then(res => {
-      //callback
-      this.handleFetchOrder();
-      this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
-    })
-    .catch(err => {
-        this.setState( {error: err} );
-    });
+    if(quantity > 1){
+      authAxios
+      .post( orderItemUpdateQuantityURL, { slug } )
+      .then(res => {
+        //callback
+        this.handleFetchOrder();
+        this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
+      })
+      .catch(err => {
+          this.setState( {error: err} );
+      });
+    } else {
+      this.handleRemoveItem(itemID)
+    }
+
   }
 
 
@@ -162,7 +167,7 @@ class CustomLayout extends React.Component {
                                           color='red'
                                           style={{cursor: 'pointer'}}
                                           onClick={ () =>
-                                            this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title)}
+                                            this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title, order_item.quantity, order_item.id)}
                                         />
                                         {order_item.quantity}
 

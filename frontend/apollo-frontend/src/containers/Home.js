@@ -94,12 +94,9 @@ ResponsiveContainer.propTypes = {
 
 //renders the homepage
 const HomepageLayout = () => (
-
-
   <ResponsiveContainer>
       <NavigationTabs />
   </ResponsiveContainer>
-
 );
 
 

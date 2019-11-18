@@ -18,9 +18,9 @@ import {
 } from 'semantic-ui-react';
 
 import {connect} from 'react-redux';
-import { Link, Redirect} from 'react-router-dom';
+import { Link, Redirect, withRouter} from 'react-router-dom';
 
-
+import {fetchCart} from '../store/actions/cart';
 import { authAxios } from '../utils';
 import {
   orderSummaryURL,
@@ -49,8 +49,14 @@ class OrderSummary extends React.Component {
     }
 
     componentDidMount(){
+      //updates the cart dropdown and the info in the summary page
+      this.handleGetCartInformation();
+    }
+
+    //was repeating these actions a lot so i combined them into the same function
+    handleGetCartInformation = () => {
       this.handleFetchOrder();
-      console.log(this.state.data)
+      this.props.fetchCart();
     }
 
 
@@ -59,9 +65,9 @@ class OrderSummary extends React.Component {
       authAxios
         .get(orderSummaryURL)
         .then(res => {
-
           //res.data.order_items.data
-          console.log("RESPONSE (res.data ): " ,  res.data   );
+          //console.log("RESPONSE (res.data ): " ,  res.data   );
+
           //dispatches the cartSuccess method with data
           this.setState( { data: res.data , loading: false } );
         })
@@ -82,7 +88,6 @@ class OrderSummary extends React.Component {
 
     //created at https://youtu.be/qJN1_2ZwqeA?t=2160
     renderVariations = (orderItem) => {
-
       let text = '';
       //loop through all the variations of the orderItem
       orderItem.item_variations.forEach(iv => {
@@ -112,8 +117,10 @@ class OrderSummary extends React.Component {
       authAxios
       .post( addToCartURL , { slug, variations } )
       .then(res => {
-        console.log(res.data, addToCartURL, "add to cart succeeded");
-        this.handleFetchOrder();
+        //console.log(res.data, addToCartURL, "add to cart succeeded");
+
+        //updates the cart dropdown and the info in the summary page
+        this.handleGetCartInformation();
         this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
       })
       .catch(err => {
@@ -132,7 +139,9 @@ class OrderSummary extends React.Component {
         .post( orderItemUpdateQuantityURL, { slug } )
         .then(res => {
           //callback
-          this.handleFetchOrder();
+
+          //updates the cart dropdown and the info in the summary page
+          this.handleGetCartInformation();
           this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
         })
         .catch(err => {
@@ -149,7 +158,9 @@ class OrderSummary extends React.Component {
       .delete( orderItemDeleteURL(itemID) )
       .then(res => {
         //callback
-        this.handleFetchOrder();
+
+        //updates the cart dropdown and the info in the summary page
+        this.handleGetCartInformation();
       })
       .catch(err => {
           this.setState( {error: err} );
@@ -273,7 +284,9 @@ class OrderSummary extends React.Component {
                                       onClick={ () =>
                                         this.handleRemoveQuantityFromCart(item.item.slug, item.item.title, item.quantity, item.id)}
                                     />
+
                                     {item.quantity}
+
                                     <Label.Detail>
                                       <Icon
                                         name='plus'
@@ -336,5 +349,17 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchCart: () => dispatch( fetchCart() )
+  };
+};
 
-export default connect(mapStateToProps)(OrderSummary);
+
+export default
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(OrderSummary)
+  );

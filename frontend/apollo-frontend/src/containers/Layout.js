@@ -18,11 +18,16 @@ import {
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+
 import { fetchCart } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
-
 import { authAxios } from '../utils';
-import { orderItemDeleteURL, orderItemUpdateQuantityURL, addToCartURL } from '../constants';
+import {
+  orderItemDeleteURL,
+  orderItemUpdateQuantityURL,
+  addToCartURL,
+
+} from '../constants';
 
 
 class CustomLayout extends React.Component {
@@ -169,6 +174,7 @@ class CustomLayout extends React.Component {
                                           onClick={ () =>
                                             this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title, order_item.quantity, order_item.id)}
                                         />
+                                      
                                         {order_item.quantity}
 
                                         <Label.Detail>
@@ -228,7 +234,7 @@ class CustomLayout extends React.Component {
 
             {/*displays the logout button if the user is logged in*/}
             {authenticated ? (
-              
+
               <React.Fragment>
                 <Menu.Item onClick={() => this.props.history.push(`/profile`)}>
                   Account
@@ -336,15 +342,16 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() )
   };
 };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CustomLayout)
+export default
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(CustomLayout)
 );

@@ -60,8 +60,6 @@ class MobileContainer extends Component {
 
   handleToggle = () => this.setState({ sidebarOpened: true });
 
-
-
   render() {
     const { children } = this.props;
     const { sidebarOpened } = this.state;
@@ -96,7 +94,6 @@ ResponsiveContainer.propTypes = {
 
 //renders the homepage
 const HomepageLayout = () => (
-
 
 
   <ResponsiveContainer>

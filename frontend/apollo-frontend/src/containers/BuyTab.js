@@ -33,6 +33,7 @@ import {connect} from 'react-redux';
 
 
 import {ProductList} from './ProductList';
+import {fetchCart} from '../store/actions/cart';
 
 import {productListURL, addToCartURL, productSearchListURL} from '../constants';
 
@@ -471,16 +472,20 @@ class BuyTab extends React.Component {
 }
 
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     fetchCart: () => dispatch(fetchCart()),
-//   }
-// }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchCart: () => dispatch(fetchCart()),
+  }
+}
 
 
 
 
 export default
   withRouter(
+    connect(
+      null,
+      mapDispatchToProps
+    )
     (BuyTab)
   );

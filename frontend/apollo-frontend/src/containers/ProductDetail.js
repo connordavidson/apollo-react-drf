@@ -369,7 +369,7 @@ class ProductDetail extends React.Component {
 }
 
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch(fetchCart()),
   }

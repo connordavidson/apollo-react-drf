@@ -41,7 +41,7 @@ class CustomLayout extends React.Component {
     .delete( orderItemDeleteURL(itemID) )
     .then(res => {
       //callback
-      this.handleFetchOrder();
+      this.props.fetchCart();
     })
     .catch(err => {
         this.setState( {error: err} );
@@ -81,7 +81,7 @@ class CustomLayout extends React.Component {
     .post( addToCartURL , { slug, variations } )
     .then(res => {
       console.log(res.data, addToCartURL, "add to cart succeeded");
-      this.handleFetchOrder();
+      this.props.fetchCart();
       this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
     })
     .catch(err => {
@@ -100,7 +100,7 @@ class CustomLayout extends React.Component {
       .post( orderItemUpdateQuantityURL, { slug } )
       .then(res => {
         //callback
-        this.handleFetchOrder();
+        this.props.fetchCart();
         this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
       })
       .catch(err => {
@@ -133,14 +133,14 @@ class CustomLayout extends React.Component {
                 <Dropdown
                     icon='cart'
                     loading= {loading}
-                    text= { `${ cart!== null ? cart.order_items.length : 0} ` }
+                    text= { `${ cart!== null && cart.order_items.length > 0 ? cart.order_items.length : 0} ` }
                     pointing
                     className='link item'
                     direction='left'
                   >
 
                   <Dropdown.Menu>
-                    { cart !== null ? (
+                    { cart !== null  && cart.order_items.length > 0? (
                         <React.Fragment>
                           {
                             cart.order_items.map(order_item => {
@@ -228,7 +228,7 @@ class CustomLayout extends React.Component {
 
             {/*displays the logout button if the user is logged in*/}
             {authenticated ? (
-
+              
               <React.Fragment>
                 <Menu.Item onClick={() => this.props.history.push(`/profile`)}>
                   Account

@@ -27,7 +27,6 @@ const panes = [
 
 class NavigationTabs extends React.Component {
   render(){
-
     return(
         <Tab panes={panes} />
     )

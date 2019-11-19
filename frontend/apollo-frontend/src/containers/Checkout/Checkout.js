@@ -35,12 +35,19 @@ import PaymentForm from './PaymentForm';
 import CouponForm from './CouponForm';
 
 /*
-should display the checkout process through the breadcrumbs.
+the BreadCrumbs are used to display information in a way that doesn't overwhelm the customer.
+
+**FOR ADDRESS -> SHIPPING BREADCRUMB**
+  the breadcrumbs need to check that the address is valid before letting the user move to the next breadcrumb.
+  this is done by storing shippingAddressValidated in the state of the breadcrumbs.
+  addressValidatedError is stored in the state and is used to send back to the address component if there is an error with the address validation.
+    this is used when the user clicks on the next breadcrumb before all the inputs are validated
+  addressInformation is used to send the validated address information back into the addressForm component.
+    this is then used in the event that the user goes back to the addressForm breadcrumb and tries to edit  their info. the information automatically repopulates
+
+
 
 */
-
-//made this file at https://youtu.be/z7Kq6bHxEcI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=426
-//made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
 
 class CheckoutBreadCrumbs extends React.Component {

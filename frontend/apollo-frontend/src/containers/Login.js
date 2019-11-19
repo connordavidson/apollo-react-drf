@@ -31,7 +31,7 @@ class LoginForm extends React.Component {
   render() {
     const { error, loading, token } = this.props;
     const { username, password } = this.state;
-    
+
     //redirects to the home page after the user is logged in
     if (token) {
       return <Redirect to="/" />;
@@ -44,7 +44,7 @@ class LoginForm extends React.Component {
         verticalAlign="middle"
       >
         <Grid.Column style={{ maxWidth: 450 }}>
-          <Header as="h2" color="teal" textAlign="center">
+          <Header as="h2" color="blue" textAlign="center">
             Log-in to your account
           </Header>
           {error && <p>{this.props.error.message}</p>}
@@ -73,7 +73,7 @@ class LoginForm extends React.Component {
                 />
 
                 <Button
-                  color="teal"
+                  color="blue"
                   fluid
                   size="large"
                   loading={loading}
@@ -84,7 +84,7 @@ class LoginForm extends React.Component {
               </Segment>
             </Form>
             <Message>
-              New to us? <NavLink to="/signup">Sign Up</NavLink>
+              New to Apollo? <NavLink to="/signup">Sign Up</NavLink>
             </Message>
           </React.Fragment>
         </Grid.Column>

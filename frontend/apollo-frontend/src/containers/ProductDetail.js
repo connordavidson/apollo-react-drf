@@ -5,7 +5,6 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {
   Button,
-  Icon,
   Image,
   Item,
   Label,
@@ -19,7 +18,6 @@ import {
   Header,
   Form,
   Divider,
-  Dropdown,
   Select,
   Comment,
 
@@ -307,8 +305,8 @@ class ProductDetail extends React.Component {
                           <Card.Content extra>
                             <Button
                               fluid
-                              basic
-                              color='green'
+
+                              color='blue'
                               onClick={() => {
                                 this.handleAddToCart(this.state.data.slug, this.state.quantity )
                                 }

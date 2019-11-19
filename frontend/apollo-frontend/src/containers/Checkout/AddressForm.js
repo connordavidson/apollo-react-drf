@@ -7,8 +7,6 @@ import {
 
   } from 'semantic-ui-react';
 
-
-
 import {
     addressListURL,
     countryListURL,
@@ -18,7 +16,21 @@ import {
 import {authAxios} from '../../utils';
 
 
-{/* FOR FORM VALIDATION: https://mdbootstrap.com/docs/react/forms/validation/*/}
+/*
+this is used to display the shipping information form.
+
+every time that the user clicks off of an input box, it triggers handleValidateInput to determine if the input is "valid"
+  if the input is valid, it uses  handleCheckFormValidated to check if the rest of the form is valid.
+  if all of the information is valid, it uses handleAddressFormValidated to tell the breadcrumbs that the information is valid and to let the user move to the next breadcrumbs.
+the AddressForm component takes in addressInformation as props so that it can automatically populate the previously entered data.
+  this is in case the user comes back to this form after going to other BreadCrumbs.
+
+
+*/
+
+
+
+/* FOR FORM VALIDATION: https://mdbootstrap.com/docs/react/forms/validation/*/
 class AddressForm extends React.Component {
   state = {
     shippingAddresses: [],
@@ -32,7 +44,7 @@ class AddressForm extends React.Component {
     cityError: false,
     stateError: false,
     zipError: false,
-
+    
     nameValue: '',
     emailValue: '',
     addressValue: '',
@@ -391,6 +403,7 @@ class AddressForm extends React.Component {
                   options={ countries }
                   name='country'
                   placeholder='Country'
+
                   onChange={this.handleSelectChange}
                   value={formData.country}
                 />

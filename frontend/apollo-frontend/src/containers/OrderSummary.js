@@ -1,12 +1,9 @@
 import React from 'react';
 import {
   Button,
-  Container,
   Header,
   Icon,
   Label,
-  Menu,
-  Table,
   Message,
   Segment,
   Dimmer,
@@ -324,7 +321,7 @@ class OrderSummary extends React.Component {
                         <Card.Content>
                           <Button
                             fluid
-                            color='yellow'
+                            color='blue'
                             onClick={ () => this.props.history.push(`/checkout`) }
                             >
                             Checkout

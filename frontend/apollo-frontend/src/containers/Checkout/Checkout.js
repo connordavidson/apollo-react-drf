@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 
 import {
-    Button,
-    Container,
     Message,
-    Item,
     Divider,
     Header,
     Loader,
@@ -12,13 +9,9 @@ import {
     Dimmer,
     Icon,
     Label,
-    Checkbox,
-    Form,
-    Select,
     Grid,
     Breadcrumb,
     Card,
-    Input,
 
   } from 'semantic-ui-react';
 
@@ -28,249 +21,27 @@ import {
 
   } from 'react-router-dom';
 
-//import ShippingForm from './ShippingForm';
 
 import {authAxios} from '../../utils';
 
 import {
-    checkoutURL,
     orderSummaryURL,
-    addCouponURL,
-    addressListURL,
-    countryListURL,
-
   } from '../../constants';
 
 
 import AddressForm from './AddressForm';
+import ShippingForm from './ShippingForm';
+import PaymentForm from './PaymentForm';
+import CouponForm from './CouponForm';
+
 /*
 should display the checkout process through the breadcrumbs.
-planning on making each part of the breadcrumbs it's own component
-
 
 */
-
-
-
 
 //made this file at https://youtu.be/z7Kq6bHxEcI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=426
 //made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
-
-
-
-
- class ShippingForm extends Component {
-  //insert logic to retrieve available shipping optins for the address given in the previous breadcrumb
-
-  render() {
-    return(
-      <React.Fragment>
-        <Header>Select a shipping option</Header>
-        <Card.Group>
-          <Card>
-            <Card.Content>
-              <Card.Header>2 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 2 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $75.16
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>3-5 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 3-5 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $50.16
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>7-10 Day Shipping</Card.Header>
-              <Card.Meta>Friends of Elliot</Card.Meta>
-              <Card.Description>
-                arrives in 7-10 business days
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                FREE.99 boiiii
-            </Card.Content>
-          </Card>
-
-        </Card.Group>
-      </React.Fragment>
-
-
-    )
-  }
-}
-
-
-
-
-
-
-//made at https://youtu.be/Vm9Z6mm2kcU?t=1187
-class CouponForm extends Component {
-  state = {
-    code: ''
-  };
-
-
-
-  //made at https://youtu.be/Vm9Z6mm2kcU?t=1431
-  handleChange = (e) => {
-    this.setState({
-      code: e.target.value
-    });
-
-  };
-
-  //for adding a coupon
-  handleAddCoupon = (e, code) => {
-    console.log("HELLO?????")
-    e.preventDefault();
-    this.setState({ loading: true });
-
-    authAxios.post(addCouponURL, {code})
-    .then(res => {
-      this.setState({ loading: false });
-      this.handleFetchOrder();
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-    });
-  };
-
-
-  //handleAddCoupon comes from the Checkout form component.. gets passed in
-  handleSubmit = (e) => {
-    const { code } = this.state;
-    this.handleAddCoupon(e, code);
-    //resets the form with the code.. without this, the code stays in the textbox after page refresh
-    this.setState({code: ''});
-
-    console.log("handleaddcoupon : " , this.state.data)
-
-  };
-
-
-
-  render(){
-    const {code} = this.state;
-
-    return(
-      <React.Fragment>
-          <Input
-            fluid
-            icon='angle right'
-            placeholder='Enter a coupon...'
-            value={code}
-            onChange={this.handleChange}
-            onSubmit={this.handleSubmit}
-          />
-      </React.Fragment>
-
-    )
-  }
-}
-
-class PaymentForm extends Component {
-  //insert logic to retrieve available payment optins for the order total info given in the previous breadcrumbs
-
-  render(){
-    return(
-
-      <React.Fragment>
-        <Header>Select a currency</Header>
-        <Card.Group>
-          <Card>
-            <Card.Content>
-              <Card.Header>Bitcoin</Card.Header>
-              <Card.Meta>click to display a scannable QR code</Card.Meta>
-              <Card.Description>
-                <Input
-                  action={{
-                    icon: 'copy',
-                  }}
-                  defaultValue='47dm93050jd02jm,ka7ifa'
-                />
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $429104/<Label color='yellow'>₿1.3349103</Label>
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>Litecoin</Card.Header>
-              <Card.Meta>click to display a scannable QR code</Card.Meta>
-              <Card.Description>
-                <Input
-                  action={{
-                    icon: 'copy',
-                  }}
-                  defaultValue='158df8asdf50jd02jm,ka7ifa'
-                />
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $429104/ <Label color='blue'>Ł 19.3349103</Label>
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>Ethereum ETH</Card.Header>
-              <Card.Meta>click to display a scannable QR code</Card.Meta>
-              <Card.Description>
-                <Input
-                  action={{
-                    icon: 'copy',
-                  }}
-                  defaultValue='asdf791jfa9012jasdf09asd90f'
-                />
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $429104/ <Label color='teal'>4.3349103 ETH</Label>
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>Ripple XRP</Card.Header>
-              <Card.Meta>click to display a scannable QR code</Card.Meta>
-              <Card.Description>
-                <Input
-                  action={{
-                    icon: 'copy',
-                  }}
-                  defaultValue='a123asdfjakea9012jasdf09asd90f'
-                />
-              </Card.Description>
-            </Card.Content>
-            <Card.Content>
-                $429104/ <Label color='grey'>4821.3349103 XRP</Label>
-            </Card.Content>
-          </Card>
-
-        </Card.Group>
-      </React.Fragment>
-    )
-  }
-}
 
 
 

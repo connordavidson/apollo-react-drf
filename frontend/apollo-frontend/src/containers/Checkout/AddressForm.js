@@ -1,32 +1,15 @@
 import React, {Component} from 'react';
 import {
-    Button,
-    Container,
     Message,
-    Item,
-    Divider,
     Header,
-    Loader,
-    Segment,
-    Dimmer,
-    Icon,
-    Label,
-    Checkbox,
     Form,
     Select,
-    Grid,
-    Breadcrumb,
-    Card,
-    Input,
 
   } from 'semantic-ui-react';
 
 
 
 import {
-    checkoutURL,
-    orderSummaryURL,
-    addCouponURL,
     addressListURL,
     countryListURL,
 

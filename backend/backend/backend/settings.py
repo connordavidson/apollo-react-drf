@@ -136,6 +136,8 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+#for some reason the admin site won't display without this??? lol wtf. solution at https://stackoverflow.com/questions/40013100/doesnotexist-at-admin-login
+SITE_ID = 1
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.AllowAny', ),

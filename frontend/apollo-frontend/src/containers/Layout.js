@@ -125,7 +125,7 @@ class CustomLayout extends React.Component {
 
     return (
       <div>
-        <Menu inverted size='huge'>
+        <Menu color='blue' inverted size='huge'>
 
             <Link to="/">
               <Menu.Item header><h1>Apollo</h1></Menu.Item>
@@ -174,7 +174,7 @@ class CustomLayout extends React.Component {
                                           onClick={ () =>
                                             this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title, order_item.quantity, order_item.id)}
                                         />
-                                      
+
                                         {order_item.quantity}
 
                                         <Label.Detail>

@@ -43,17 +43,6 @@ should display the checkout process through the breadcrumbs.
 //made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
 
-
-
-
-
-
-
-
-
-
-
-
 class CheckoutBreadCrumbs extends React.Component {
 
   state= {
@@ -450,14 +439,8 @@ class CheckoutForm extends React.Component {
 }
 
 
-//const InjectedForm = withRouter(injectStripe(CheckoutForm));
 
-
-const WrappedForm = () => (
-      <CheckoutForm />
-)
-
-export default WrappedForm;
+export default CheckoutForm;
 
 
 /*

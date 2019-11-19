@@ -30,7 +30,7 @@ import {
 
 //import ShippingForm from './ShippingForm';
 
-import {authAxios} from '../utils';
+import {authAxios} from '../../utils';
 
 import {
     checkoutURL,
@@ -39,8 +39,10 @@ import {
     addressListURL,
     countryListURL,
 
-  } from '../constants';
+  } from '../../constants';
 
+
+import AddressForm from './AddressForm';
 /*
 should display the checkout process through the breadcrumbs.
 planning on making each part of the breadcrumbs it's own component
@@ -54,52 +56,6 @@ planning on making each part of the breadcrumbs it's own component
 //made this file at https://youtu.be/z7Kq6bHxEcI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=426
 //made major restructuring to this file around https://youtu.be/Vm9Z6mm2kcU?t=1856 . the idea was to only have 1 component with state object instead of 3
 
-class OrderReview extends Component {
-
-  render(){
-    return(
-      <React.Fragment>
-        <Header>Order review</Header>
-        <Card.Group>
-          <Card>
-            <Card.Content>
-              <Card.Header>iPhone 4s 16gb </Card.Header>
-              <Card.Meta>$99.99</Card.Meta>
-              <Card.Description>
-                this is a brick lmao
-              </Card.Description>
-            </Card.Content>
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>Family pack of Goldfish snack crackers</Card.Header>
-              <Card.Meta>$9.99</Card.Meta>
-              <Card.Description>
-                This is a pack of goldfish crackers that is designed to be able to feed an entire family
-              </Card.Description>
-            </Card.Content>
-
-          </Card>
-
-          <Card>
-            <Card.Content>
-              <Card.Header>A refridgerator</Card.Header>
-              <Card.Meta>$299.99</Card.Meta>
-              <Card.Description>
-                this will keep your snacks cold
-              </Card.Description>
-            </Card.Content>
-
-          </Card>
-
-        </Card.Group>
-      </React.Fragment>
-
-    )
-  }
-
-}
 
 
 
@@ -327,384 +283,33 @@ class PaymentForm extends Component {
 
 
 
-{/* FOR FORM VALIDATION: https://mdbootstrap.com/docs/react/forms/validation/*/}
-class AddressForm extends Component {
-  state = {
-    shippingAddresses: [],
-    selectedShippingAddress: '',
-    loading: false,
-    countries: [],
-    formData: [],
-    nameError: false,
-    emailError: false,
-    addressError: false,
-    cityError: false,
-    stateError: false,
-    zipError: false,
-
-    nameValue: '',
-    emailValue: '',
-    addressValue: '',
-    cityValue: '',
-    stateValue: '',
-    zipValue: '',
-
-  }
-
-  componentDidMount(){
-    this.setState({
-      shippingAddresses: this.handleFetchShippingAddresses(),
-      //selectedShippingAddress: this.handleGetDefaultAddress()
-      countries: this.handleFetchCountries(),
-    })
-  }
-
-  //callback function to send info to the parent component about if the form is validated (this is what will stop the user from clicking into the shipping breadcrumb before completing the address form)
-  handleAddressFormValidated = (isValidated) => {
-    this.props.handleAddressFormValidated(isValidated)
-  }
-
-
-  //created at https://youtu.be/NaJ-b0ZaSoI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=209
-  handleFetchShippingAddresses = () => {
-    this.setState({loading: true});
-    authAxios
-      //S for shipping
-      .get(addressListURL)
-      .then(res => {
-        //dispatches the cartSuccess method with data
-        this.setState({
-          shippingAddresses: res.data.map(a => {
-            return {
-              key: a.id,
-              text: `${a.street_address}, ${a.country}`,
-              value: a.id
-              };
-            }),
-          selectedShippingAddress: this.handleGetDefaultAddress(res.data) ,
-          loading: false
-        });
-      })
-      .catch(err => {
-          this.setState( {error: err, loading: false} );
-      });
-  }
-
-  //made at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1763
-  handleFormatCountries = (countries) => {
-    //want to get all the object keys of the countrioes object
-    const keys = Object.keys(countries);
-    //makes a new multidimensional, associative array of countries
-    //"for every country, return it's key (read: country code), text (read: name), and value (read: country code)"
-
-    //console.log('KEYS: ', keys)
-    return keys.map(k => {
-      return{
-        key: k,
-        text: countries[k],
-        value: k
-      }
-    })
-  }
-
-  handleFetchCountries = () => {
-    authAxios
-    .get(countryListURL)
-    .then(res => {
-      //console.log(this.handleFormatCountries(res.data))
-      this.setState({ countries: this.handleFormatCountries(res.data) });
-      //console.log('countries.length: ', this.state.countries.length);
-    })
-    .catch(err => {
-      this.setState({ error: err });
-    })
-  }
-
-  //made at https://youtu.be/NaJ-b0ZaSoI?t=875
-  // handleGetDefaultAddress = (addresses) => {
-  //   const filteredAddresses = addresses.filter( el => el.default === true )
-  //   if(filteredAddresses.length > 0){
-  //     return filteredAddresses[0].id;
-  //   }
-  //   return '';
-  // }
-
-  handleSelectChange = (e, {name, value} ) => {
-    const {formData} = this.state;
-    const updatedFormData = {
-      ...formData,
-      [name]: value
-    };
-    this.setState({
-      formData: updatedFormData
-    })
-    console.log("form data", this.state.formData)
-  }
-
-  //validates the form input, can create specific cases for form validation by using the error (becuase the error name is unique to each input box)
-  //the error parameter is the name in the State of the error for that input (ie. nameError is the error for the name field)
-  handleValidateInput = ( value, error) => {
-    if(value === ''){
-      this.setState({
-        [error]: true,
-      })
-    } else if(error === 'zipError' && value.length < 5 ){
-      this.setState({
-        [error]: true,
-      })
-    } else {
-      //checks if the form is fully validated
-      this.handleCheckFormValidated()
-      this.setState({
-        [error]: false
-      })
-    }
-  }
-
-
-
-  //checks every form error and form value and makes sure that they are in the required position for the form to be "validated"
-  //checks if the form is fully validated, if it is fully validated then it sends it to the parent component (the breadcrumbs component)
-  handleCheckFormValidated = () => {
-    if(
-      this.state.nameError      === false &&
-      this.state.emailError     === false &&
-      this.state.addressError   === false &&
-      this.state.cityError      === false &&
-      this.state.stateError     === false &&
-      this.state.zipError       === false &&
-
-      this.state.nameValue      !== '' &&
-      this.state.emailValue     !== '' &&
-      this.state.addressValue   !== '' &&
-      this.state.cityValue      !== '' &&
-      this.state.stateValue     !== '' &&
-      this.state.zipValue       !== ''
-    ) {
-      this.handleAddressFormValidated(true)
-    }else{
-      this.handleAddressFormValidated(false)
-    }
-  }
-
-
-
-  render(){
-    //console.log('this.props from address form: ', this.props)
-
-
-    const {
-      shippingAddresses,
-      selectedShippingAddress,
-      loading,
-      countries,
-      formData,
-
-      nameError,
-      emailError,
-      addressError,
-      cityError,
-      stateError,
-      zipError,
-
-      nameValue,
-      emailValue,
-      addressValue,
-      cityValue,
-      stateValue,
-      zipValue,
-
-    } = this.state;
-
-
-    return(
-
-        <React.Fragment>
-          <Header>Enter your name and shipping address</Header>
-          <Form loading={loading} error>
-
-            <Form.Group>
-              <Form.Field required width={8}>
-                <label>Name</label>
-                <Form.Input
-
-                  error={nameError}
-                  placeholder='Full Name'
-                  onChange={
-                    (e,data)=> {
-                      this.setState({nameValue: data.value})
-                    }
-                  }
-                  onBlur={
-                    () => {
-                      this.handleValidateInput( this.state.nameValue, 'nameError')
-                    }
-                  }
-                />
-              </Form.Field>
-
-              <Form.Field required width={8}>
-                <label>Email</label>
-                <Form.Input
-                  error={emailError}
-                  placeholder='Email'
-                  onChange={
-                    (e, data) => {
-                      this.setState({emailValue: data.value})
-                    }
-                  }
-                  onBlur={
-                    () => {
-                      this.handleValidateInput(this.state.emailValue, 'emailError')
-                    }
-                  }
-                />
-              </Form.Field>
-            </Form.Group>
-
-            <Form.Field required>
-              <label>Address</label>
-              <Form.Input
-                error={addressError}
-                placeholder='Address'
-                onChange={
-                  (e,data) => {
-                    this.setState({addressValue: data.value})
-                  }
-                }
-                onBlur={
-                  () => {
-                    this.handleValidateInput(this.state.addressValue, 'addressError')
-                  }
-                }
-              />
-            </Form.Field>
-
-            <Form.Group>
-
-              <Form.Field required width={4}>
-                <label>City</label>
-                <Form.Input
-                  error={cityError}
-                  placeholder='City'
-                  onChange={
-                    (e,data) => {
-                      this.setState({cityValue: data.value})
-                    }
-                  }
-                  onBlur={
-                    () => {
-                      this.handleValidateInput(this.state.cityValue, 'cityError')
-                    }
-                  }
-                />
-              </Form.Field>
-
-              <Form.Field required width={3}>
-                <label>State</label>
-                <Form.Input
-                  error={stateError}
-                  placeholder='State'
-                  onChange={
-                    (e,data) => {
-                      this.setState({stateValue: data.value})
-                    }
-                  }
-                  onBlur={
-                    () => {
-                      this.handleValidateInput(this.state.stateValue, 'stateError')
-                    }
-                  }
-                />
-              </Form.Field>
-
-              <Form.Field required width={3}>
-                <label>Zip Code</label>
-                <Form.Input
-                  error={zipError}
-                  placeholder='Zip Code'
-                  onChange={
-                    (e,data) => {
-                      this.setState({zipValue: data.value})
-                    }
-                  }
-                  onBlur={
-                    () => {
-                      this.handleValidateInput(this.state.zipValue, 'zipError')
-                    }
-                  }
-                />
-              </Form.Field>
-
-              <Form.Field required width={7}>
-                <label>Country</label>
-                <Select
-                  loading={loading}
-                  fluid
-                  clearable
-                  search
-                  options={ countries }
-                  name='country'
-                  placeholder='Country'
-                  onChange={this.handleSelectChange}
-                  value={formData.country}
-                />
-              </Form.Field>
-
-            </Form.Group>
-
-            {
-              nameError || emailError || addressError || cityError || stateError || zipError ?
-              <Message
-                error
-                header='Form incomplete'
-                content='You need to fill out the highlighted input boxes'
-              />
-              :
-              null
-            }
-
-            {
-
-              this.props.validatedError &&
-              <Message
-                error
-                header='Form incomplete'
-                content='You need to complete the entire form before continuing to the next part of the checkout'
-              />
-            }
-
-
-          </Form>
-
-        </React.Fragment>
-    )
-  }
-}
-
-
-
-
-
-
-
 class CheckoutBreadCrumbs extends React.Component {
 
   state= {
-    activeCrumb: '',
     information: true,
     shipping  : false,
     orderReview : false,
     payment : false,
     shippingAddressValidated : false,
-    addressValidatedError : false
+    addressValidatedError : false,
+    addressInformation: {},
+
   };
 
 
-  //childProps should be a boolean, responds true if the form is all validated and false if it is not validated
-  handleFormValidated = (isValidated) => {
+  //callback method to get props from AddressForm component and set them into the state of the breadCrumbs component
+  //shippingAddressValidated should be a boolean, responds true if the form is all validated and false if it is not validated
+  handleFormValidated = (isValidated, isError=false) => {
     this.setState({
-      shippingAddressValidated: isValidated
+      shippingAddressValidated: isValidated,
+      //addressValidatedError: isError
+    })
+  }
+
+
+  handleGetAddressInforation = (addressInformation) => {
+    this.setState({
+      addressInformation: addressInformation
     })
   }
 
@@ -719,6 +324,7 @@ class CheckoutBreadCrumbs extends React.Component {
           shipping  : false,
           orderReview : false,
           payment : false,
+          addressValidatedError: true,
         })
         console.log('info: ', this.state)
       break;
@@ -730,10 +336,11 @@ class CheckoutBreadCrumbs extends React.Component {
             shipping  : true,
             orderReview : false,
             payment : false,
+            addressValidatedError: false,
           })
         }else{
           this.setState({
-            addressValidatedError: true
+            addressValidatedError: true,
           })
         }
         console.log('ship: ', this.state)
@@ -771,13 +378,19 @@ class CheckoutBreadCrumbs extends React.Component {
       payment,
       shippingAddressValidated,
       addressValidatedError,
+      addressInformation,
 
     } = this.state;
 
-
+    // console.log('addressInformation FROM STATE IN BREADCRUMBS COMP: ', addressInformation)
     if(information){
       return(
-        <AddressForm handleAddressFormValidated={this.handleFormValidated} validatedError={addressValidatedError}/>
+        <AddressForm
+          handleAddressFormValidated={this.handleFormValidated}
+          validatedError={addressValidatedError}
+          sendAddressInformation={this.handleGetAddressInforation}
+          addressInformation = {addressInformation}
+        />
       )
     }else if(shipping){
       return(
@@ -866,7 +479,7 @@ class CheckoutForm extends React.Component {
   componentDidMount(){
     //gets the order when the component has mounted
     this.handleFetchOrder();
-    console.log('data compdidmount' ,this.state.data)
+    //console.log('data compdidmount' ,this.state.data)
   }
 
 
@@ -880,7 +493,7 @@ class CheckoutForm extends React.Component {
         //dispatches the cartSuccess method with data
         this.setState( {data: res.data, total: res.data.total , loading: false} );
 
-        console.log("data: fetchorder" , this.state.data.total);
+        //console.log("data: fetchorder" , this.state.data.total);
       })
       .catch(err => {
         //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
@@ -919,8 +532,8 @@ class CheckoutForm extends React.Component {
 
       } = this.state;
 
-    console.log('data inside render(): ', data);
-    console.log('data.total: ', data);
+    // console.log('data inside render(): ', data);
+    // console.log('data.total: ', data);
 
     return (
 
@@ -1003,7 +616,7 @@ class CheckoutForm extends React.Component {
                         {
                           data &&
                           data.order_items.map(item => {
-                            console.log('item id: ', item.item.id)
+                            //console.log('item id: ', item.item.id)
                             return (
                               <Card.Content>
                                 <Card.Header>

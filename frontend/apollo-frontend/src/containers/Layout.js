@@ -162,7 +162,12 @@ class CustomLayout extends React.Component {
                                       onClick={() => this.props.history.push(`/products/${order_item.item.id}`)}
                                       style={{cursor: 'pointer'}}
                                     >
-                                      {order_item.item.title}
+                                      {
+                                        //trims titles that are longer than 22 characters... so that the dropdown isn't obnoxiously wide
+                                        order_item.item.title.length > 22 ?
+                                        order_item.item.title.substring(0, 22) + '...' :
+                                        order_item.item.title
+                                      }
                                     </Message.Header>
                                     <p>
 

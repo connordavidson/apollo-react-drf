@@ -11,6 +11,7 @@ import {
   Grid,
   Divider,
   Card,
+  Container,
 
 } from 'semantic-ui-react';
 
@@ -223,115 +224,104 @@ class OrderSummary extends React.Component {
             data&&
             <React.Fragment>
 
-              {/*based on the layout of checkout.js*/}
-              <Grid>
-                {/*row for holding the header*/}
-                <Grid.Row>
-                  <Grid.Column width={3}>
-                  </Grid.Column>
-                  <Grid.Column width={9}>
-                    <h1>Review your cart</h1>
-                    <Divider/>
-                  </Grid.Column>
-                  <Grid.Column width={4}>
-                  </Grid.Column>
-                </Grid.Row>
+              <Container>
 
-                <Grid.Row>
-                  {/*empty filler column to help with spacing of the rest of the page, probably can do this with some type of offset, not sure though*/}
-                  <Grid.Column width={3}>
-                  </Grid.Column>
+                <Header as='h1'>Review your cart</Header>
+                <Divider />
+                {/*based on the layout of checkout.js*/}
+                <Grid>
 
-                  <Grid.Column width={9}>
-                    <Card.Group>
-                      {
-                        data.order_items.map(item => {
-                          console.log('item inside order_items: quantity: ', item.quantity)
-                          return(
-                            <Card>
-                              <Card.Content>
-                                <Card.Header>
-                                  {item.item.title}
-                                </Card.Header>
-
+                    <Grid.Column width={12}>
+                      <Card.Group>
+                        {
+                          data.order_items.map(item => {
+                            console.log('item inside order_items: quantity: ', item.quantity)
+                            return(
+                              <Card>
                                 <Card.Content>
-                                  {item.item_variations ?
-                                    (this.renderVariations(item)) :
-                                    null
+                                  <Card.Header>
+                                    {item.item.title}
+                                  </Card.Header>
+
+                                  <Card.Content>
+                                    {item.item_variations ?
+                                      (this.renderVariations(item)) :
+                                      null
+                                    }
+                                  </Card.Content>
+
+                                  {
+                                    item.item.discount_price !== null ?
+                                    <Card.Meta>
+                                      <s>${item.item.price}</s>
+                                      ${item.item.discount_price}
+                                    </Card.Meta> :
+                                    <Card.Meta>
+                                      ${item.item.price}
+                                    </Card.Meta>
                                   }
-                                </Card.Content>
 
-                                {
-                                  item.item.discount_price !== null ?
-                                  <Card.Meta>
-                                    <s>${item.item.price}</s>
-                                    ${item.item.discount_price}
-                                  </Card.Meta> :
-                                  <Card.Meta>
-                                    ${item.item.price}
-                                  </Card.Meta>
-                                }
-
-                                <Card.Description >
-                                  <Label>
-                                    <Icon
-                                      name='minus'
-                                      color='red'
-                                      style={{cursor: 'pointer'}}
-                                      onClick={ () =>
-                                        this.handleRemoveQuantityFromCart(item.item.slug, item.item.title, item.quantity, item.id)}
-                                    />
-
-                                    {item.quantity}
-
-                                    <Label.Detail>
+                                  <Card.Description >
+                                    <Label>
                                       <Icon
-                                        name='plus'
-                                        color='green'
+                                        name='minus'
+                                        color='red'
                                         style={{cursor: 'pointer'}}
                                         onClick={ () =>
-                                          this.handleAddToCart(
-                                            item.item.slug,
-                                            item.item_variations,
-                                            item.item.title
-                                          )}
+                                          this.handleRemoveQuantityFromCart(item.item.slug, item.item.title, item.quantity, item.id)}
                                       />
-                                    </Label.Detail>
-                                  </Label>
-                                  <Icon
-                                    name='trash'
-                                    color='red'
-                                    style={{float: 'right', cursor: 'pointer'}}
-                                    onClick={ () => this.handleRemoveItem(item.id) }
-                                  />
-                                </Card.Description>
 
-                              </Card.Content>
-                            </Card>
-                          )
-                        })
-                      }
+                                      {item.quantity}
 
-                    </Card.Group>
-                  </Grid.Column>
+                                      <Label.Detail>
+                                        <Icon
+                                          name='plus'
+                                          color='green'
+                                          style={{cursor: 'pointer'}}
+                                          onClick={ () =>
+                                            this.handleAddToCart(
+                                              item.item.slug,
+                                              item.item_variations,
+                                              item.item.title
+                                            )}
+                                        />
+                                      </Label.Detail>
+                                    </Label>
+                                    <Icon
+                                      name='trash'
+                                      color='red'
+                                      style={{float: 'right', cursor: 'pointer'}}
+                                      onClick={ () => this.handleRemoveItem(item.id) }
+                                    />
+                                  </Card.Description>
 
-                  <Grid.Column width={4}>
-                    <Header>Go to checkout</Header>
-                      <Card>
-                        <Card.Content>
-                          <Button
-                            fluid
-                            color='blue'
-                            onClick={ () => this.props.history.push(`/checkout`) }
-                            >
-                            Checkout
-                          </Button>
-                        </Card.Content>
-                      </Card>
+                                </Card.Content>
+                              </Card>
+                            )
+                          })
+                        }
 
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
+                      </Card.Group>
+                    </Grid.Column>
+
+                    <Grid.Column width={4}>
+                      <Header>Go to checkout</Header>
+                        <Card fluid>
+                          <Card.Content>
+                            <Button
+                              fluid
+                              color='blue'
+                              onClick={ () => this.props.history.push(`/checkout`) }
+                              >
+                              Checkout
+                            </Button>
+                          </Card.Content>
+                        </Card>
+
+                    </Grid.Column>
+
+                </Grid>
+              </Container>
             </React.Fragment>
           }
         </React.Fragment>

@@ -12,6 +12,7 @@ import {
     Grid,
     Breadcrumb,
     Card,
+    Container,
 
   } from 'semantic-ui-react';
 
@@ -345,95 +346,81 @@ class CheckoutForm extends React.Component {
 
             <React.Fragment>
               {/*grid to hold the checkout info*/}
-              <Grid>
-
-                <Grid.Row>
-                  {/*literally just to display "complete your order" abve the breadcrumbs and total.... probably a better way to do this*/}
-                  <Grid.Column width={3}>
-                  </Grid.Column>
-                  <Grid.Column width={9}>
-                    <h1>Complete your order</h1>
-                    <Divider/>
-                  </Grid.Column>
-                  <Grid.Column width={4}>
-                  </Grid.Column>
-                </Grid.Row>
 
 
-                <Grid.Row>
-                    {/*empty filler column to help with spacing of the rest of the page, probably can do this with some type of offset, not sure though*/}
-                  <Grid.Column width={3}>
-                  </Grid.Column>
+              <Container>
+                <Header as='h1'>Complete your order</Header>
+                <Divider />
 
-                  {/*column to hold the breadcrumbs for checkout info*/}
-                  <Grid.Column width={9}>
-                    <CheckoutBreadCrumbs />
+                <Grid>
 
-                  </Grid.Column>
-                  {/*for some reason this divider doesn't want to work lol*/}
-                  <Divider vertical />
+                    {/*column to hold the breadcrumbs for checkout info*/}
+                    <Grid.Column width={12}>
+                      <CheckoutBreadCrumbs />
+                    </Grid.Column>
+                    {/*for some reason this divider doesn't want to work lol*/}
 
 
-                  {/*column for holding the price info*/}
-                  <Grid.Column width={4}>
+                    {/*column for holding the price info*/}
+                    <Grid.Column width={4}>
 
-                    <Header>Order Review</Header>
-                    <Card.Group>
-                      <Card>
-                        {
-                          data &&
-                          data.order_items.map(item => {
-                            //console.log('item id: ', item.item.id)
-                            return (
-                              <Card.Content>
-                                <Card.Header>
-                                  {item.item.title} [{item.quantity}]
-                                </Card.Header>
-                                <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
-                              </Card.Content>
-                            )
-                          })
-                        }
-
-                      </Card>
-
-                      <Card>
-                      <Card.Content>
-                        <Card.Header>Price: </Card.Header>
-                          <Card.Description>
-                            subtotal: ${total}
-                          </Card.Description>
-                          <Card.Description>
-                            tax: ______
-                          </Card.Description>
-                          <Card.Description>
-                            shipping: _______
-                          </Card.Description>
-                          <Card.Description>
-                            Total: ______
-                          </Card.Description>
-                      </Card.Content>
-                      </Card>
-                      </Card.Group>
-
-                      <Card>
-                        <Card.Content>
-                          <Card.Header>Coupon</Card.Header>
-                          {   data &&
-                              data.coupon !== null ?
-                                <Label color='green'><Icon name='check circle' color='grey'/> applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
-                                null
+                      <Header>Order Review</Header>
+                      <Card.Group>
+                        <Card>
+                          {
+                            data &&
+                            data.order_items.map(item => {
+                              //console.log('item id: ', item.item.id)
+                              return (
+                                <Card.Content>
+                                  <Card.Header>
+                                    {item.item.title} [{item.quantity}]
+                                  </Card.Header>
+                                  <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
+                                </Card.Content>
+                              )
+                            })
                           }
-                          <CouponForm />
+
+                        </Card>
+
+                        <Card>
+                        <Card.Content>
+                          <Card.Header>Price: </Card.Header>
+                            <Card.Description>
+                              subtotal: ${total}
+                            </Card.Description>
+                            <Card.Description>
+                              tax: ______
+                            </Card.Description>
+                            <Card.Description>
+                              shipping: _______
+                            </Card.Description>
+                            <Card.Description>
+                              Total: ______
+                            </Card.Description>
                         </Card.Content>
-                      </Card>
+                        </Card>
+                        </Card.Group>
 
-                  </Grid.Column>
+                        <Card>
+                          <Card.Content>
+                            <Card.Header>Coupon</Card.Header>
+                            {   data &&
+                                data.coupon !== null ?
+                                  <Label color='green'><Icon name='check circle' color='grey'/> applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
+                                  null
+                            }
+                            <CouponForm />
+                          </Card.Content>
+                        </Card>
 
-                </Grid.Row>
+                    </Grid.Column>
 
-              </Grid>
 
+
+                </Grid>
+              </Container>
             </React.Fragment>
 
           )

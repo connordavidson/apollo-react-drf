@@ -11,7 +11,7 @@ import ProductList from './containers/ProductList';
 import OrderSummary from './containers/OrderSummary';
 import Checkout from './containers/Checkout/Checkout';
 import ProductDetail from './containers/ProductDetail';
-import Profile from './containers/Profile';
+import Profile from './containers/Profile/Profile';
 import BuyTab from './containers/BuyTab';
 
 const BaseRouter = () => (

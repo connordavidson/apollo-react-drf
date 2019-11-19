@@ -335,6 +335,19 @@ class AddressForm extends Component {
     loading: false,
     countries: [],
     formData: [],
+    nameError: false,
+    emailError: false,
+    addressError: false,
+    cityError: false,
+    stateError: false,
+    zipError: false,
+
+    nameValue: '',
+    emailValue: '',
+    addressValue: '',
+    cityValue: '',
+    stateValue: '',
+    zipValue: '',
 
   }
 
@@ -343,9 +356,14 @@ class AddressForm extends Component {
       shippingAddresses: this.handleFetchShippingAddresses(),
       //selectedShippingAddress: this.handleGetDefaultAddress()
       countries: this.handleFetchCountries(),
-
     })
   }
+
+  //callback function to send info to the parent component about if the form is validated (this is what will stop the user from clicking into the shipping breadcrumb before completing the address form)
+  handleAddressFormValidated = (isValidated) => {
+    this.props.handleAddressFormValidated(isValidated)
+  }
+
 
   //created at https://youtu.be/NaJ-b0ZaSoI?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=209
   handleFetchShippingAddresses = () => {
@@ -393,11 +411,8 @@ class AddressForm extends Component {
     authAxios
     .get(countryListURL)
     .then(res => {
-
       //console.log(this.handleFormatCountries(res.data))
       this.setState({ countries: this.handleFormatCountries(res.data) });
-
-
       //console.log('countries.length: ', this.state.countries.length);
     })
     .catch(err => {
@@ -426,9 +441,57 @@ class AddressForm extends Component {
     console.log("form data", this.state.formData)
   }
 
+  //validates the form input, can create specific cases for form validation by using the error (becuase the error name is unique to each input box)
+  //the error parameter is the name in the State of the error for that input (ie. nameError is the error for the name field)
+  handleValidateInput = ( value, error) => {
+    if(value === ''){
+      this.setState({
+        [error]: true,
+      })
+    } else if(error === 'zipError' && value.length < 5 ){
+      this.setState({
+        [error]: true,
+      })
+    } else {
+      //checks if the form is fully validated
+      this.handleCheckFormValidated()
+      this.setState({
+        [error]: false
+      })
+    }
+  }
+
+
+
+  //checks every form error and form value and makes sure that they are in the required position for the form to be "validated"
+  //checks if the form is fully validated, if it is fully validated then it sends it to the parent component (the breadcrumbs component)
+  handleCheckFormValidated = () => {
+    if(
+      this.state.nameError      === false &&
+      this.state.emailError     === false &&
+      this.state.addressError   === false &&
+      this.state.cityError      === false &&
+      this.state.stateError     === false &&
+      this.state.zipError       === false &&
+
+      this.state.nameValue      !== '' &&
+      this.state.emailValue     !== '' &&
+      this.state.addressValue   !== '' &&
+      this.state.cityValue      !== '' &&
+      this.state.stateValue     !== '' &&
+      this.state.zipValue       !== ''
+    ) {
+      this.handleAddressFormValidated(true)
+    }else{
+      this.handleAddressFormValidated(false)
+    }
+  }
+
 
 
   render(){
+    //console.log('this.props from address form: ', this.props)
+
 
     const {
       shippingAddresses,
@@ -437,6 +500,20 @@ class AddressForm extends Component {
       countries,
       formData,
 
+      nameError,
+      emailError,
+      addressError,
+      cityError,
+      stateError,
+      zipError,
+
+      nameValue,
+      emailValue,
+      addressValue,
+      cityValue,
+      stateValue,
+      zipValue,
+
     } = this.state;
 
 
@@ -444,40 +521,119 @@ class AddressForm extends Component {
 
         <React.Fragment>
           <Header>Enter your name and shipping address</Header>
-          <Form loading={loading}>
+          <Form loading={loading} error>
 
             <Form.Group>
               <Form.Field required width={8}>
                 <label>Name</label>
-                <input placeholder='Full Name' />
+                <Form.Input
+
+                  error={nameError}
+                  placeholder='Full Name'
+                  onChange={
+                    (e,data)=> {
+                      this.setState({nameValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput( this.state.nameValue, 'nameError')
+                    }
+                  }
+                />
               </Form.Field>
 
               <Form.Field required width={8}>
                 <label>Email</label>
-                <input placeholder='Email' />
+                <Form.Input
+                  error={emailError}
+                  placeholder='Email'
+                  onChange={
+                    (e, data) => {
+                      this.setState({emailValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput(this.state.emailValue, 'emailError')
+                    }
+                  }
+                />
               </Form.Field>
             </Form.Group>
 
             <Form.Field required>
               <label>Address</label>
-              <input placeholder='Address' />
+              <Form.Input
+                error={addressError}
+                placeholder='Address'
+                onChange={
+                  (e,data) => {
+                    this.setState({addressValue: data.value})
+                  }
+                }
+                onBlur={
+                  () => {
+                    this.handleValidateInput(this.state.addressValue, 'addressError')
+                  }
+                }
+              />
             </Form.Field>
 
             <Form.Group>
 
               <Form.Field required width={4}>
                 <label>City</label>
-                <input placeholder='City' />
+                <Form.Input
+                  error={cityError}
+                  placeholder='City'
+                  onChange={
+                    (e,data) => {
+                      this.setState({cityValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput(this.state.cityValue, 'cityError')
+                    }
+                  }
+                />
               </Form.Field>
 
               <Form.Field required width={3}>
                 <label>State</label>
-                <input placeholder='State' />
+                <Form.Input
+                  error={stateError}
+                  placeholder='State'
+                  onChange={
+                    (e,data) => {
+                      this.setState({stateValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput(this.state.stateValue, 'stateError')
+                    }
+                  }
+                />
               </Form.Field>
 
               <Form.Field required width={3}>
                 <label>Zip Code</label>
-                <input placeholder='Zip' />
+                <Form.Input
+                  error={zipError}
+                  placeholder='Zip Code'
+                  onChange={
+                    (e,data) => {
+                      this.setState({zipValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput(this.state.zipValue, 'zipError')
+                    }
+                  }
+                />
               </Form.Field>
 
               <Form.Field required width={7}>
@@ -497,6 +653,27 @@ class AddressForm extends Component {
 
             </Form.Group>
 
+            {
+              nameError || emailError || addressError || cityError || stateError || zipError ?
+              <Message
+                error
+                header='Form incomplete'
+                content='You need to fill out the highlighted input boxes'
+              />
+              :
+              null
+            }
+
+            {
+
+              this.props.validatedError &&
+              <Message
+                error
+                header='Form incomplete'
+                content='You need to complete the entire form before continuing to the next part of the checkout'
+              />
+            }
+
 
           </Form>
 
@@ -504,6 +681,9 @@ class AddressForm extends Component {
     )
   }
 }
+
+
+
 
 
 
@@ -516,7 +696,17 @@ class CheckoutBreadCrumbs extends React.Component {
     shipping  : false,
     orderReview : false,
     payment : false,
+    shippingAddressValidated : false,
+    addressValidatedError : false
   };
+
+
+  //childProps should be a boolean, responds true if the form is all validated and false if it is not validated
+  handleFormValidated = (isValidated) => {
+    this.setState({
+      shippingAddressValidated: isValidated
+    })
+  }
 
 
   handleBreadcrumbClick = (e, data) =>{
@@ -534,32 +724,35 @@ class CheckoutBreadCrumbs extends React.Component {
       break;
 
       case 'ship':
-        this.setState({
-          information : false,
-          shipping  : true,
-          orderReview : false,
-          payment : false,
-        })
+        if(this.state.shippingAddressValidated){
+          this.setState({
+            information : false,
+            shipping  : true,
+            orderReview : false,
+            payment : false,
+          })
+        }else{
+          this.setState({
+            addressValidatedError: true
+          })
+        }
         console.log('ship: ', this.state)
-      break;
-      //should never be the case (changed the layout to display the order review on the righthand side)
-      case 'review':
-        this.setState({
-          information : false,
-          shipping  : false,
-          orderReview : true,
-          payment : false,
-        })
-        console.log('review: ', this.state)
       break;
 
       case 'payment':
-        this.setState({
-          information : false,
-          shipping  : false,
-          orderReview : false,
-          payment : true,
-        })
+        if(this.state.shippingAddressValidated){
+          this.setState({
+            information : false,
+            shipping  : false,
+            orderReview : false,
+            payment : true,
+          })
+        }else{
+          this.setState({
+            addressValidatedError: true
+          })
+        }
+
         console.log('payment: ', this.state)
       break;
 
@@ -569,28 +762,26 @@ class CheckoutBreadCrumbs extends React.Component {
   }
 
 
-
+  //displays the correct component based on what breadcrumb is clicked
   renderForm = () => {
     const {
       information,
       shipping,
       orderReview,
       payment,
+      shippingAddressValidated,
+      addressValidatedError,
+
     } = this.state;
 
 
-    if( information){
+    if(information){
       return(
-        <AddressForm />
+        <AddressForm handleAddressFormValidated={this.handleFormValidated} validatedError={addressValidatedError}/>
       )
     }else if(shipping){
       return(
         <ShippingForm />
-      )
-    //should not be the case ever bc ui design changes
-    }else if(orderReview){
-      return(
-        <OrderReview />
       )
     }else if(payment){
       return(
@@ -602,6 +793,10 @@ class CheckoutBreadCrumbs extends React.Component {
 
 
   render(){
+
+    console.log('address form validated? from breadcrumbs comp : ', this.state.shippingAddressValidated)
+    console.log('address form validated error? from breadcrumbs comp : ', this.state.addressValidatedError)
+
 
     return(
       <React.Fragment>
@@ -627,19 +822,7 @@ class CheckoutBreadCrumbs extends React.Component {
         </Breadcrumb.Section>
 
         <Breadcrumb.Divider />
-        {/*
-        <Breadcrumb.Section
-          id='review'
-          active={this.state.orderReview}
-          as='div'
-          style={{cursor: 'pointer'}}
-          onClick={(e, data) => { this.handleBreadcrumbClick(e, data) } }
-          >
-          Order Review
-        </Breadcrumb.Section>
 
-        <Breadcrumb.Divider />
-        */}
         <Breadcrumb.Section
           id='payment'
           active={this.state.payment}
@@ -715,22 +898,12 @@ class CheckoutForm extends React.Component {
 
 
 
-  //made at https://youtu.be/NaJ-b0ZaSoI?t=1035
-  //for letting the user select more than just the default shipping address
-  handleSelectChange = (e, { name, value }) => {
-    this.setState({
-      [name]: value
-    });
-  };
-
-
   //filled out this at https://youtu.be/z7Kq6bHxEcI?t=566
   //for submitting the payment
   submit = (ev) => {
       ev.preventDefault();
       console.log("SUBMIT FUNCTION");
     }
-
 
 
 
@@ -841,6 +1014,10 @@ class CheckoutForm extends React.Component {
                             )
                           })
                         }
+
+                      </Card>
+
+                      <Card>
                       <Card.Content>
                         <Card.Header>Price: </Card.Header>
                           <Card.Description>

@@ -91,7 +91,6 @@ class BuyTab extends React.Component {
       this.setState({data: response.data, loading: false, categories: cats});
       // console.log('handlegetproducts data: ', response.data)
       // console.log('handlegetproducts state.data: ', this.state.data)
-
       // console.log('handlegetproducts categories: ', cats)
 
     })
@@ -139,7 +138,6 @@ class BuyTab extends React.Component {
           }
         })
       .then(response => {
-        // console.log("response.data.length (from search): " , response.data.length);
 
         //if the search bar is empty, make the title say 'featured products'
         //the issue is if the user searches for something, then erases it from the search bar and hits enter it'll say 'search results for "" []' when it is displaying the featured products
@@ -206,7 +204,7 @@ class BuyTab extends React.Component {
   }
 
 
-  //make this so that it will display the product item, should get put in a loop and it should save code
+  //this should be a component to create an item. make this so that it will display the product item, should get put in a loop when displaying the current items
   makeProductItem = (item) => {
     console.log('makeproductitem item: ' , item)
   }

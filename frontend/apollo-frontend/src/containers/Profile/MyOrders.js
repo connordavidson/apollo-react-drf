@@ -159,7 +159,11 @@ class MyOrders extends React.Component {
                               >
                                 <Card.Content>
                                   <Card.Header>
-                                    {item.item.title}
+                                    {
+                                      item.item.title.length > 30 ?
+                                      item.item.title.substring(0,30) + '...':
+                                      item.item.title
+                                    }
                                   </Card.Header>
                                   <Card.Meta>
                                     Quantity: {item.quantity}

@@ -94,7 +94,7 @@ class CheckoutBreadCrumbs extends React.Component {
           payment : false,
           addressValidatedError: true,
         })
-        console.log('info: ', this.state)
+        console.log('inside handleBreadcrumbClick info: ', this.state)
       break;
 
       case 'ship':

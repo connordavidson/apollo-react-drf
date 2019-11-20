@@ -169,10 +169,10 @@ class OrderSummary extends React.Component {
     render(){
 
       const {
-        data, 
-        error, 
-        loading, 
-        increased, 
+        data,
+        error,
+        loading,
+        increased,
         decreased
       } = this.state;
       //redirects the user if they aren't authenticated (if their login times out)
@@ -246,16 +246,20 @@ class OrderSummary extends React.Component {
                               <Card>
                                 <Card.Content>
                                   <Card.Header>
-                                    {item.item.title}
+                                    {
+                                      item.item.title.length > 30 ?
+                                      item.item.title.substring(0,30) + '...':
+                                      item.item.title
+                                    }
                                   </Card.Header>
 
                                   <Card.Content>
-                                    {item.item_variations ?
+                                    {
+                                      item.item_variations ?
                                       (this.renderVariations(item)) :
                                       null
                                     }
                                   </Card.Content>
-
                                   {
                                     item.item.discount_price !== null ?
                                     <Card.Meta>

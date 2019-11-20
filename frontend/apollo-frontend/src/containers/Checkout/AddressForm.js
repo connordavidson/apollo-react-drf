@@ -38,19 +38,22 @@ class AddressForm extends React.Component {
     loading: false,
     countries: [],
     formData: [],
+
     nameError: false,
     emailError: false,
     addressError: false,
     cityError: false,
     stateError: false,
     zipError: false,
-    
+    countryError: false,
+
     nameValue: '',
     emailValue: '',
     addressValue: '',
     cityValue: '',
     stateValue: '',
     zipValue: '',
+    countryValue: '',
 
   }
 
@@ -62,7 +65,10 @@ class AddressForm extends React.Component {
       countries: this.handleFetchCountries(),
     })
 
+
     this.handlePopulateAddressInformation(this.props.addressInformation);
+    console.log('addressInformation componentDidMount: ' , this.props.addressInformation)
+    console.log('state ComponentDidMount: ', this.state)
   }
 
   //callback function to send info to the parent component about if the form is validated (this is what will stop the user from clicking into the shipping breadcrumb before completing the address form)
@@ -79,17 +85,18 @@ class AddressForm extends React.Component {
 
 
   handlePopulateAddressInformation = (addressInformation) => {
-    //console.log('POPULATE ADDRESSS INFORMATION ADDRESSINFO: ', addressInformation)
+    //console.log('handlePopulateAddressInformation addressInformation: ', addressInformation)
     if(addressInformation !== null) {
       this.setState({
-        nameValue: this.props.addressInformation['name'] ,
-        emailValue : this.props.addressInformation['email'],
-        addressValue: this.props.addressInformation['address'],
-        cityValue:  this.props.addressInformation['city'],
-        stateValue: this.props.addressInformation['state'],
-        zipValue:  this.props.addressInformation['zip'],
+        nameValue: addressInformation['name'] ,
+        emailValue : addressInformation['email'],
+        addressValue: addressInformation['address'],
+        cityValue:  addressInformation['city'],
+        stateValue: addressInformation['state'],
+        zipValue:  addressInformation['zip'],
       })
 
+      console.log('handlePopulateAddressInformation addressInformation !== null STATE: ', this.state)
       //console.log('ADDRESS INFO !== NULL: ', this.state)
     }else {
       console.log('address information === null: ', addressInformation)
@@ -181,16 +188,20 @@ class AddressForm extends React.Component {
   //the error parameter is the name in the State of the error for that input (ie. nameError is the error for the name field)
   handleValidateInput = ( value, error) => {
     console.log('validating input with VALUE & ERROR: ', value, ' ', error)
-    if(value === ''){
+    if(value === undefined || value === ''){
       this.setState({
         [error]: true,
       })
-      //validates the zip value
-    } else if(error === 'zipError' && value.length !== 5 ){
-      this.setState({
-        [error]: true,
-      })
+
+
+    //   //validates the zip value
+    // } else if(error === 'zipError' && value.length !== 5 ){
+    //   this.setState({
+    //     [error]: true,
+    //   })
       //if the value for that input box is valid, check if the entire form is validated and set that input's error to be false
+
+
     } else {
       //checks if the form is fully validated
       this.handleCheckFormValidated()
@@ -212,25 +223,29 @@ class AddressForm extends React.Component {
       this.state.cityError      === false &&
       this.state.stateError     === false &&
       this.state.zipError       === false &&
+      this.state.countryError   === false &&
 
-      this.state.nameValue      !== ''    &&
-      this.state.emailValue     !== ''    &&
-      this.state.addressValue   !== ''    &&
-      this.state.cityValue      !== ''    &&
-      this.state.stateValue     !== ''    &&
-      this.state.zipValue       !== ''
+      this.state.nameValue      !== undefined    &&
+      this.state.emailValue     !== undefined    &&
+      this.state.addressValue   !== undefined    &&
+      this.state.cityValue      !== undefined    &&
+      this.state.stateValue     !== undefined    &&
+      this.state.zipValue       !== undefined    &&
+      this.state.countryValue   !== undefined
     ) {
+
       //the form is validated and it sends 'true' to the parent component (the breadcrumbscomponent)
       this.handleAddressFormValidated(true)//, false)
       //the form is validated and it sends the form info to the parent component (the breadcrubms component)
       this.handleSendAddressInformation(
         {
-          'name' : this.state.nameValue,
-          'email': this.state.emailValue,
-          'address': this.state.addressValue,
-          'city' : this.state.cityValue ,
-          'state': this.state.stateValue,
-          'zip' : this.state.zipValue ,
+          'name'    : this.state.nameValue,
+          'email'   : this.state.emailValue,
+          'address' : this.state.addressValue,
+          'city'    : this.state.cityValue ,
+          'state'   : this.state.stateValue,
+          'zip'     : this.state.zipValue ,
+          'country' : this.state.countryValue,
         }
       )
     }else{
@@ -242,7 +257,7 @@ class AddressForm extends React.Component {
 
   render(){
     //console.log('this.props from address form: ', this.props)
-
+    console.log('PRINTING STATE WITHIN RENDER: ' , this.state)
 
     const {
       shippingAddresses,
@@ -257,6 +272,7 @@ class AddressForm extends React.Component {
       cityError,
       stateError,
       zipError,
+      countryError,
 
       nameValue,
       emailValue,
@@ -264,7 +280,7 @@ class AddressForm extends React.Component {
       cityValue,
       stateValue,
       zipValue,
-
+      countryValue,
     } = this.state;
 
 
@@ -403,9 +419,18 @@ class AddressForm extends React.Component {
                   options={ countries }
                   name='country'
                   placeholder='Country'
+                  value={this.state.countryValue}
+                  onChange={
+                    (e,data) => {
+                      this.setState({countryValue: data.value})
+                    }
+                  }
+                  onBlur={
+                    () => {
+                      this.handleValidateInput(this.state.countryValue, 'countryError')
+                    }
+                  }
 
-                  onChange={this.handleSelectChange}
-                  value={formData.country}
                 />
               </Form.Field>
 

@@ -13,6 +13,8 @@ import Checkout from './containers/Checkout/Checkout';
 import ProductDetail from './containers/ProductDetail';
 import Profile from './containers/Profile/Profile';
 import BuyTab from './containers/BuyTab';
+import MyOrders from './containers/Profile/MyOrders';
+
 
 const BaseRouter = () => (
   <Hoc>
@@ -26,8 +28,11 @@ const BaseRouter = () => (
     <Route exact path="/products/:productID" component={ProductDetail} />
 
 
+    <Route exact path="/profile/my-orders" component={MyOrders} />
+    <Route exact path="/profile" component={Profile} />
 
-    <Route path="/profile" component={Profile} />
+
+
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
     <Route exact path="/" component={HomepageLayout} />

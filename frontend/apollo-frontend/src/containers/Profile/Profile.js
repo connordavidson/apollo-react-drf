@@ -1,6 +1,7 @@
 import React from 'react';
+
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import {
   Grid,
   Card,
@@ -10,18 +11,22 @@ import {
 
   } from 'semantic-ui-react';
 
+
 import {
-    addressListURL,
-    addressCreateURL,
-    countryListURL,
-    userIDURL,
-    addressUpdateURL,
-    addressDeleteURL,
-    paymentListURL,
+    // addressListURL,
+    // addressCreateURL,
+    // countryListURL,
+    // userIDURL,
+    // addressUpdateURL,
+    // addressDeleteURL,
+    // paymentListURL,
 
   } from '../../constants';
 
 import {authAxios} from '../../utils';
+
+
+import {MyOrders} from './MyOrders';
 
 
 
@@ -39,7 +44,9 @@ class Profile extends React.Component {
         <Divider/>
         <Grid>
           <Grid.Column width={5}>
-            <Card>
+            <Card
+              onClick={() => this.props.history.push('/profile/my-orders/')}
+            >
               <Card.Content>
                 <Card.Header>
                   My Orders
@@ -113,4 +120,8 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps)(Profile);
+export default
+  withRouter(
+    connect(mapStateToProps)
+    (Profile)
+  );

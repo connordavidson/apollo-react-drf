@@ -1,4 +1,5 @@
-import React from 'react';
+
+  import React from 'react';
 
 import {
   Grid,
@@ -35,7 +36,11 @@ import {connect} from 'react-redux';
 import {ProductList} from './ProductList';
 import {fetchCart} from '../store/actions/cart';
 
-import {productListURL, addToCartURL, productSearchListURL} from '../constants';
+import {
+    productListURL, 
+    addToCartURL,
+    productSearchListURL
+  } from '../constants';
 
 import {authAxios} from '../utils';
 

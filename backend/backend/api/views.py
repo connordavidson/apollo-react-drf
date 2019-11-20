@@ -21,6 +21,7 @@ from .serializers import (
     AddressSerializer,
     OrderSerializer,
     ItemReviewsSerializer,
+    AllOrdersSerializer,
 
 )
 
@@ -159,6 +160,7 @@ class AddToCartView(APIView):
 
 
 #created at https://youtu.be/0JOl3ckfGAM?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1574
+#retrieves the cart for the user (ordered=False)
 class OrderDetailView(RetrieveAPIView):
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated, )
@@ -172,6 +174,17 @@ class OrderDetailView(RetrieveAPIView):
         except ObjectDoesNotExist:
             #changed this response at https://youtu.be/Vm9Z6mm2kcU?t=149
             raise Http404("You do not have an active order")
+
+
+class AllOrdersView(ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = AllOrdersSerializer
+
+    def get_queryset(self):
+        #made big changes to this at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=3030
+        qs = Order.objects.all()
+
+        return qs.filter(user=self.request.user, ordered=True)
 
 
 #made at https://youtu.be/8UEZsm4tCpY?t=205

@@ -136,18 +136,18 @@ class OrderItem(models.Model):
         return f"{self.quantity} of {self.item.title}"
 
     def get_total_item_price(self):
-        return self.quantity * self.item.price
+        return round( (self.quantity * self.item.price) , 2)
 
     def get_total_discount_item_price(self):
-        return self.quantity * self.item.discount_price
+        return round( (self.quantity * self.item.discount_price) , 2)
 
     def get_amount_saved(self):
         return self.get_total_item_price() - self.get_total_discount_item_price()
 
     def get_final_price(self):
         if self.item.discount_price:
-            return self.get_total_discount_item_price()
-        return self.get_total_item_price()
+            return round( (self.get_total_discount_item_price() ) , 2)
+        return round( (self.get_total_item_price()) , 2)
 
 
 
@@ -155,8 +155,7 @@ class OrderItem(models.Model):
 class Order(models.Model):
     #need to change this so that the order can be created if the user isn't logged in
     # (possibly store in state if they aren't logged in, then add them in checkout process if they decide to log in )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     #email = models.CharField(max_length=30, default='')
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
@@ -197,8 +196,7 @@ class Order(models.Model):
             total += order_item.get_final_price()
         if self.coupon:
             total -= self.coupon.amount
-        return total
-
+        return round(total , 2)
 
 
 
@@ -207,7 +205,7 @@ class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
-    apartment_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100, blank=True)
     country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
     default = models.BooleanField(default=False)
@@ -217,7 +215,6 @@ class Address(models.Model):
 
     class Meta:
         verbose_name_plural = 'Addresses'
-
 
 #will need to make slight changes when getting involved with the api (ex: might need to change payment_address max length, might need to make the payment_currency have at tuple of possible answers etc)
 #should be stored every time a new order happens (this is not the same as storing someone's credit card information)

@@ -12,7 +12,8 @@ from .views import (
     CountryListView,
     ItemReviewsView,
     ItemSearchListView,
-
+    AllOrdersView,
+    
 )
 
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path( 'products/<pk>/', ItemDetailView.as_view(), name='product-detail' ),
     path( 'add-to-cart/', AddToCartView.as_view(), name='add-to-cart'),
     path( 'order-summary/', OrderDetailView.as_view(), name='order-summary' ),
+    path( 'all-orders/', AllOrdersView.as_view(), name='all-orders' ),
     path( 'order-items/<pk>/delete/', OrderItemDeleteView.as_view(), name='order-item-delete'),
     path( 'order-item/update-quantity/', OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
     path( 'addresses/', AddressListView.as_view(), name='address-list'),

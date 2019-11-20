@@ -168,7 +168,13 @@ class OrderSummary extends React.Component {
 
     render(){
 
-      const {data, error, loading, increased, decreased} = this.state;
+      const {
+        data, 
+        error, 
+        loading, 
+        increased, 
+        decreased
+      } = this.state;
       //redirects the user if they aren't authenticated (if their login times out)
       const {isAuthenticated} = this.props ;
 

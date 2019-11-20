@@ -376,44 +376,43 @@ class CheckoutForm extends React.Component {
                                   <Card.Header>
                                     {item.item.title} [{item.quantity}]
                                   </Card.Header>
-                                  <Card.Meta >Total: ${item.item.price * item.quantity}</Card.Meta>
+                                  <Card.Meta >Total: ${item.final_price}</Card.Meta>
                                 </Card.Content>
                               )
                             })
                           }
-
                         </Card>
-
-                        <Card>
-                        <Card.Content>
-                          <Card.Header>Price: </Card.Header>
-                            <Card.Description>
-                              subtotal: ${total}
-                            </Card.Description>
-                            <Card.Description>
-                              tax: ______
-                            </Card.Description>
-                            <Card.Description>
-                              shipping: _______
-                            </Card.Description>
-                            <Card.Description>
-                              Total: ______
-                            </Card.Description>
-                        </Card.Content>
-                        </Card>
-                        </Card.Group>
 
                         <Card>
                           <Card.Content>
-                            <Card.Header>Coupon</Card.Header>
-                            {   data &&
-                                data.coupon !== null ?
-                                  <Label color='green'><Icon name='check circle' color='grey'/> applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
-                                  null
-                            }
-                            <CouponForm />
+                            <Card.Header>Price: </Card.Header>
+                              <Card.Description>
+                                subtotal: ${total}
+                              </Card.Description>
+                              <Card.Description>
+                                tax: ______
+                              </Card.Description>
+                              <Card.Description>
+                                shipping: _______
+                              </Card.Description>
+                              <Card.Description>
+                                Total: ______
+                              </Card.Description>
                           </Card.Content>
                         </Card>
+                      </Card.Group>
+
+                      <Card>
+                        <Card.Content>
+                          <Card.Header>Coupon</Card.Header>
+                          {   data &&
+                              data.coupon !== null ?
+                                <Label basic color='green'><Icon name='check' />applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
+                                null
+                          }
+                          <CouponForm />
+                        </Card.Content>
+                      </Card>
 
                     </Grid.Column>
 

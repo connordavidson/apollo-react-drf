@@ -25,6 +25,9 @@ export const addToCartURL = 'http://127.0.0.1:8000/api/add-to-cart/';
 
 export const orderSummaryURL = 'http://127.0.0.1:8000/api/order-summary/';
 
+export const allOrdersURL = 'http://127.0.0.1:8000/api/all-orders/';
+
+
 //made at https://youtu.be/z7Kq6bHxEcI?t=1055
 export const checkoutURL = 'http://127.0.0.1:8000/api/checkout/';
 

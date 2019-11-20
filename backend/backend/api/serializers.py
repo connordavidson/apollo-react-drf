@@ -229,10 +229,51 @@ class OrderSerializer(serializers.ModelSerializer):
         return None
 
 
+
+class AllOrdersSerializer(serializers.ModelSerializer):
+    order_items = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+    coupon = serializers.SerializerMethodField()
+    shipping_address = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Order
+        fields = (
+            'id',
+            'order_items',
+            'total',
+            'coupon',
+            'shipping_address',
+            'ordered_date',
+            'being_delivered',
+            'tracking_number',
+            'received',
+            'ordered',
+            'ordered_date',
+            
+        )
+
+    def get_order_items(self, obj):
+        return OrderItemSerializer(obj.items.all(), many=True).data
+
+    def get_total(self, obj):
+        return obj.get_total()
+
+    def get_coupon(self, obj):
+        if obj.coupon is not None:
+            return CouponSerializer(obj.coupon).data
+        return None
+
+    def get_shipping_address(self, obj):
+        return AddressSerializer(obj.shipping_address).data
+
+
+
 #created at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=930
 class AddressSerializer(serializers.ModelSerializer):
     #country has to come from django_countries
     country = CountryField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Address
@@ -246,6 +287,9 @@ class AddressSerializer(serializers.ModelSerializer):
             'default'
         ]
 
+    def get_user(self, obj):
+        #returns the name of the user instead of their userID
+        return obj.__str__()
 
 #made at https://youtu.be/cZw2Mp5ep5g?t=85
 class PaymentSerializer(serializers.ModelSerializer):

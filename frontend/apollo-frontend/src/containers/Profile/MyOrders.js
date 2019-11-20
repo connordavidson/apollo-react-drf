@@ -21,7 +21,29 @@ import {authAxios} from '../../utils';
 import {
   allOrdersURL,
 
-} from '../../constants';
+  } from '../../constants';
+
+
+
+/*
+This page is designed to show the user their past orders
+
+it just pulls data in from the backend and displays it.
+
+There will need to be changes in the backend that create a "OrderItemOrder" type of model
+  this is needed because an order can be split up (for any number of reasons ie. different items in different warehouses)
+  and those new 'OrderItemOrder' orders will need to have data that is required of an Order (ie. being able to track each order item individually, instead of tracking the order as a whole)
+
+**need to change**
+figure out how to have multiple buttons on the individual item card
+
+
+
+*/
+
+
+
+
 
 
 
@@ -133,7 +155,7 @@ class MyOrders extends React.Component {
                             return(
                               <Card
                                 href
-                                style={{width : '32%'}}
+                                style={{width : ' 32%'}}
                               >
                                 <Card.Content>
                                   <Card.Header>
@@ -149,19 +171,19 @@ class MyOrders extends React.Component {
 
                                 <Card.Content extra >
 
-                                    <Button basic color='green'>
-                                      Order
+                                    <Label basic color='green'>
+                                      Order again
                                       <Icon name='cart plus' floated='right' />
-                                    </Button>
+                                    </Label>
 
-                                    <Button  basic color='yellow' >
-                                      Review
+                                    <Label  basic color='yellow' >
+                                      Write Review
                                         <Icon name='write square' floated='right' />
-                                    </Button>
+                                    </Label>
 
-                                    <Button basic color='blue'>
-                                      Return
-                                    </Button>
+                                    <Label basic color='blue'>
+                                      Return Item
+                                    </Label>
 
                                 </Card.Content>
                               </Card>

@@ -1,25 +1,18 @@
 
-  import React from 'react';
-
+import React from 'react';
 import {
   Grid,
-  Search,
   Segment,
   Header,
-  Menu,
   Item,
   Label,
-  Container,
   Button,
   Card,
-  Radio,
   Divider,
-  List,
   Dimmer,
   Loader,
   Image,
   Input,
-  Form,
   Checkbox,
   Icon,
   Message,
@@ -33,16 +26,15 @@ import { Redirect } from "react-router-dom";
 import {connect} from 'react-redux';
 
 
-import {ProductList} from './ProductList';
-import {fetchCart} from '../store/actions/cart';
+import {fetchCart} from '../../store/actions/cart';
 
 import {
     productListURL,
     addToCartURL,
     productSearchListURL
-  } from '../constants';
+  } from '../../constants';
 
-import {authAxios} from '../utils';
+import {authAxios} from '../../utils';
 
 /*
 WORK TO BE DONE:
@@ -61,7 +53,7 @@ class BuyTab extends React.Component {
     data: [],
     categories: [],
     value: '',
-    productsTitle: 'Featured Products',
+    productsTitle: 'Featured Items',
     filterTitle: '',
     filterCategory: '',
     filteredData : [],
@@ -151,7 +143,7 @@ class BuyTab extends React.Component {
             {
               data: response.data,
               loading: false,
-              productsTitle: 'Featured Products'}
+              productsTitle: 'Featured Items'}
           );
         }else{
           this.setState(
@@ -237,14 +229,13 @@ class BuyTab extends React.Component {
 
     return(
 
-
       <Grid>
         <Grid.Row>
           <Grid.Column width={5}>
             <Input
               fluid
               icon='search'
-              placeholder='Search...'
+              placeholder='Search for an item...'
               onKeyPress={this.handleSearchEnterPress}
               onChange={
                 //sets the search value into the value in the state
@@ -258,7 +249,7 @@ class BuyTab extends React.Component {
 
 
         <Grid.Column width={3}>
-          <Header>Categories</Header>
+          <Header as='h3'>Categories</Header>
           {loading ? (
               <Segment>
                   <Dimmer active inverted>
@@ -311,7 +302,7 @@ class BuyTab extends React.Component {
           ) : (
 
             <React.Fragment>
-              <Header >{productsTitle}{filterTitle}</Header>
+              <Header as='h1'>{productsTitle}{filterTitle}</Header>
               <Divider />
               <Item.Group divided>
 

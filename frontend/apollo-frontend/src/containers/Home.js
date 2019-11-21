@@ -18,7 +18,7 @@ import {
 } from "semantic-ui-react";
 
 
-import NavigationTabs from './NavigationTabs';
+import NavigationTabs from './NavigationTabs/NavigationTabs';
 
 
 

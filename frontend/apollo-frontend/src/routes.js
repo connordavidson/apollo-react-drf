@@ -7,12 +7,11 @@ import Signup from "./containers/Signup";
 import HomepageLayout from "./containers/Home";
 
 //new
-import ProductList from './containers/ProductList';
 import OrderSummary from './containers/OrderSummary';
 import Checkout from './containers/Checkout/Checkout';
 import ProductDetail from './containers/ProductDetail';
 import Profile from './containers/Profile/Profile';
-import BuyTab from './containers/BuyTab';
+import BuyTab from './containers/NavigationTabs/BuyTab';
 import MyOrders from './containers/Profile/MyOrders';
 
 

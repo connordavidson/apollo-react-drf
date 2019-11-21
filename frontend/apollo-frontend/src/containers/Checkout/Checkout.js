@@ -38,7 +38,7 @@ import CouponForm from './CouponForm';
 /*
 the BreadCrumbs are used to display information in a way that doesn't overwhelm the customer.
 
-**FOR ADDRESS -> SHIPPING BREADCRUMB**
+**LOGIC FOR ADDRESS BREADCRUMB -> SHIPPING BREADCRUMB**
   the breadcrumbs need to check that the address is valid before letting the user move to the next breadcrumb.
   this is done by storing shippingAddressValidated in the state of the breadcrumbs.
   addressValidatedError is stored in the state and is used to send back to the address component if there is an error with the address validation.

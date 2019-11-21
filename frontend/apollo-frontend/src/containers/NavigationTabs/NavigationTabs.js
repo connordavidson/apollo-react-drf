@@ -5,15 +5,15 @@ import {
   Container,
 
 } from 'semantic-ui-react'
-
-import BuyTab from './BuyTab';
 import {withRouter} from 'react-router';
 
+import BuyTab from './BuyTab';
+import FundTab from './FundTab';
 
 const panes = [
   //tabpane makes the tab have an outline around the content
   { menuItem: 'Buy Something',  render: () => <Tab.Pane>  <BuyTab/>  </Tab.Pane> },
-  { menuItem: 'Fund a Project', render: () => <Tab.Pane> Tab 2 Content</Tab.Pane> },
+  { menuItem: 'Fund a Project', render: () => <Tab.Pane> <FundTab/> </Tab.Pane> },
   { menuItem: 'Personal Items', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
   { menuItem: 'Home',           render: () => <Tab.Pane>
     <p> somn somn about 'we recomend this for you',</p>

@@ -73,7 +73,7 @@ class Profile extends React.Component {
             <Card>
               <Card.Content>
                 <Card.Header>
-                  Past Project Donations
+                  My Donations
                 </Card.Header>
                 <Card.Description>
                   Check on the status of all your project donations!

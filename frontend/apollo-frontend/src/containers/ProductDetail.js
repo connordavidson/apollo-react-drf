@@ -241,7 +241,7 @@ class ProductDetail extends React.Component {
 
 
                     {/*column for displaying the product info AND reviews*/}
-                    <Grid.Column width={7}>
+                    <Grid.Column width={8}>
 
                       <Container text style={{marginTop: '5%'}}>
                         <Header>
@@ -293,7 +293,7 @@ class ProductDetail extends React.Component {
 
                     {/*Column for holding the add-to-cart widget and the different variations of the product*/}
                     <Grid.Column width={4}>
-                      <Container >
+                      <Container text >
 
                         <Card >
                           <Card.Content>
@@ -322,8 +322,6 @@ class ProductDetail extends React.Component {
                             >
                               Add to Cart
                             </Button>
-
-
 
 
 

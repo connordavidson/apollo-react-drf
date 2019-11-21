@@ -128,7 +128,9 @@ class CustomLayout extends React.Component {
         <Menu color='blue' inverted size='huge'>
 
             <Link to="/">
-              <Menu.Item header><h1>Apollo</h1></Menu.Item>
+              <Menu.Item header>
+                Apollo
+              </Menu.Item>
             </Link>
 
             <Menu.Menu position='right' >
@@ -239,7 +241,6 @@ class CustomLayout extends React.Component {
 
             {/*displays the logout button if the user is logged in*/}
             {authenticated ? (
-
               <React.Fragment>
                 <Menu.Item onClick={() => this.props.history.push(`/profile`)}>
                   Account
@@ -248,7 +249,6 @@ class CustomLayout extends React.Component {
                   Logout
                 </Menu.Item>
               </React.Fragment>
-
             ) : (
               // displays the login/signup buttons if the user is not logged in
               <React.Fragment>

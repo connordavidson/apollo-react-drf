@@ -58,7 +58,7 @@ class ItemSearchListView(ListAPIView):
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.all()
+    queryset = Item.objects.all().filter(featured=True)
 
 
 class UserIDView(APIView):

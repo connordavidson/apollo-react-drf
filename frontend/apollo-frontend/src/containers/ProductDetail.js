@@ -20,6 +20,8 @@ import {
   Divider,
   Select,
   Comment,
+  Dropdown,
+  Input,
 
 } from 'semantic-ui-react';
 
@@ -165,7 +167,7 @@ class ProductDetail extends React.Component {
 
       return (
 
-        <Container fluid >
+        <Container fluid>
             {
               error &&
 
@@ -239,9 +241,9 @@ class ProductDetail extends React.Component {
 
 
                     {/*column for displaying the product info AND reviews*/}
-                    <Grid.Column width={8}>
+                    <Grid.Column width={7}>
 
-                      <Container text style={{paddingTop: '5%'}}>
+                      <Container text style={{marginTop: '5%'}}>
                         <Header>
                           Product Information
                         </Header>
@@ -251,7 +253,7 @@ class ProductDetail extends React.Component {
                       <Divider />
 
 
-                      <Container text style={{paddingTop: '3%'}}>
+                      <Container text style={{marginTop: '3%'}}>
                         <Comment.Group >
                           <Header as='h3' dividing>
                             Customer Reviews
@@ -272,9 +274,7 @@ class ProductDetail extends React.Component {
                                       <Comment.Text>
                                         {review.review_content}
                                       </Comment.Text>
-                                      <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                      </Comment.Actions>
+
                                     </Comment.Content>
                                   </Comment>
                                 )
@@ -293,13 +293,21 @@ class ProductDetail extends React.Component {
 
                     {/*Column for holding the add-to-cart widget and the different variations of the product*/}
                     <Grid.Column width={4}>
-                      <Container style={{paddingTop: '5%'}}>
+                      <Container >
 
                         <Card >
                           <Card.Content>
 
                             <Card.Header>Quantity:</Card.Header>
-                            <NumberInput  float='right' size='mini' value={this.state.quantity} minValue={1}  onChange={this.changeValue} doubleClickStepAmount={3} />
+                            <NumberInput
+
+                              float='right'
+                              size='mini'
+                              value={this.state.quantity}
+                              minValue={1}
+                              onChange={this.changeValue}
+                              doubleClickStepAmount={3}
+                            />
 
                           </Card.Content>
                           <Card.Content extra>
@@ -313,6 +321,74 @@ class ProductDetail extends React.Component {
                               }
                             >
                               Add to Cart
+                            </Button>
+
+
+
+
+
+                            <Button
+                              style={{marginTop: '3%'}}
+                              fluid
+                              color='blue'
+                            >
+                              <Dropdown
+                                text='Buy now with 2-Click'
+                                direction='left'
+                              >
+                                <Dropdown.Menu>
+                                  <Dropdown.Item>
+
+                                    <p>
+                                      hello world, welcome to '2-click' purchasing.
+                                    </p>
+                                    <p>
+                                      this is strictly a demo/layout for the real deal
+                                    </p>
+                                    <p>
+                                      *insert shpeal about incorrect addresses here*
+                                    </p>
+
+
+                                    <Card>
+                                      <Card.Content>
+                                        <Card.Header>Bitcoin</Card.Header>
+                                        <Card.Meta>click to display a scannable QR code</Card.Meta>
+                                        <Card.Description>
+                                          <Input
+                                            action={{
+                                              icon: 'copy',
+                                            }}
+                                            defaultValue='47dm93050jd02jm,ka7ifa'
+                                          />
+                                        </Card.Description>
+                                      </Card.Content>
+                                      <Card.Content>
+                                          $429104/<Label color='yellow'>₿1.3349103</Label>
+                                      </Card.Content>
+                                    </Card>
+
+
+                                    <Card>
+                                      <Card.Content>
+                                        <Card.Header>Litecoin</Card.Header>
+                                        <Card.Meta>click to display a scannable QR code</Card.Meta>
+                                        <Card.Description>
+                                          <Input
+                                            action={{
+                                              icon: 'copy',
+                                            }}
+                                            defaultValue='158df8asdf50jd02jm,ka7ifa'
+                                          />
+                                        </Card.Description>
+                                      </Card.Content>
+                                      <Card.Content>
+                                          $429104/ <Label color='blue'>Ł 19.3349103</Label>
+                                      </Card.Content>
+                                    </Card>
+                                  </Dropdown.Item>
+                                </Dropdown.Menu>
+                              </Dropdown>
                             </Button>
                           </Card.Content>
                         </Card>

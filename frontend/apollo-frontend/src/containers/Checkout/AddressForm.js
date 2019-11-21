@@ -170,19 +170,6 @@ class AddressForm extends React.Component {
   //   return '';
   // }
 
-  handleSelectChange = (e, {name, value} ) => {
-    const {formData} = this.state;
-    const updatedFormData = {
-      ...formData,
-      [name]: value
-    };
-    this.setState({
-      formData: updatedFormData
-    })
-    console.log("form data", this.state.formData)
-  }
-
-
 
   //validates the form input, can create specific cases for form validation by using the error (becuase the error name is unique to each input box)
   //the error parameter is the name in the State of the error for that input (ie. nameError is the error for the name field)
@@ -192,16 +179,12 @@ class AddressForm extends React.Component {
       this.setState({
         [error]: true,
       })
-
-
-    //   //validates the zip value
-    // } else if(error === 'zipError' && value.length !== 5 ){
-    //   this.setState({
-    //     [error]: true,
-    //   })
+      //validates the zip value
+    } else if(error === 'zipError' && value.length !== 5 ){
+      this.setState({
+        [error]: true,
+      })
       //if the value for that input box is valid, check if the entire form is validated and set that input's error to be false
-
-
     } else {
       //checks if the form is fully validated
       this.handleCheckFormValidated()

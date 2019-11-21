@@ -37,7 +37,7 @@ import {ProductList} from './ProductList';
 import {fetchCart} from '../store/actions/cart';
 
 import {
-    productListURL, 
+    productListURL,
     addToCartURL,
     productSearchListURL
   } from '../constants';
@@ -271,11 +271,10 @@ class BuyTab extends React.Component {
               //displays the active categories.. styling needs work
               <Card.Group>
                 <Card>
-                  <List divided relaxed>
                     {//prints all the categories
                       categories.map(category => {
                         return(
-                          <React.Fragment>
+                          <Card.Content >
                             <Checkbox
                               label={category}
                               float='middle'
@@ -286,11 +285,9 @@ class BuyTab extends React.Component {
                               name={category}
                               checked={category === filterCategory}
                             />
-                            <br />
-                          </React.Fragment>
+                          </Card.Content>
                         )
                     })}
-                  </List>
                 </Card>
               </Card.Group>
 

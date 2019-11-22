@@ -1,5 +1,7 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
+//import {cartSuccess, fetchCart} from './cart';
+
 
 export const authStart = () => {
   return {
@@ -7,12 +9,10 @@ export const authStart = () => {
   };
 };
 
-//added username to the parameters and the return type
-export const authSuccess = (token, username) => {
+export const authSuccess = (token) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
     token: token,
-    username: username
   };
 };
 
@@ -54,6 +54,7 @@ export const authLogin = (username, password) => {
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(token, username));
         dispatch(checkAuthTimeout(10000));
+
       })
       .catch(err => {
         dispatch(authFail(err));

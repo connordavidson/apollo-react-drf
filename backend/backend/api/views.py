@@ -61,6 +61,7 @@ class ItemListView(ListAPIView):
     queryset = Item.objects.all().filter(featured=True)
 
 
+
 class UserIDView(APIView):
     def get(self, request, *args, **kwargs):
         return Response({'userID': request.user.id }, status=HTTP_200_OK)

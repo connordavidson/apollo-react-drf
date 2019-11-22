@@ -24,20 +24,20 @@ import {
   Input,
 
 } from 'semantic-ui-react';
-
 import NumberInput from 'semantic-ui-react-numberinput';
-
 import axios from 'axios';
-
 import {connect} from 'react-redux';
 
 
+
 //don't really use this at all
-import {productDetailURL, addToCartURL, productReviewListURL} from '../constants'
+import {
+  productDetailURL,
+  addToCartURL,
+  productReviewListURL
+} from '../constants'
 import {authAxios} from '../utils';
-import {fetchCart} from '../store/actions/cart';
-
-
+import {fetchCart, addItemToCart} from '../store/actions/cart';
 
 
 /*
@@ -67,6 +67,7 @@ class ProductDetail extends React.Component {
   componentDidMount() {
     this.handleFetchItem();
     this.handleFetchReviews();
+    this.props.fetchCart();
   }
 
   //retrieves the product info from the database
@@ -78,11 +79,76 @@ class ProductDetail extends React.Component {
       .get( productDetailURL(productID) )
       .then(res => {
         this.setState({data: res.data, loading: false});
+        // console.log('handlefetchitem productDetail response data : ', res.data)
       })
       .catch(err =>{
         this.setState({error: err, loading: false});
       });
   }
+
+
+    // handleAddToCart = (slug, quantity) => {
+    //   this.setState({ loading: true });
+    //   const {formData} = this.state;
+    //   //filters  the data into the correct format fot the backend
+    //   const variations = this.handleFormatData(formData);
+    //   //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
+    //   authAxios
+    //   .post( addToCartURL , { slug, variations, quantity} )
+    //   .then(res => {
+    //     //console.log(res.data, addToCartURL, "add to cart succeeded");
+    //     this.props.fetchCart();
+    //     this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
+    //   })
+    //   .catch(err => {
+    //     this.setState({ error: err, loading: false });
+    //     console.log(err.message , 'add-to-cart failed ');
+    //   });
+    // }
+
+
+
+
+  handleAddToCart = (data, quantity) => {
+
+    console.log('quanityt from handleaddtocart: ', quantity)
+    this.setState({ loading: true });
+    const {formData} = this.state;
+
+    //filters  the data into the correct format fot the backend
+    const variations = this.handleFormatData(formData);
+
+    console.log('variations from handleaddtocart : ', variations)
+
+    this.props.addItemToCart(data, quantity, variations)
+
+    this.setState({loading: false});
+
+    // const productID = this.props.match.params.productID;
+    // axios
+    //   .get( productDetailURL(productID) )
+    //   .then(res => {
+    //     this.props.addItemToCart(produc)
+    //     this.setState({data: res.data, loading: false});
+    //     console.log('response data: ', )
+    //   })
+    //   .catch(err =>{
+    //     this.setState({error: err, loading: false});
+    //   });
+
+    // axios
+    // .post( addToCartURL , { slug, variations, quantity} )
+    // .then(res => {
+    //   //console.log(res.data, addToCartURL, "add to cart succeeded");
+    //   this.props.fetchCart();
+    //   this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
+    // })
+    // .catch(err => {
+    //   this.setState({ error: err, loading: false });
+    //   console.log(err.message , 'add-to-cart failed ');
+    // });
+  }
+
 
   handleFetchReviews = () => {
     const productID = this.props.match.params.productID;
@@ -91,7 +157,7 @@ class ProductDetail extends React.Component {
     .get(productReviewListURL(productID))
     .then(res => {
       this.setState({reviews: res.data, loading: false});
-      console.log("reviews: ", res)
+      // console.log("reviews: ", res)
     })
     .catch(err => {
       this.setState({error: err, loading: false});
@@ -109,24 +175,12 @@ class ProductDetail extends React.Component {
 
 
 
-  handleAddToCart = (slug, quantity) => {
-    this.setState({ loading: true });
-    const {formData} = this.state;
-    //filters  the data into the correct format fot the backend
-    const variations = this.handleFormatData(formData);
-    //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
-    authAxios
-    .post( addToCartURL , { slug, variations, quantity} )
-    .then(res => {
-      //console.log(res.data, addToCartURL, "add to cart succeeded");
-      this.props.fetchCart();
-      this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-      console.log(err.message , 'add-to-cart failed ');
-    });
-  }
+
+
+
+
+
+
 
 
   handleChange = (e, {name, value}) => {
@@ -316,7 +370,7 @@ class ProductDetail extends React.Component {
 
                               color='blue'
                               onClick={() => {
-                                this.handleAddToCart(this.state.data.slug, this.state.quantity )
+                                this.handleAddToCart(this.state.data, this.state.quantity )
                                 }
                               }
                             >
@@ -441,16 +495,25 @@ class ProductDetail extends React.Component {
 }
 
 
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart.shoppingCart,
+  };
+};
+
+
+
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch(fetchCart()),
+    addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
   }
 }
 
 export default
   withRouter(
     connect(
-      null,
+      mapStateToProps,
       mapDispatchToProps
     )
     (ProductDetail)

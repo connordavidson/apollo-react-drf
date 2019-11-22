@@ -18,8 +18,10 @@ import {
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import ls from 'local-storage';
 
-import { fetchCart } from "../store/actions/cart";
+
+import { fetchCart, addToCart } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
 import { authAxios } from '../utils';
 import {
@@ -34,11 +36,22 @@ class CustomLayout extends React.Component {
 
   componentDidMount() {
     //grabs the cart data every time the layout is rendered
-    this.props.fetchCart();
-
-    //this.handleSetUsername(this.props.username)
-
+    //this.props.fetchCart();
+    //ls.set('cart', this.props.cart)
   }
+
+  componentWillUnmount() {
+    ls.set('cart', this.props.cart)
+  }
+
+  componentDidUpdate(prevProps){
+    if(this.props.cart === prevProps.cart){
+       ls.set('cart', this.props.cart)
+    }
+  }
+
+
+
 
   //made at https://youtu.be/8UEZsm4tCpY?t=150
   handleRemoveItem = (itemID) => {
@@ -77,6 +90,8 @@ class CustomLayout extends React.Component {
 
   //made at https://youtu.be/8UEZsm4tCpY?t=581
   //explanation around https://youtu.be/8UEZsm4tCpY?t=510
+
+  //sends the information to the database, then calls fetchCart() to retrieve that information.... like a circle
   handleAddToCart = (slug, itemVariations, title) => {
     this.setState({ loading: true });
     //filters  the data into the correct format fot the backend
@@ -122,6 +137,8 @@ class CustomLayout extends React.Component {
   render() {
     //instantiates constants from the props
     const { authenticated, cart, loading, username } = this.props;
+
+    console.log('cart from customlayout render(): ', this.props.cart)
 
     return (
       <div>
@@ -268,7 +285,10 @@ class CustomLayout extends React.Component {
 
         </Menu>
 
-        {this.props.children}
+        {
+
+          this.props.children
+        }
 
         <Segment
           inverted
@@ -342,13 +362,13 @@ const mapStateToProps = (state) => {
     authenticated: state.auth.token !== null,
     cart: state.cart.shoppingCart,
     loading: state.cart.loading,
-    username: state.auth.username
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch( fetchCart() )
+    fetchCart: () => dispatch( fetchCart() ),
+    addToCart: () => dispatch( addToCart() )
   };
 };
 

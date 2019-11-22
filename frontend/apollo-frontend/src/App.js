@@ -11,8 +11,9 @@ class App extends Component {
   componentDidMount() {
     this.props.onTryAutoSignup();
   }
-  
+
   render() {
+    // console.log('this.props from app.js: ', this.props)
     return (
       <Router>
         <CustomLayout {...this.props}>
@@ -24,7 +25,6 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-
   return {
     isAuthenticated: state.auth.token !== null,
   };

@@ -13,7 +13,7 @@ from .views import (
     ItemReviewsView,
     ItemSearchListView,
     AllOrdersView,
-    
+    AddToCartView,
 )
 
 

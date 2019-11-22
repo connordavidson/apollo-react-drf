@@ -16,10 +16,11 @@ import {
 
   } from 'semantic-ui-react';
 
+import {connect} from 'react-redux';
+
 import {
     Link,
     withRouter,
-
   } from 'react-router-dom';
 
 
@@ -237,7 +238,7 @@ class CheckoutBreadCrumbs extends React.Component {
 class CheckoutForm extends React.Component {
 
   state = {
-    data: null,
+    //data: null,
     loading: false,
     error: null,
     success: false,
@@ -245,37 +246,39 @@ class CheckoutForm extends React.Component {
   }
 
   componentDidMount(){
-    //gets the order when the component has mounted
-    this.handleFetchOrder();
+    // //gets the order when the component has mounted
+    // this.handleFetchOrder();
+
+
     //console.log('data compdidmount' ,this.state.data)
   }
 
 
 
-  //comes from OrderSummary.js
-  handleFetchOrder = () => {
-    this.setState({loading: true});
-    authAxios
-      .get(orderSummaryURL)
-      .then(res => {
-        //dispatches the cartSuccess method with data
-        this.setState( {data: res.data, total: res.data.total , loading: false} );
-
-        //console.log("data: fetchorder" , this.state.data.total);
-      })
-      .catch(err => {
-        //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
-        //this is what gets triggered if there is no current order
-        if(err.response.status === 404){
-          //made at https://youtu.be/NaJ-b0ZaSoI?t=1620
-          //moves the user to /products if they don't have an active order.
-          this.props.history.push('/products');
-        } else{
-          this.setState( {error: err, loading: false} );
-        }
-
-      });
-  };
+  // comes from OrderSummary.js
+  // handleFetchOrder = () => {
+  //   this.setState({loading: true});
+  //   authAxios
+  //     .get(orderSummaryURL)
+  //     .then(res => {
+  //       //dispatches the cartSuccess method with data
+  //       this.setState( {data: res.data, total: res.data.total , loading: false} );
+  //
+  //       //console.log("data: fetchorder" , this.state.data.total);
+  //     })
+  //     .catch(err => {
+  //       //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
+  //       //this is what gets triggered if there is no current order
+  //       if(err.response.status === 404){
+  //         //made at https://youtu.be/NaJ-b0ZaSoI?t=1620
+  //         //moves the user to /products if they don't have an active order.
+  //         this.props.history.push('/products');
+  //       } else{
+  //         this.setState( {error: err, loading: false} );
+  //       }
+  //
+  //     });
+  // };
 
 
 
@@ -290,7 +293,7 @@ class CheckoutForm extends React.Component {
 
   render() {
     const {
-        data,
+        //data,
         error,
         loading,
         success,
@@ -299,6 +302,10 @@ class CheckoutForm extends React.Component {
         total,
 
       } = this.state;
+
+      const {
+        cart,
+      } = this.props;
 
     // console.log('data inside render(): ', data);
     // console.log('data.total: ', data);
@@ -368,8 +375,8 @@ class CheckoutForm extends React.Component {
                       <Card.Group>
                         <Card>
                           {
-                            data &&
-                            data.order_items.map(item => {
+                            cart &&
+                            cart.order_items.map(item => {
                               //console.log('item id: ', item.item.id)
                               return (
                                 <Card.Content>
@@ -405,9 +412,9 @@ class CheckoutForm extends React.Component {
                       <Card>
                         <Card.Content>
                           <Card.Header>Coupon</Card.Header>
-                          {   data &&
-                              data.coupon !== null ?
-                                <Label basic color='green'><Icon name='check' />applied code "{data.coupon.code}" worth ${data.coupon.amount}</Label> :
+                          {   cart &&
+                              cart.coupon !== null ?
+                                <Label basic color='green'><Icon name='check' />applied code "{cart.coupon.code}" worth ${cart.coupon.amount}</Label> :
                                 null
                           }
                           <CouponForm />
@@ -432,9 +439,23 @@ class CheckoutForm extends React.Component {
 }
 
 
+//made at https://youtu.be/8UEZsm4tCpY?t=900
+const mapStateToProps = (state) => {
+  return {
+    //isAuthenticated: state.auth.token !== null,
+    cart: state.cart.shoppingCart,
+  }
+}
 
-export default CheckoutForm;
 
+export default
+  withRouter(
+    connect(
+      mapStateToProps,
+      null
+    )
+  (CheckoutForm)
+);
 
 /*
 1. adding the order items in the payment view as a summary

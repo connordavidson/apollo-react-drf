@@ -18,7 +18,7 @@ import {
 import {connect} from 'react-redux';
 import { Link, Redirect, withRouter} from 'react-router-dom';
 
-import {fetchCart} from '../store/actions/cart';
+import {fetchCart, addToCart} from '../store/actions/cart';
 import { authAxios } from '../utils';
 import {
   orderSummaryURL,
@@ -53,36 +53,42 @@ class OrderSummary extends React.Component {
 
     //was repeating these actions a lot so i combined them into the same function
     handleGetCartInformation = () => {
-      this.handleFetchOrder();
-      this.props.fetchCart();
+      // this.handleF`etchOrder();
+
+      //this.props.fetchCart();
     }
 
 
-    handleFetchOrder = () => {
-      this.setState({loading: true});
-      authAxios
-        .get(orderSummaryURL)
-        .then(res => {
-          //res.data.order_items.data
-          //console.log("RESPONSE (res.data ): " ,  res.data   );
-
-          //dispatches the cartSuccess method with data
-          this.setState( { data: res.data , loading: false } );
-        })
-        .catch(err => {
-          //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
-          //this is what gets triggered if there is no current order
-          if(err.status === 404){
-            console.log(err.reponse);
-            this.setState({
-              error: "You currently do not have an order" ,
-              loading: false
-            });
-          } else{
-            this.setState( {error: err, loading: false} );
-          }
-        });
-    };
+    // handleFetchOrder = () => {
+    //   this.setState({loading: true});
+    //
+    //
+    //
+    //
+    //
+    //   authAxios
+    //     .get(orderSummaryURL)
+    //     .then(res => {
+    //       //res.data.order_items.data
+    //       //console.log("RESPONSE (res.data ): " ,  res.data   );
+    //
+    //       //dispatches the cartSuccess method with data
+    //       this.setState( { data: res.data , loading: false } );
+    //     })
+    //     .catch(err => {
+    //       //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
+    //       //this is what gets triggered if there is no current order
+    //       if(err.status === 404){
+    //         console.log(err.reponse);
+    //         this.setState({
+    //           error: "You currently do not have an order" ,
+    //           loading: false
+    //         });
+    //       } else{
+    //         this.setState( {error: err, loading: false} );
+    //       }
+    //     });
+    // };
 
     //created at https://youtu.be/qJN1_2ZwqeA?t=2160
     renderVariations = (orderItem) => {
@@ -169,14 +175,17 @@ class OrderSummary extends React.Component {
     render(){
 
       const {
-        data,
+        //data,
         error,
         loading,
         increased,
         decreased
       } = this.state;
       //redirects the user if they aren't authenticated (if their login times out)
-      const {isAuthenticated} = this.props ;
+      const {
+        isAuthenticated,
+        cart,
+      } = this.props ;
 
       //for some reason, this redirects to home.js on page refresh
       // if(!isAuthenticated){
@@ -184,7 +193,7 @@ class OrderSummary extends React.Component {
       //   console.log("you were redirected becuase you were not authenticated");
       // }
 
-      console.log("data: ", data);
+      console.log("data: ", cart);
 
       return(
         <React.Fragment>
@@ -227,7 +236,7 @@ class OrderSummary extends React.Component {
           </div>
 
           {
-            data&&
+            cart &&
             <React.Fragment>
 
               <Container>
@@ -240,7 +249,7 @@ class OrderSummary extends React.Component {
                     <Grid.Column width={12}>
                       <Card.Group>
                         {
-                          data.order_items.map(item => {
+                          cart.order_items.map(item => {
                             console.log('item inside order_items: quantity: ', item.quantity)
                             return(
                               <Card>
@@ -342,13 +351,15 @@ class OrderSummary extends React.Component {
 //made at https://youtu.be/8UEZsm4tCpY?t=900
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.auth.token !== null
+    //isAuthenticated: state.auth.token !== null,
+    cart: state.cart.shoppingCart,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch( fetchCart() )
+    fetchCart: () => dispatch( fetchCart() ),
+    addToCart: () => dispatch( addToCart() )
   };
 };
 

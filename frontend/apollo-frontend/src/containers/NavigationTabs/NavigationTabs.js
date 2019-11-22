@@ -21,7 +21,7 @@ const panes = [
     <p> somn somn about 'these are your recent orders/donations/purchases, buy it again??'</p>
     <p> somn somn about 'your order is ____ days/cities/miles away from being delivered'</p>
     <p> somn somn about 'welcome to our website! this is what we do blah blah blah'</p>
-
+    <p> somn somn about 'how do you like your new ____? write a review for it' </p>
   </Tab.Pane> },
 
 ]

@@ -3,12 +3,17 @@ import {
   CART_START,
   CART_SUCCESS,
   CART_FAIL,
+  ADD_TO_CART,
 
 }
 from "./actionTypes";
 
 import {authAxios} from '../../utils';
-import {orderSummaryURL} from '../../constants';
+import {
+  orderSummaryURL,
+  productDetailURL,
+
+} from '../../constants';
 
 
 
@@ -28,6 +33,16 @@ export const cartSuccess = data => {
 };
 
 
+export const addToCart = (data ) => {
+  //console.log('addTOCart ACTIONS data: ', data)
+  return {
+    type: ADD_TO_CART,
+    data,
+  }
+}
+
+
+
 export const cartFail = error => {
   return {
     type: CART_FAIL,
@@ -43,11 +58,73 @@ export const fetchCart = () => {
     authAxios
       .get(orderSummaryURL)
       .then(res => {
-        //dispatches the cartSuccess method with data
+        //dispatches the cartSuccess method with the response data
         dispatch( cartSuccess(res.data) );
       })
       .catch(err => {
         dispatch( cartFail(err) );
       });
   };
+};
+
+
+
+
+export const addItemToCart = (data, quantity, variations) => {
+
+  //console.log('addItemToCart function in ACTIONS used with data: ', data)
+
+  //this reformats the data and the quantity to be in the format that the backend is expecting it (for when it gets saved int othe DB)
+  //the same format as a order_item in the cart
+  let newOrderItem = {
+    'final_price' : (quantity * data.price),
+    'id'          : 0,
+    'item'        : {
+      'category'        : data.category ,
+      'description'     : data.description ,
+      'discount_price'  : data.discount_price ,
+      'id'              : data.id ,
+      'image'           : data.image ,
+      'label'           : data.label ,
+      'price'           : data.price ,
+      'slug'            : data.slug ,
+      'title'           : data.title
+    },
+    'item_variations' : variations ,
+    'quantity' : Number(quantity)
+  }
+
+  console.log('newOrderItem from cart actions: ', )
+  return dispatch => {
+    dispatch(cartStart());
+
+    dispatch( addToCart(newOrderItem) )
+  // not necessary becuase it has the data passed in from productDetail
+  //   axios
+  //   .get(productDetailURL(data.id))
+  //   .then( response => {
+  //     console.log('ADDTOCART ACTION .get method')
+  //     //dispatch( addToCart( response.data))
+  //   })
+  //   .catch(error => {
+  //     dispatch( cartFail(error) )
+  //   });
+  // }
+}
+
+
+
+// export const fetchCart = () => {
+//   return dispatch => {
+//     dispatch(cartStart());
+//     authAxios
+//       .get(orderSummaryURL)
+//       .then(res => {
+//         //dispatches the cartSuccess method with data
+//         dispatch( cartSuccess(res.data) );
+//       })
+//       .catch(err => {
+//         dispatch( cartFail(err) );
+//       });
+//   };
 };

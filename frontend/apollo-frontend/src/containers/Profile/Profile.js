@@ -57,7 +57,9 @@ class Profile extends React.Component {
               </Card.Content>
             </Card>
 
-            <Card>
+            <Card
+              onClick={() => this.props.history.push('/profile/my-orders/')}
+            >
               <Card.Content>
                 <Card.Header>
                   Sell with Apollo
@@ -70,7 +72,9 @@ class Profile extends React.Component {
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Card>
+            <Card
+              onClick={() => this.props.history.push('/profile/my-orders/')}
+            >
               <Card.Content>
                 <Card.Header>
                   My Donations
@@ -81,7 +85,9 @@ class Profile extends React.Component {
               </Card.Content>
             </Card>
 
-            <Card>
+            <Card
+              onClick={() => this.props.history.push('/profile/my-orders/')}
+            >
               <Card.Content>
                 <Card.Header>
                   Start a Project
@@ -94,7 +100,9 @@ class Profile extends React.Component {
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Card>
+            <Card
+              onClick={() => this.props.history.push('/profile/my-orders/')}
+            >
               <Card.Content>
                 <Card.Header>
                   Account Information

@@ -111,14 +111,14 @@ class ProductDetail extends React.Component {
 
   handleAddToCart = (data, quantity) => {
 
-    console.log('quanityt from handleaddtocart: ', quantity)
+    // console.log('quanityt from handleaddtocart: ', quantity)
     this.setState({ loading: true });
     const {formData} = this.state;
 
     //filters  the data into the correct format fot the backend
     const variations = this.handleFormatData(formData);
 
-    console.log('variations from handleaddtocart : ', variations)
+    // console.log('variations from handleaddtocart : ', variations)
 
     this.props.addItemToCart(data, quantity, variations)
 

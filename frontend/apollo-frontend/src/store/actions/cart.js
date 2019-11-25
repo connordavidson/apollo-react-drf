@@ -4,6 +4,7 @@ import {
   CART_SUCCESS,
   CART_FAIL,
   ADD_TO_CART,
+  REMOVE_FROM_CART,
 
 }
 from "./actionTypes";
@@ -41,6 +42,14 @@ export const addToCart = (data ) => {
   }
 }
 
+export const removeFromCart = (data ) => {
+  //console.log('addTOCart ACTIONS data: ', data)
+  return {
+    type: REMOVE_FROM_CART,
+    data,
+  }
+}
+
 
 
 export const cartFail = error => {
@@ -69,15 +78,21 @@ export const fetchCart = () => {
 
 
 
+export const removeItemFromCart = (data) => {
+  return dispatch => {
+    dispatch(removeFromCart(data))
+  }
+}
+
+
+
 
 export const addItemToCart = (data, quantity, variations) => {
-
-  //console.log('addItemToCart function in ACTIONS used with data: ', data)
 
   //this reformats the data and the quantity to be in the format that the backend is expecting it (for when it gets saved int othe DB)
   //the same format as a order_item in the cart
   let newOrderItem = {
-    'final_price' : (quantity * data.price),
+    'final_price' : (data.discount_price ? quantity*data.discount_price : quantity*data.price),
     'id'          : 0,
     'item'        : {
       'category'        : data.category ,
@@ -97,34 +112,7 @@ export const addItemToCart = (data, quantity, variations) => {
   console.log('newOrderItem from cart actions: ', )
   return dispatch => {
     dispatch(cartStart());
-
     dispatch( addToCart(newOrderItem) )
-  // not necessary becuase it has the data passed in from productDetail
-  //   axios
-  //   .get(productDetailURL(data.id))
-  //   .then( response => {
-  //     console.log('ADDTOCART ACTION .get method')
-  //     //dispatch( addToCart( response.data))
-  //   })
-  //   .catch(error => {
-  //     dispatch( cartFail(error) )
-  //   });
-  // }
-}
+  }
 
-
-
-// export const fetchCart = () => {
-//   return dispatch => {
-//     dispatch(cartStart());
-//     authAxios
-//       .get(orderSummaryURL)
-//       .then(res => {
-//         //dispatches the cartSuccess method with data
-//         dispatch( cartSuccess(res.data) );
-//       })
-//       .catch(err => {
-//         dispatch( cartFail(err) );
-//       });
-//   };
 };

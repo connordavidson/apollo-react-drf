@@ -2,7 +2,9 @@ import {
   CART_START,
   CART_SUCCESS,
   CART_FAIL,
-  ADD_TO_CART
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+
 } from "../actions/actionTypes";
 import { updateObject } from "../utility";
 import ls from 'local-storage';
@@ -14,7 +16,7 @@ const initialState = {
   //  or assigns it to the basic outline that the DB is expecting (if they have never been to the site before )
   shoppingCart: ls.get('cart') ||
     {
-      'coupon' : {},
+      'coupon' : null,
       'id' : 0,
       'order_items' : [],
       'total': 0
@@ -46,24 +48,71 @@ const cartSuccess = (state, action) => {
 };
 
 
+
+
 const addToCart = (state, action) => {
   // console.log('addToCart reducer with action.data: ', action.data)
-  //
   // console.log('state from ADDTOCART reducers : ', state)
+  // console.log('cart.js action.data' , action.data)
 
-  state.shoppingCart.order_items = state.shoppingCart.order_items.concat(action.data)
+
+  //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
+  //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
+  let containsItem = false
+  let itemIndex = 0
+  let cart = state.shoppingCart
+  let cartTotal = 0.0
+
+  // console.log('CART: ', cart)
+
+  //loop through every item that is in the cart now and check if it is the item that is being added to the cart
+  //doing this so that if the item is already there, the quantity will just be increased instead of adding a redundant item
+  for(itemIndex ; itemIndex < cart.order_items.length ; itemIndex++ ){
+    if( cart.order_items[itemIndex].item.id == action.data.item.id ){
+      containsItem = true;
+      break;
+    }
+  }
+
+  console.log('containsItem: ', containsItem)
+  console.log('itemIndex: ', itemIndex)
+
+  //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
+  if(containsItem){
+    //let q = action.data.quantity
+    cart.order_items[itemIndex].quantity += action.data.quantity
+    //cart.order_items = orderItems
+  }else {
+    cart.order_items = cart.order_items.concat(action.data)
+    // orderItems.concat(action.data)
+  }
+  //console.log('orderItems: ' , orderItems)
 
 
-  // console.log('state.shoppingCart from ADDTOCART reducers : ', state.shoppingCart)
+
+
 
   return updateObject(state, {
     shoppingCart: state.shoppingCart,
     error: null,
     loading: false
   });
+}
 
 
 
+
+
+
+
+const removeFromCart = (state, action) => {
+
+  //need to figure out how to "un-concat"
+  return updateObject(state, {
+    shoppingCart: state.shoppingCart,
+    error: null,
+    loading: false
+  });
 }
 
 
@@ -88,6 +137,8 @@ const reducer = (state = initialState, action) => {
       return cartFail(state, action);
     case ADD_TO_CART:
       return addToCart(state, action);
+    case REMOVE_FROM_CART:
+      return removeFromCart(state, action);
     default:
       return state;
   }

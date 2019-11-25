@@ -18,7 +18,11 @@ import {
 import {connect} from 'react-redux';
 import { Link, Redirect, withRouter} from 'react-router-dom';
 
-import {fetchCart, addToCart} from '../store/actions/cart';
+import {
+    fetchCart,
+    addToCart,
+    removeItemFromCart
+  } from '../store/actions/cart';
 import { authAxios } from '../utils';
 import {
   orderSummaryURL,
@@ -158,17 +162,21 @@ class OrderSummary extends React.Component {
 
     //made at https://youtu.be/8UEZsm4tCpY?t=150
     handleRemoveItem = (itemID) => {
-      authAxios
-      .delete( orderItemDeleteURL(itemID) )
-      .then(res => {
-        //callback
 
-        //updates the cart dropdown and the info in the summary page
-        this.handleGetCartInformation();
-      })
-      .catch(err => {
-          this.setState( {error: err} );
-      });
+
+      // authAxios
+      // .delete( orderItemDeleteURL(itemID) )
+      // .then(res => {
+      //   //callback
+      //
+      //   //updates the cart dropdown and the info in the summary page
+      //   this.handleGetCartInformation();
+      // })
+      // .catch(err => {
+      //     this.setState( {error: err} );
+      // });
+
+
     }
 
 
@@ -359,7 +367,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() ),
-    addToCart: () => dispatch( addToCart() )
+    addToCart: () => dispatch( addToCart() ),
+    removeItemFromCart: () => dispatch( removeItemFromCart() ),
   };
 };
 

@@ -138,7 +138,7 @@ class CustomLayout extends React.Component {
     //instantiates constants from the props
     const { authenticated, cart, loading, username } = this.props;
 
-    console.log('cart from customlayout render(): ', this.props.cart)
+    //console.log('cart from customlayout render(): ', this.props.cart)
 
     return (
       <div>

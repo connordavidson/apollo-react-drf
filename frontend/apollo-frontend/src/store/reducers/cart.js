@@ -63,8 +63,6 @@ const addToCart = (state, action) => {
   let cart = state.shoppingCart
   let cartTotal = 0.0
 
-  // console.log('CART: ', cart)
-
   //loop through every item that is in the cart now and check if it is the item that is being added to the cart
   //doing this so that if the item is already there, the quantity will just be increased instead of adding a redundant item
   for(itemIndex ; itemIndex < cart.order_items.length ; itemIndex++ ){
@@ -73,22 +71,22 @@ const addToCart = (state, action) => {
       break;
     }
   }
-
-  console.log('containsItem: ', containsItem)
-  console.log('itemIndex: ', itemIndex)
+  // console.log('containsItem: ', containsItem)
+  // console.log('itemIndex: ', itemIndex)
 
   //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
   if(containsItem){
-    //let q = action.data.quantity
     cart.order_items[itemIndex].quantity += action.data.quantity
-    //cart.order_items = orderItems
+    cart.order_items[itemIndex].final_price += (action.data.quantity * (action.data.item.discount_price !== null ? action.data.item.discount_price : action.data.item.price) )
   }else {
     cart.order_items = cart.order_items.concat(action.data)
-    // orderItems.concat(action.data)
+
   }
   //console.log('orderItems: ' , orderItems)
-
-
+  cart.order_items.map( item => {
+    cart.total += item.final_price
+  })
+  //console.log('cartTotal: ', cartTotal)
 
 
 

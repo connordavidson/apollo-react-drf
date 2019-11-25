@@ -26,7 +26,10 @@ import { Redirect } from "react-router-dom";
 import {connect} from 'react-redux';
 
 
-import {fetchCart} from '../../store/actions/cart';
+import {
+    fetchCart,
+    addItemToCart
+  } from '../../store/actions/cart';
 
 import {
     productListURL,
@@ -97,23 +100,29 @@ class BuyTab extends React.Component {
   }
 
 
-  handleAddToCart = (slug, quantity) => {
+  handleAddToCart = (data, quantity) => {
     this.setState({ loading: true });
     const {formData} = this.state;
     //filters  the data into the correct format fot the backend
     const variations = []
-    //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
-    authAxios
-    .post( addToCartURL , { slug, variations, quantity} )
-    .then(res => {
-      //console.log(res.data, addToCartURL, "add to cart succeeded");
-      this.props.fetchCart();
-      this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-      console.log(err.message , 'add-to-cart failed ');
-    });
+
+    this.props.addItemToCart(data, 1, variations)
+
+    this.setState({loading: false});
+
+
+    // //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
+    // authAxios
+    // .post( addToCartURL , { slug, variations, quantity} )
+    // .then(res => {
+    //   //console.log(res.data, addToCartURL, "add to cart succeeded");
+    //   this.props.fetchCart();
+    //   this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
+    // })
+    // .catch(err => {
+    //   this.setState({ error: err, loading: false });
+    //   console.log(err.message , 'add-to-cart failed ');
+    // });
   }
 
 
@@ -312,6 +321,7 @@ class BuyTab extends React.Component {
                   filterCategory !== '' ?
                   (
                     filteredData.map(item => {
+
                       return (
                         <Item key={item.id}>
                           <Item.Image
@@ -356,7 +366,7 @@ class BuyTab extends React.Component {
                                     floated='right'
                                     icon
                                     onClick={ () => {
-                                      this.handleAddToCart(item.slug, 1 )
+                                      this.handleAddToCart(item, 1 )
                                       }
                                     }
                                     >
@@ -381,6 +391,7 @@ class BuyTab extends React.Component {
 
                   ):(
                     data.map(item => {
+                      console.log('item from products: ' , item)
                       return (
                         <Item key={item.id}>
                           <Item.Image
@@ -425,7 +436,7 @@ class BuyTab extends React.Component {
                                     floated='right'
                                     icon
                                     onClick={ () => {
-                                      this.handleAddToCart(item.slug, 1 )
+                                      this.handleAddToCart(item, 1 )
                                       }
                                     }
                                     >
@@ -466,6 +477,8 @@ class BuyTab extends React.Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch(fetchCart()),
+    addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
+
   }
 }
 

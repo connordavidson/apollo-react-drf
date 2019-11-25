@@ -394,7 +394,7 @@ class CheckoutForm extends React.Component {
                           <Card.Content>
                             <Card.Header>Price: </Card.Header>
                               <Card.Description>
-                                subtotal: ${total}
+                                subtotal: ${cart.total}
                               </Card.Description>
                               <Card.Description>
                                 tax: ______

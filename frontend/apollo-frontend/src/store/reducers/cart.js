@@ -51,13 +51,12 @@ const cartSuccess = (state, action) => {
 
 
 const addToCart = (state, action) => {
-  console.log('state.shoppingCart before anything else', state.shoppingCart)
   //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
   //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
   let containsItem = false
   let itemIndex = 0
   let cart = state.shoppingCart
-  console.log('state.shoppingCart after instantiating cart', state.shoppingCart)
+  var cartTotal = 0
 
   //loop through every item that is in the cart now and check if it is the item that is being added to the cart
   //doing this so that if the item is already there, the quantity will just be increased instead of adding a redundant item
@@ -67,9 +66,6 @@ const addToCart = (state, action) => {
       break;
     }
   }
-  // console.log('containsItem: ', containsItem)
-  // console.log('itemIndex: ', itemIndex)
-
   //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
   if(containsItem){
     cart.order_items[itemIndex].quantity += action.data.quantity
@@ -78,20 +74,17 @@ const addToCart = (state, action) => {
     cart.order_items = cart.order_items.concat(action.data)
   }
 
-  console.log('state.shoppingCart after concat item to cart & b4 update cart total', state.shoppingCart)
-
-  //console.log('orderItems: ' , orderItems)
+  //loops through the order_items and determines what the new total of the  cart is, and assigns that value to cart.total
   cart.order_items.map( item => {
-    cart.total += item.final_price
+    cartTotal += item.final_price
   })
+  cart.total = cartTotal
 
-  console.log('state.shoppingCart after all changes to cart', state.shoppingCart)
   return updateObject(state, {
     shoppingCart: cart,
     error: null,
     loading: false
   });
-
 }
 
 
@@ -101,36 +94,25 @@ const addToCart = (state, action) => {
 const removeFromCart = (state, action) => {
   let itemIndex = 0
   let cart = state.shoppingCart
-  console.log('shoppingCart after cart instant: ', state.shoppingCart)
 
-  // console.log('action.data : ', action.data)
-  //loops through the cart and removes the item if it is equal to the given itemID
+  //loops through the cart and subtracts that item's final_price, then removes the item if it is equal to the given itemID
   for(itemIndex ; itemIndex < cart.order_items.length ; itemIndex++ ){
-    // console.log('cart itemINDEX ', itemIndex)
-    // console.log('cart.order_items[itemIndex].item.id : ', cart.order_items[itemIndex].item.id)
     if( cart.order_items[itemIndex].item.id === action.data ){
-      // console.log('INSIDE IF: ')
+      cart.total -= cart.order_items[itemIndex].final_price
       cart.order_items.splice(itemIndex, 1)
       break;
     }
   }
 
-  console.log('shoppingCart before ls.set(): ', state.shoppingCart)
-
   //sets the cart in the local storage.
   //if the new cart isn't set in local storage, the cart isn't updated on page refresh (the item will reappear on the screen)
   ls.set('cart', cart)
 
-  console.log('shoppingCart after ls.set(): ', state.shoppingCart)
-  //need to figure out how to "un-concat"
   return updateObject(state, {
     shoppingCart: cart,
     error: null,
     loading: false
   });
-
-
-
 }
 
 

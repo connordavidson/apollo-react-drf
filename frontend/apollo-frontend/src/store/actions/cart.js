@@ -80,7 +80,9 @@ export const fetchCart = () => {
 
 export const removeItemFromCart = (data) => {
   return dispatch => {
-    dispatch(cartStart());
+    //for some reason, the navigation bar doesn't update when this line gets removed
+    dispatch(cartStart())
+
     dispatch(removeFromCart(data))
   }
 }

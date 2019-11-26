@@ -34,10 +34,15 @@ import {connect} from 'react-redux';
 import {
   productDetailURL,
   addToCartURL,
-  productReviewListURL
+  productReviewListURL,
+  
 } from '../constants'
 import {authAxios} from '../utils';
-import {fetchCart, addItemToCart} from '../store/actions/cart';
+import {
+  fetchCart,
+  addItemToCart,
+
+ } from '../store/actions/cart';
 
 
 /*

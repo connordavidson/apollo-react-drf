@@ -21,7 +21,9 @@ import { Link, Redirect, withRouter} from 'react-router-dom';
 import {
     fetchCart,
     addItemToCart,
-    removeItemFromCart
+    removeItemFromCart,
+    decreaseItemQuantity,
+
   } from '../store/actions/cart';
 import { authAxios } from '../utils';
 import {
@@ -54,7 +56,7 @@ class OrderSummary extends React.Component {
     componentDidMount(){
       //updates the cart dropdown and the info in the summary page
       this.handleGetCartInformation();
-      this.props.fetchCart();
+      //this.props.fetchCart();
     }
 
     //was repeating these actions a lot so i combined them into the same function
@@ -117,79 +119,28 @@ class OrderSummary extends React.Component {
       })
     }
 
-    //made at https://youtu.be/8UEZsm4tCpY?t=581
-    //explanation around https://youtu.be/8UEZsm4tCpY?t=510
-    handleAddToCart = (slug, itemVariations, title) => {
+    handleAddToCart = (data, quantity) => {
       this.setState({ loading: true });
-      //filters  the data into the correct format fot the backend
-      const variations = this.handleFormatData(itemVariations);
-      //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
-      authAxios
-      .post( addToCartURL , { slug, variations } )
-      .then(res => {
-        //console.log(res.data, addToCartURL, "add to cart succeeded");
-
-        //updates the cart dropdown and the info in the summary page
-        this.handleGetCartInformation();
-        this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
-      })
-      .catch(err => {
-        this.setState({ error: err, loading: false });
-        console.log(err , 'add-to-cart failed ');
-      });
+      this.props.addItemToCart(data, quantity)
+      this.setState({loading: false});
     }
 
-    //made around https://youtu.be/8UEZsm4tCpY?t=815
-    //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
-    handleRemoveQuantityFromCart = (slug , title, quantity, itemID) => {
-      //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
 
+    handleRemoveQuantityFromCart = (itemID, quantity) => {
+      this.setState({ loading: true });
       if(quantity > 1){
-        authAxios
-        .post( orderItemUpdateQuantityURL, { slug } )
-        .then(res => {
-          //callback
-
-          //updates the cart dropdown and the info in the summary page
-          this.handleGetCartInformation();
-          this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
-        })
-        .catch(err => {
-            this.setState( {error: err} );
-        });
+        this.props.decreaseItemQuantity(itemID)
       } else {
         this.handleRemoveItem(itemID)
       }
+      this.setState({ loading: false });
     }
 
     //made at https://youtu.be/8UEZsm4tCpY?t=150
     handleRemoveItem = (itemID) => {
-      console.log('itemID: ', itemID)
-
-      this.setState({
-        loading : true,
-      })
-
+      this.setState({loading : true})
       this.props.removeItemFromCart(itemID)
-
-      this.setState({
-        loading : false,
-      })
-
-
-      // authAxios
-      // .delete( orderItemDeleteURL(itemID) )
-      // .then(res => {
-      //   //callback
-      //
-      //   //updates the cart dropdown and the info in the summary page
-      //   this.handleGetCartInformation();
-      // })
-      // .catch(err => {
-      //     this.setState( {error: err} );
-      // });
-
-
+      this.setState({loading : false})
     }
 
 
@@ -266,82 +217,88 @@ class OrderSummary extends React.Component {
                 <Divider />
                 {/*based on the layout of checkout.js*/}
                 <Grid>
-
                     <Grid.Column width={12}>
-                      <Card.Group>
-                        {
-                          cart.order_items.map(item => {
-                            // console.log('item inside order_items: quantity: ', item.quantity)
-                            return(
-                              <Card>
-                                <Card.Content>
-                                  <Card.Header>
-                                    {
-                                      item.item.title.length > 30 ?
-                                      item.item.title.substring(0,30) + '...':
-                                      item.item.title
-                                    }
-                                  </Card.Header>
-
+                      { cart.order_items.length > 0 ?
+                        (<Card.Group>
+                          {
+                            cart.order_items.map(item => {
+                              // console.log('item inside order_items ', item)
+                              // console.log('item inside order_items: quantity: ', item.quantity)
+                              return(
+                                <Card>
                                   <Card.Content>
+                                    <Card.Header>
+                                      {
+                                        item.item.title.length > 30 ?
+                                        item.item.title.substring(0,30) + '...':
+                                        item.item.title
+                                      }
+                                    </Card.Header>
+
+                                    <Card.Content>
+                                      {
+                                        item.item_variations ?
+                                        (this.renderVariations(item)) :
+                                        null
+                                      }
+                                    </Card.Content>
                                     {
-                                      item.item_variations ?
-                                      (this.renderVariations(item)) :
-                                      null
+                                      item.item.discount_price !== null ?
+                                      <Card.Meta>
+                                        <s>${item.item.price}</s>
+                                        ${item.item.discount_price}
+                                      </Card.Meta> :
+                                      <Card.Meta>
+                                        ${item.item.price}
+                                      </Card.Meta>
                                     }
-                                  </Card.Content>
-                                  {
-                                    item.item.discount_price !== null ?
-                                    <Card.Meta>
-                                      <s>${item.item.price}</s>
-                                      ${item.item.discount_price}
-                                    </Card.Meta> :
-                                    <Card.Meta>
-                                      ${item.item.price}
-                                    </Card.Meta>
-                                  }
 
-                                  <Card.Description >
-                                    <Label>
-                                      <Icon
-                                        name='minus'
-                                        color='red'
-                                        style={{cursor: 'pointer'}}
-                                        onClick={ () =>
-                                          this.handleRemoveQuantityFromCart(item.item.slug, item.item.title, item.quantity, item.id)}
-                                      />
-
-                                      {item.quantity}
-
-                                      <Label.Detail>
+                                    <Card.Description >
+                                      <Label>
                                         <Icon
-                                          name='plus'
-                                          color='green'
+                                          name='minus'
+                                          color='red'
                                           style={{cursor: 'pointer'}}
                                           onClick={ () =>
-                                            this.handleAddToCart(
-                                              item.item.slug,
-                                              item.item_variations,
-                                              item.item.title
-                                            )}
+                                            this.handleRemoveQuantityFromCart(item.item.id, item.quantity)}
                                         />
-                                      </Label.Detail>
-                                    </Label>
-                                    <Icon
-                                      name='trash'
-                                      color='red'
-                                      style={{float: 'right', cursor: 'pointer'}}
-                                      onClick={ () => this.handleRemoveItem(item.item.id) }
-                                    />
-                                  </Card.Description>
 
-                                </Card.Content>
-                              </Card>
-                            )
-                          })
-                        }
+                                        {item.quantity}
 
-                      </Card.Group>
+                                        <Label.Detail>
+                                          <Icon
+                                            name='plus'
+                                            color='green'
+                                            style={{cursor: 'pointer'}}
+                                            onClick={ () =>
+                                              this.handleAddToCart(
+                                                item.item,
+                                                1
+                                              )}
+                                          />
+                                        </Label.Detail>
+                                      </Label>
+                                      <Icon
+                                        name='trash'
+                                        color='red'
+                                        style={{float: 'right', cursor: 'pointer'}}
+                                        onClick={ () => this.handleRemoveItem(item.item.id) }
+                                      />
+                                    </Card.Description>
+
+                                  </Card.Content>
+                                </Card>
+                              )
+                            })
+                          }
+
+                        </Card.Group>
+                      )
+                      :
+                      (
+                        <Header>There isn't anything in your cart right now! get to shopping </Header>
+                      )
+                      }
                     </Grid.Column>
 
                     <Grid.Column width={4}>
@@ -349,6 +306,7 @@ class OrderSummary extends React.Component {
                         <Card fluid>
                           <Card.Content>
                             <Button
+                              disabled={cart.order_items.length > 0 ? false : true}
                               fluid
                               color='blue'
                               onClick={ () => this.props.history.push(`/checkout`) }
@@ -380,9 +338,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() ),
-    // addToCart: () => dispatch( addToCart() ),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
     removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
+    decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),
+
   };
 };
 

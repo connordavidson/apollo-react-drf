@@ -23,8 +23,9 @@ import ls from 'local-storage';
 
 import {
   fetchCart,
-  addToCart,
-  removeFromCart,
+  addItemToCart,
+  removeItemFromCart,
+  decreaseItemQuantity,
 
  } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
@@ -68,22 +69,6 @@ class CustomLayout extends React.Component {
   }
 
 
-
-
-  //made at https://youtu.be/8UEZsm4tCpY?t=150
-  handleRemoveItem = (itemID) => {
-    authAxios
-    .delete( orderItemDeleteURL(itemID) )
-    .then(res => {
-      //callback
-      this.props.fetchCart();
-    })
-    .catch(err => {
-        this.setState( {error: err} );
-    });
-  }
-
-
   renderVariations = (orderItem) => {
     let text = '';
     //loop through all the variations of the orderItem
@@ -109,44 +94,32 @@ class CustomLayout extends React.Component {
   //explanation around https://youtu.be/8UEZsm4tCpY?t=510
 
   //sends the information to the database, then calls fetchCart() to retrieve that information.... like a circle
-  handleAddToCart = (slug, itemVariations, title) => {
+  handleAddToCart = (data, quantity) => {
     this.setState({ loading: true });
-    //filters  the data into the correct format fot the backend
-    const variations = this.handleFormatData(itemVariations);
-    //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
-    authAxios
-    .post( addToCartURL , { slug, variations } )
-    .then(res => {
-      console.log(res.data, addToCartURL, "add to cart succeeded");
-      this.props.fetchCart();
-      this.setState({ loading: false, increased: `${title} increased by 1!`, decreased: false });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-      console.log(err , 'add-to-cart failed ');
-    });
+    this.props.addItemToCart(data, 1)
+    this.setState({loading: false});
   }
 
 
-  //made around https://youtu.be/8UEZsm4tCpY?t=815
   //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
-  handleRemoveQuantityFromCart = (slug , title, quantity, itemID) => {
-    //filled in this function at https://youtu.be/8UEZsm4tCpY?t=1210
+  handleRemoveQuantityFromCart = (itemID, quantity) => {
+    console.log('itemID from removeQuantity: ', itemID )
+    console.log('quantity from removeQuantity: ', quantity )
+    this.setState({ loading: true });
     if(quantity > 1){
-      authAxios
-      .post( orderItemUpdateQuantityURL, { slug } )
-      .then(res => {
-        //callback
-        this.props.fetchCart();
-        this.setState( {decreased: ` ${title} decreased by 1`, increased: false})
-      })
-      .catch(err => {
-          this.setState( {error: err} );
-      });
+      this.props.decreaseItemQuantity(itemID)
     } else {
       this.handleRemoveItem(itemID)
     }
+    this.setState({ loading: false });
+  }
 
+
+
+  handleRemoveItem = (itemID) => {
+    this.setState({loading : true})
+    this.props.removeItemFromCart(itemID)
+    this.setState({loading : false})
   }
 
 
@@ -216,7 +189,7 @@ class CustomLayout extends React.Component {
                                           color='red'
                                           style={{cursor: 'pointer'}}
                                           onClick={ () =>
-                                            this.handleRemoveQuantityFromCart(order_item.item.slug, order_item.item.title, order_item.quantity, order_item.id)}
+                                            this.handleRemoveQuantityFromCart(order_item.item.id, order_item.quantity)}
                                         />
 
                                         {order_item.quantity}
@@ -227,11 +200,7 @@ class CustomLayout extends React.Component {
                                             color='green'
                                             style={{cursor: 'pointer'}}
                                             onClick={ () =>
-                                              this.handleAddToCart(
-                                                order_item.item.slug,
-                                                order_item.item_variations,
-                                                order_item.item.title
-                                              )}
+                                              this.handleAddToCart( order_item.item, 1 )}
                                           />
                                         </Label.Detail>
 
@@ -241,7 +210,7 @@ class CustomLayout extends React.Component {
                                         name='trash'
                                         color='red'
                                         style={{float: 'right', cursor: 'pointer'}}
-                                        onClick={ () => this.handleRemoveItem(order_item.id) }
+                                        onClick={ () => this.handleRemoveItem(order_item.item.id) }
                                       />
                                     </p>
                                   </Message>
@@ -388,8 +357,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() ),
-    addToCart: () => dispatch( addToCart() ),
-    removeFromCart: (itemID) => dispatch( removeFromCart(itemID) ),
+    addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
+    removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
+    decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),
 
   };
 };

@@ -5,7 +5,7 @@ import {
   CART_FAIL,
   ADD_TO_CART,
   REMOVE_FROM_CART,
-
+  DECREASE_QUANTITY
 }
 from "./actionTypes";
 
@@ -42,13 +42,22 @@ export const addToCart = (data ) => {
   }
 }
 
-export const removeFromCart = (data ) => {
+export const removeFromCart = (data) => {
   //console.log('addTOCart ACTIONS data: ', data)
   return {
     type: REMOVE_FROM_CART,
     data,
   }
 }
+
+export const decreaseQuantity = (data) => {
+  return {
+    type: DECREASE_QUANTITY,
+    data,
+  }
+
+}
+
 
 
 
@@ -84,6 +93,16 @@ export const removeItemFromCart = (data) => {
     dispatch(cartStart())
 
     dispatch(removeFromCart(data))
+  }
+}
+
+export const decreaseItemQuantity = (data) => {
+
+  return dispatch => {
+    //for some reason, the navigation bar doesn't update when this line gets removed
+    dispatch(cartStart())
+
+    dispatch(decreaseQuantity(data))
   }
 }
 

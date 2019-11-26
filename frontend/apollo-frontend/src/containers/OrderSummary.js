@@ -14,13 +14,13 @@ import {
   Container,
 
 } from 'semantic-ui-react';
-
 import {connect} from 'react-redux';
 import { Link, Redirect, withRouter} from 'react-router-dom';
 
+
 import {
     fetchCart,
-    addToCart,
+    addItemToCart,
     removeItemFromCart
   } from '../store/actions/cart';
 import { authAxios } from '../utils';
@@ -40,6 +40,7 @@ import {
 
  */
 
+
 class OrderSummary extends React.Component {
 
     state = {
@@ -53,6 +54,7 @@ class OrderSummary extends React.Component {
     componentDidMount(){
       //updates the cart dropdown and the info in the summary page
       this.handleGetCartInformation();
+      this.props.fetchCart();
     }
 
     //was repeating these actions a lot so i combined them into the same function
@@ -162,6 +164,17 @@ class OrderSummary extends React.Component {
 
     //made at https://youtu.be/8UEZsm4tCpY?t=150
     handleRemoveItem = (itemID) => {
+      console.log('itemID: ', itemID)
+
+      this.setState({
+        loading : true,
+      })
+
+      this.props.removeItemFromCart(itemID)
+
+      this.setState({
+        loading : false,
+      })
 
 
       // authAxios
@@ -258,7 +271,7 @@ class OrderSummary extends React.Component {
                       <Card.Group>
                         {
                           cart.order_items.map(item => {
-                            console.log('item inside order_items: quantity: ', item.quantity)
+                            // console.log('item inside order_items: quantity: ', item.quantity)
                             return(
                               <Card>
                                 <Card.Content>
@@ -318,7 +331,7 @@ class OrderSummary extends React.Component {
                                       name='trash'
                                       color='red'
                                       style={{float: 'right', cursor: 'pointer'}}
-                                      onClick={ () => this.handleRemoveItem(item.id) }
+                                      onClick={ () => this.handleRemoveItem(item.item.id) }
                                     />
                                   </Card.Description>
 
@@ -367,8 +380,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() ),
-    addToCart: () => dispatch( addToCart() ),
-    removeItemFromCart: () => dispatch( removeItemFromCart() ),
+    // addToCart: () => dispatch( addToCart() ),
+    addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
+    removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
   };
 };
 

@@ -321,7 +321,6 @@ class BuyTab extends React.Component {
                   filterCategory !== '' ?
                   (
                     filteredData.map(item => {
-
                       return (
                         <Item key={item.id}>
                           <Item.Image

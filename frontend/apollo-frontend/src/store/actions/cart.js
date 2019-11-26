@@ -80,6 +80,7 @@ export const fetchCart = () => {
 
 export const removeItemFromCart = (data) => {
   return dispatch => {
+    dispatch(cartStart());
     dispatch(removeFromCart(data))
   }
 }

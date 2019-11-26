@@ -21,7 +21,12 @@ import { connect } from "react-redux";
 import ls from 'local-storage';
 
 
-import { fetchCart, addToCart } from "../store/actions/cart";
+import {
+  fetchCart,
+  addToCart,
+  removeFromCart,
+
+ } from "../store/actions/cart";
 import { logout } from "../store/actions/auth";
 import { authAxios } from '../utils';
 import {
@@ -31,21 +36,33 @@ import {
 
 } from '../constants';
 
+/*
+
+  for keeping the dropdown open: onClick () => open = True
+
+*/
+
 
 class CustomLayout extends React.Component {
 
   componentDidMount() {
     //grabs the cart data every time the layout is rendered
     //this.props.fetchCart();
-    //ls.set('cart', this.props.cart)
+    ls.set('cart', this.props.cart)
+
+    console.log('this.props.cart in componentDidMount: ' , this.props.cart)
   }
 
   componentWillUnmount() {
+    console.log('this.props.cart in componentWillUnmount: ' , this.props.cart)
+
     ls.set('cart', this.props.cart)
   }
 
   componentDidUpdate(prevProps){
+    console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
     if(this.props.cart === prevProps.cart){
+      console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
        ls.set('cart', this.props.cart)
     }
   }
@@ -152,7 +169,9 @@ class CustomLayout extends React.Component {
 
             <Menu.Menu position='right' >
 
-              {/* displays the cart dropdown  */}
+              {/*
+                displays the cart dropdown
+              */}
 
                 <Dropdown
                     icon='cart'
@@ -161,6 +180,7 @@ class CustomLayout extends React.Component {
                     pointing
                     className='link item'
                     direction='left'
+
                   >
 
                   <Dropdown.Menu>
@@ -368,7 +388,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCart: () => dispatch( fetchCart() ),
-    addToCart: () => dispatch( addToCart() )
+    addToCart: () => dispatch( addToCart() ),
+    removeFromCart: (itemID) => dispatch( removeFromCart(itemID) ),
+
   };
 };
 

@@ -6,13 +6,15 @@ import {
     Select,
 
   } from 'semantic-ui-react';
+import axios from 'axios';
+
+
 
 import {
     addressListURL,
     countryListURL,
 
   } from '../../constants';
-
 import {authAxios} from '../../utils';
 
 
@@ -24,6 +26,14 @@ every time that the user clicks off of an input box, it triggers handleValidateI
   if all of the information is valid, it uses handleAddressFormValidated to tell the breadcrumbs that the information is valid and to let the user move to the next breadcrumbs.
 the AddressForm component takes in addressInformation as props so that it can automatically populate the previously entered data.
   this is in case the user comes back to this form after going to other BreadCrumbs.
+
+
+***NEED TO DO***
+use UPS address validation to validate the address. this will then be passed into the shipping api to determine how much shipping should cost
+  https://www.ups.com/us/en/services/technology-integration/us-address-validation.page?
+  the handleCheckFormValidated() method can do this when all of the inputs are "valid".
+  this means I need to figure out what format the UPS api wants the information to be in and need to validate the user's input in handleValidateInput() to comply with the UPS api
+  then need to pass this information up into the ShippingForm component (through the Breadcrumbs component (which this component already does) ) and have that determine the shipping options/prices
 
 
 */
@@ -149,7 +159,7 @@ class AddressForm extends React.Component {
   }
 
   handleFetchCountries = () => {
-    authAxios
+    axios
     .get(countryListURL)
     .then(res => {
       //console.log(this.handleFormatCountries(res.data))

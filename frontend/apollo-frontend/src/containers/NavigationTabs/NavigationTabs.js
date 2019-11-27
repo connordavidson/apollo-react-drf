@@ -2,8 +2,6 @@ import React from 'react';
 
 import {
   Tab,
-  Container,
-
 } from 'semantic-ui-react'
 import {withRouter} from 'react-router';
 

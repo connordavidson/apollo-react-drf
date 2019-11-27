@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
-//import {cartSuccess, fetchCart} from './cart';
 
 
 export const authStart = () => {
@@ -52,7 +51,7 @@ export const authLogin = (username, password) => {
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);
-        dispatch(authSuccess(token, username));
+        dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(10000));
 
       })
@@ -63,7 +62,6 @@ export const authLogin = (username, password) => {
 };
 
 
-//added username to the authSuccess part  of the function on 11/5/19
 export const authSignup = (username, email, password1, password2) => {
   return dispatch => {
     dispatch(authStart());
@@ -79,7 +77,7 @@ export const authSignup = (username, email, password1, password2) => {
         const expirationDate = new Date(new Date().getTime() + 86400 * 1000);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);
-        dispatch(authSuccess(token, username));
+        dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(3600));
       })
       .catch(err => {

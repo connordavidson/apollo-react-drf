@@ -314,6 +314,7 @@ class AddressListView(ListAPIView):
 
 #created at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=1591
 class CountryListView(APIView):
+    permission_classes = (AllowAny, )
     def get(self, request, *args, **kwargs):
         return Response(countries, status=HTTP_200_OK)
 

@@ -15,16 +15,14 @@ import {
     Container,
 
   } from 'semantic-ui-react';
-
 import {connect} from 'react-redux';
-
 import {
     Link,
     withRouter,
   } from 'react-router-dom';
+import axios from 'axios';
 
 
-import {authAxios} from '../../utils';
 
 import {
     orderSummaryURL,

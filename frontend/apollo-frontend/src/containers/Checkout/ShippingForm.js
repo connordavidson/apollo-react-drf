@@ -33,7 +33,13 @@ import {
 
   import {authAxios} from '../../utils';
 
+/*
 
+***NEED TO DO***
+use the UPS shipping api to determine how much to charge for shipping with UPS (the address should be coming from the AddressForm component (through parent BreadCrumbs))
+  https://www.ups.com/us/en/services/technology-integration/online-tools-rates-svc.page?
+
+*/
 
 
    class ShippingForm extends Component {

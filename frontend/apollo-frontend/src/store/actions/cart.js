@@ -5,7 +5,8 @@ import {
   CART_FAIL,
   ADD_TO_CART,
   REMOVE_FROM_CART,
-  DECREASE_QUANTITY
+  DECREASE_QUANTITY,
+  MERGE_CART
 }
 from "./actionTypes";
 
@@ -34,6 +35,14 @@ export const cartSuccess = data => {
 };
 
 
+export const cartFail = error => {
+  return {
+    type: CART_FAIL,
+    error: error
+  };
+};
+
+
 export const addToCart = (data ) => {
   //console.log('addTOCart ACTIONS data: ', data)
   return {
@@ -55,18 +64,19 @@ export const decreaseQuantity = (data) => {
     type: DECREASE_QUANTITY,
     data,
   }
+}
 
+export const mergeCart = (data) => {
+  return {
+    type: MERGE_CART,
+    data,
+  }
 }
 
 
 
 
-export const cartFail = error => {
-  return {
-    type: CART_FAIL,
-    error: error
-  };
-};
+
 
 
 //what we call when the app is loaded. fetches whatever is in the cart at load and can be called again to update the display with the contents of the cart
@@ -77,7 +87,7 @@ export const fetchCart = () => {
       .get(orderSummaryURL)
       .then(res => {
         //dispatches the cartSuccess method with the response data
-        dispatch( cartSuccess(res.data) );
+        dispatch( mergeCart(res.data) );
       })
       .catch(err => {
         dispatch( cartFail(err) );

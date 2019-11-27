@@ -390,7 +390,7 @@ class BuyTab extends React.Component {
 
                   ):(
                     data.map(item => {
-                      console.log('item from products: ' , item)
+                      // console.log('item from products: ' , item)
                       return (
                         <Item key={item.id}>
                           <Item.Image

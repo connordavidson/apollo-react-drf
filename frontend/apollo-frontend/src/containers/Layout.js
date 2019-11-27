@@ -47,23 +47,25 @@ import {
 class CustomLayout extends React.Component {
 
   componentDidMount() {
+
     //grabs the cart data every time the layout is rendered
     //this.props.fetchCart();
     ls.set('cart', this.props.cart)
 
-    console.log('this.props.cart in componentDidMount: ' , this.props.cart)
+    this.props.fetchCart();
+    // console.log('this.props.cart in componentDidMount: ' , this.props.cart)
   }
 
   componentWillUnmount() {
-    console.log('this.props.cart in componentWillUnmount: ' , this.props.cart)
+    // console.log('this.props.cart in componentWillUnmount: ' , this.props.cart)
 
     ls.set('cart', this.props.cart)
   }
 
   componentDidUpdate(prevProps){
-    console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
+    // console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
     if(this.props.cart === prevProps.cart){
-      console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
+      // console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
        ls.set('cart', this.props.cart)
     }
   }
@@ -103,8 +105,8 @@ class CustomLayout extends React.Component {
 
   //needs to decrement the quantity in the cart, if quantity is 1 then it should remove the item from the cart
   handleRemoveQuantityFromCart = (itemID, quantity) => {
-    console.log('itemID from removeQuantity: ', itemID )
-    console.log('quantity from removeQuantity: ', quantity )
+    // console.log('itemID from removeQuantity: ', itemID )
+    // console.log('quantity from removeQuantity: ', quantity )
     this.setState({ loading: true });
     if(quantity > 1){
       this.props.decreaseItemQuantity(itemID)
@@ -161,6 +163,7 @@ class CustomLayout extends React.Component {
                         <React.Fragment>
                           {
                             cart.order_items.map(order_item => {
+                              // console.log('cart from LAYOUT: ', cart)
                               return(
                                 <Dropdown.Item
                                   key={order_item.id}

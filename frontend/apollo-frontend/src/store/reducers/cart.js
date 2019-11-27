@@ -4,8 +4,8 @@ import {
   CART_FAIL,
   ADD_TO_CART,
   REMOVE_FROM_CART,
-  DECREASE_QUANTITY
-
+  DECREASE_QUANTITY,
+  MERGE_CART,
 } from "../actions/actionTypes";
 import { updateObject } from "../utility";
 import ls from 'local-storage';
@@ -46,6 +46,14 @@ const cartSuccess = (state, action) => {
   });
 
   console.log('cartsuccess shoppingCart: ', this.state.shoppingCart)
+};
+
+
+const cartFail = (state, action) => {
+  return updateObject(state, {
+    error: action.error,
+    loading: false
+  });
 };
 
 
@@ -102,7 +110,6 @@ const removeFromCart = (state, action) => {
       break;
     }
   }
-
   //sets the cart in the local storage.
   //if the new cart isn't set in local storage, the cart isn't updated on page refresh (the item will reappear on the screen)
   ls.set('cart', cart)
@@ -116,9 +123,9 @@ const removeFromCart = (state, action) => {
 
 
 
-
+//is used to decrease quantity in the little +/- thing in the dropdown and on order-summary page
 const decreaseQuantity = (state, action) => {
-  console.log('action from decreaseQuantity: ', action)
+  // console.log('action from decreaseQuantity: ', action)
   let cart = state.shoppingCart
   let cartTotal = 0
 
@@ -149,15 +156,107 @@ const decreaseQuantity = (state, action) => {
 }
 
 
+//this is used when the user logs in.. it merges the two cart objects and updates quantities and prices
+//the two carts are stateCart and savedCart.
+//stateCart is the cart that is already saved in the state when the user logged in. this may be a "blank template" of the cart, or it may contain items that the user added to their cart before they logged in
+//savedCart is a cart that gets pulled from the database when the user logs in. this should contain items.
+const mergeCart = (state, action) => {
+
+  console.log("action.data MERGECART: " , action.data)
 
 
+  //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
+  //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
+  let containsItem = false
+  let stateCartItemIndex = 0
+  let savedCartItemIndex = 0
+  let stateCart = state.shoppingCart
+  let savedCart = action.data
+  let cartTotal = 0
+  let final_price = 0
 
-const cartFail = (state, action) => {
+  //if there is something in the cart already, merge them
+  if(stateCart.order_items.length > 0){
+    //for every item in the user's saved cart (from the DB), loop through all of the items in the "State Cart" and check if the two items are the same item (using item.id)
+    //if they are equal, increase the quantity and order_item final_price of the "state item" with the item from the saved cart.
+    for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
+      //creates a label (titled stateCart) for this loop. this is used for breaking out of just this loop. without the label, the break statement breaks out of both loops
+      stateCart:
+      //this loop is used to loop through the current cart saved in the state and to find out if the saved Cart item is already in the state.
+      for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
+        //without this being set to false, it will only += the quantity of the first alike item, and will just repeatedly add the other items from the DB cart to the state cart
+        containsItem = false
+        if( stateCart.order_items[stateCartItemIndex].item.id == savedCart.order_items[savedCartItemIndex].item.id ){
+          containsItem = true;
+          break stateCart;
+        }
+      }
+      //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
+      if(containsItem){
+        stateCart.order_items[stateCartItemIndex].quantity += savedCart.order_items[savedCartItemIndex].quantity
+        //calculates new final price. uses the new quantity and determines if the item has a discount_price or not and then uses it
+        final_price += (stateCart.order_items[stateCartItemIndex].quantity * (stateCart.order_items[stateCartItemIndex].item.discount_price !== null ? stateCart.order_items[stateCartItemIndex].item.discount_price : stateCart.order_items[stateCartItemIndex].item.price) )
+        stateCart.order_items[stateCartItemIndex].final_price = final_price
+      }else {
+        //if the cart in the state does not contain the item from the saved Cart, then add it to the end of the state cart
+        stateCart.order_items = stateCart.order_items.concat( savedCart.order_items[savedCartItemIndex] )
+      }
+    }
+  } else {
+    //if there is nothing in the cart already, the new cart is all of the information that was stored in the database
+    stateCart = savedCart
+  }
+
+
+  //loops through the order_items and determines what the new total of the  cart is, and assigns that value to cart.total
+  stateCart.order_items.map( item => {
+    cartTotal += item.final_price
+  })
+  stateCart.total = Number(cartTotal.toFixed(2))
+
+
+  ls.set('cart', stateCart)
+
   return updateObject(state, {
-    error: action.error,
+    shoppingCart: stateCart,
+    error: null,
     loading: false
   });
-};
+
+
+  // //loop through every item that is in the cart now and check if it is the item that is being added to the cart
+  // //doing this so that if the item is already there, the quantity will just be increased instead of adding a redundant item
+  // for(itemIndex ; itemIndex < cart.order_items.length ; itemIndex++ ){
+  //   if( cart.order_items[itemIndex].item.id == action.data.item.id ){
+  //     containsItem = true;
+  //     break;
+  //   }
+  // }
+  // //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
+  // if(containsItem){
+  //   cart.order_items[itemIndex].quantity += action.data.quantity
+  //   cart.order_items[itemIndex].final_price += (action.data.quantity * (action.data.item.discount_price !== null ? action.data.item.discount_price : action.data.item.price) )
+  // }else {
+  //   cart.order_items = cart.order_items.concat(action.data)
+  // }
+  //
+  // //loops through the order_items and determines what the new total of the  cart is, and assigns that value to cart.total
+  // cart.order_items.map( item => {
+  //   cartTotal += item.final_price
+  // })
+  // cart.total = Number(cartTotal.toFixed(2))
+  //
+  // return updateObject(state, {
+  //   shoppingCart: cart,
+  //   error: null,
+  //   loading: false
+  // });
+  //
+
+}
+
+
+
 
 
 
@@ -176,6 +275,8 @@ const reducer = (state = initialState, action) => {
       return removeFromCart(state, action);
     case DECREASE_QUANTITY:
       return decreaseQuantity(state, action);
+    case MERGE_CART:
+      return mergeCart(state, action);
     default:
       return state;
   }

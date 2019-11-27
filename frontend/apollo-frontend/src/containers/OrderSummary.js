@@ -54,49 +54,10 @@ class OrderSummary extends React.Component {
     }
 
     componentDidMount(){
-      //updates the cart dropdown and the info in the summary page
-      this.handleGetCartInformation();
-      //this.props.fetchCart();
-    }
 
-    //was repeating these actions a lot so i combined them into the same function
-    handleGetCartInformation = () => {
-      // this.handleF`etchOrder();
-
-      //this.props.fetchCart();
     }
 
 
-    // handleFetchOrder = () => {
-    //   this.setState({loading: true});
-    //
-    //
-    //
-    //
-    //
-    //   authAxios
-    //     .get(orderSummaryURL)
-    //     .then(res => {
-    //       //res.data.order_items.data
-    //       //console.log("RESPONSE (res.data ): " ,  res.data   );
-    //
-    //       //dispatches the cartSuccess method with data
-    //       this.setState( { data: res.data , loading: false } );
-    //     })
-    //     .catch(err => {
-    //       //made this around https://youtu.be/Vm9Z6mm2kcU?t=207
-    //       //this is what gets triggered if there is no current order
-    //       if(err.status === 404){
-    //         console.log(err.reponse);
-    //         this.setState({
-    //           error: "You currently do not have an order" ,
-    //           loading: false
-    //         });
-    //       } else{
-    //         this.setState( {error: err, loading: false} );
-    //       }
-    //     });
-    // };
 
     //created at https://youtu.be/qJN1_2ZwqeA?t=2160
     renderVariations = (orderItem) => {
@@ -296,7 +257,11 @@ class OrderSummary extends React.Component {
                       )
                       :
                       (
-                        <Header>There isn't anything in your cart right now! get to shopping </Header>
+                        <Message
+                          error
+                          header='Your Cart Is Empty'
+                          content='Oops! You have nothing in your cart right now. Get to shopping'
+                        />
                       )
                       }
                     </Grid.Column>

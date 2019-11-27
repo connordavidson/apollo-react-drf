@@ -34,10 +34,13 @@ There will need to be changes in the backend that create a "OrderItemOrder" type
   this is needed because an order can be split up (for any number of reasons ie. different items in different warehouses)
   and those new 'OrderItemOrder' orders will need to have data that is required of an Order (ie. being able to track each order item individually, instead of tracking the order as a whole)
 
+
 **need to change**
 figure out how to have multiple buttons on the individual item card
 
-
+***NEED to DO***
+display the up-to-date shipping info per item using the UPS shipping api
+  https://www.ups.com/us/en/services/technology-integration/online-tools-tracking.page?
 
 */
 

@@ -88,6 +88,25 @@ const addToCart = (state, action) => {
   })
   cart.total = Number(cartTotal.toFixed(2))
 
+
+  // //logic for adding the item into the database if the user is logged in 
+  // if(ls.get('token') !== null){
+  //   authAxios
+  //     .post( addToCartURL , {slug}  )
+  //     .then(res => {
+  //       // console.log(res.data, addToCartURL, "add to cart succeeded");
+  //       this.props.fetchCart();
+  //       this.setState({ loading: false });
+  //     })
+  //     .catch(err => {
+  //       this.setState({ error: err, loading: false });
+  //       // console.log(err , 'add-to-cart failed ');
+  //     });
+  // }
+
+
+
+
   return updateObject(state, {
     shoppingCart: cart,
     error: null,
@@ -193,10 +212,14 @@ const mergeCart = (state, action) => {
       }
       //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
       if(containsItem){
-        stateCart.order_items[stateCartItemIndex].quantity += savedCart.order_items[savedCartItemIndex].quantity
-        //calculates new final price. uses the new quantity and determines if the item has a discount_price or not and then uses it
-        final_price += (stateCart.order_items[stateCartItemIndex].quantity * (stateCart.order_items[stateCartItemIndex].item.discount_price !== null ? stateCart.order_items[stateCartItemIndex].item.discount_price : stateCart.order_items[stateCartItemIndex].item.price) )
-        stateCart.order_items[stateCartItemIndex].final_price = final_price
+        //if the quantity of the item in the State Cart is less than the quantity of the item from the Saved Cart, then set the Quantity of the State cart to the quantity of the Saved Cart
+        //if the quantity is greater, then don't do anything. bc they obviously want more than they previously had put into their cart
+        if(stateCart.order_items[stateCartItemIndex].quantity < savedCart.order_items[savedCartItemIndex].quantity){
+          stateCart.order_items[stateCartItemIndex].quantity = savedCart.order_items[savedCartItemIndex].quantity
+          //calculates new final price of the item (based on the new quantity). uses the new quantity and determines if the item has a discount_price or not and then uses it
+          final_price += (stateCart.order_items[stateCartItemIndex].quantity * (stateCart.order_items[stateCartItemIndex].item.discount_price !== null ? stateCart.order_items[stateCartItemIndex].item.discount_price : stateCart.order_items[stateCartItemIndex].item.price) )
+          stateCart.order_items[stateCartItemIndex].final_price = final_price
+        }
       }else {
         //if the cart in the state does not contain the item from the saved Cart, then add it to the end of the state cart
         stateCart.order_items = stateCart.order_items.concat( savedCart.order_items[savedCartItemIndex] )

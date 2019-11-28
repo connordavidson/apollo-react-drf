@@ -53,6 +53,8 @@ class CustomLayout extends React.Component {
     ls.set('cart', this.props.cart)
 
     this.props.fetchCart();
+
+
     // console.log('this.props.cart in componentDidMount: ' , this.props.cart)
   }
 

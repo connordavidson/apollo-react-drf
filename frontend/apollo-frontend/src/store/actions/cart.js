@@ -99,9 +99,8 @@ export const fetchCart = () => {
 
 export const removeItemFromCart = (data) => {
   return dispatch => {
-    //for some reason, the navigation bar doesn't update when this line gets removed
+    //for some reason, the navigation bar doesn't update without dispatch(cartStart())
     dispatch(cartStart())
-
     dispatch(removeFromCart(data))
   }
 }
@@ -109,9 +108,8 @@ export const removeItemFromCart = (data) => {
 export const decreaseItemQuantity = (data) => {
 
   return dispatch => {
-    //for some reason, the navigation bar doesn't update when this line gets removed
+    //for some reason, the navigation bar doesn't update without dispatch(cartStart())
     dispatch(cartStart())
-
     dispatch(decreaseQuantity(data))
   }
 }

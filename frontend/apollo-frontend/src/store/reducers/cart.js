@@ -24,7 +24,7 @@ const initialState = {
     },
 
   error: null,
-  loading: false
+  loading: false,
 }
 
 
@@ -88,8 +88,7 @@ const addToCart = (state, action) => {
   })
   cart.total = Number(cartTotal.toFixed(2))
 
-
-  // //logic for adding the item into the database if the user is logged in 
+  // //logic for adding the item into the database if the user is logged in
   // if(ls.get('token') !== null){
   //   authAxios
   //     .post( addToCartURL , {slug}  )
@@ -103,9 +102,6 @@ const addToCart = (state, action) => {
   //       // console.log(err , 'add-to-cart failed ');
   //     });
   // }
-
-
-
 
   return updateObject(state, {
     shoppingCart: cart,
@@ -285,7 +281,6 @@ const mergeCart = (state, action) => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-
     case CART_START:
       return cartStart(state, action);
     case CART_SUCCESS:

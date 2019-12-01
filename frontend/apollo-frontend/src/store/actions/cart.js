@@ -14,7 +14,6 @@ import {authAxios} from '../../utils';
 import {
   orderSummaryURL,
   productDetailURL,
-
 } from '../../constants';
 
 

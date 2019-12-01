@@ -11,3 +11,10 @@ export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const DECREASE_QUANTITY = 'DECREASE_QUANTITY';
 export const MERGE_CART = 'MERGE_CART';
+
+
+
+
+export const CHANGE_TAB = "CHANGE_TAB";
+export const TAB_START = "TAB_START";
+export const TAB_FAIL = "TAB_FAIL";

@@ -28,6 +28,7 @@ import {
   decreaseItemQuantity,
 
  } from "../store/actions/cart";
+
 import { logout } from "../store/actions/auth";
 import { authAxios } from '../utils';
 import {
@@ -47,14 +48,10 @@ import {
 class CustomLayout extends React.Component {
 
   componentDidMount() {
-
     //grabs the cart data every time the layout is rendered
     //this.props.fetchCart();
     ls.set('cart', this.props.cart)
-
     this.props.fetchCart();
-
-
     // console.log('this.props.cart in componentDidMount: ' , this.props.cart)
   }
 
@@ -352,6 +349,7 @@ class CustomLayout extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log('state' , state)
   return {
     authenticated: state.auth.token !== null,
     cart: state.cart.shoppingCart,

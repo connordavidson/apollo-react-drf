@@ -22,7 +22,7 @@ import ls from 'local-storage';
 
 
 import {
-  fetchCart,
+  mergeCartOnLogin,
   addItemToCart,
   removeItemFromCart,
   decreaseItemQuantity,
@@ -49,19 +49,17 @@ class CustomLayout extends React.Component {
 
   componentDidMount() {
     //grabs the cart data every time the layout is rendered
-    //this.props.fetchCart();
     ls.set('cart', this.props.cart)
-    this.props.fetchCart();
-    // console.log('this.props.cart in componentDidMount: ' , this.props.cart)
+
   }
 
   componentWillUnmount() {
     // console.log('this.props.cart in componentWillUnmount: ' , this.props.cart)
-
     ls.set('cart', this.props.cart)
   }
 
   componentDidUpdate(prevProps){
+
     // console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
     if(this.props.cart === prevProps.cart){
       // console.log('this.props.cart in componentDidUpdate: ' , this.props.cart)
@@ -130,7 +128,10 @@ class CustomLayout extends React.Component {
     const { authenticated, cart, loading, username } = this.props;
 
     //console.log('cart from customlayout render(): ', this.props.cart)
-
+    // {
+    //   authenticated &&
+    //   this.props.mergeCartOnLogin();
+    // }
     return (
       <div>
         <Menu color='blue' inverted size='huge'>
@@ -349,7 +350,6 @@ class CustomLayout extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('state' , state)
   return {
     authenticated: state.auth.token !== null,
     cart: state.cart.shoppingCart,
@@ -359,7 +359,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch( fetchCart() ),
+    mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
     removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
     decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),

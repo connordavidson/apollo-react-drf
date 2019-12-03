@@ -4,7 +4,6 @@ import {
   Tab,
 } from 'semantic-ui-react'
 import {withRouter} from 'react-router';
-import {connect} from 'react-redux';
 import ls from 'local-storage';
 
 import HomeTab from './HomeTab'
@@ -28,7 +27,6 @@ class NavigationTabs extends React.Component {
   }
 
   render(){
-
     const panes = [
       //tabpane makes the tab have an outline around the content
       { menuItem: 'Home',           render: () =>

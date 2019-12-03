@@ -182,9 +182,7 @@ class AllOrdersView(ListAPIView):
     serializer_class = AllOrdersSerializer
 
     def get_queryset(self):
-        #made big changes to this at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=3030
         qs = Order.objects.all()
-
         return qs.filter(user=self.request.user, ordered=True)
 
 

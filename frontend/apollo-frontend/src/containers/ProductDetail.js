@@ -27,6 +27,7 @@ import {
 import NumberInput from 'semantic-ui-react-numberinput';
 import axios from 'axios';
 import {connect} from 'react-redux';
+import ls from 'local-storage';
 
 
 
@@ -35,11 +36,11 @@ import {
   productDetailURL,
   addToCartURL,
   productReviewListURL,
-  
+
 } from '../constants'
 import {authAxios} from '../utils';
 import {
-  fetchCart,
+  mergeCartOnLogin,
   addItemToCart,
 
  } from '../store/actions/cart';
@@ -72,7 +73,7 @@ class ProductDetail extends React.Component {
   componentDidMount() {
     this.handleFetchItem();
     this.handleFetchReviews();
-    this.props.fetchCart();
+    //this.props.mergeCartOnLogin();
   }
 
   //retrieves the product info from the database
@@ -102,7 +103,7 @@ class ProductDetail extends React.Component {
     //   .post( addToCartURL , { slug, variations, quantity} )
     //   .then(res => {
     //     //console.log(res.data, addToCartURL, "add to cart succeeded");
-    //     this.props.fetchCart();
+    //     this.props.mergeCartOnLogin();
     //     this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
     //   })
     //   .catch(err => {
@@ -116,39 +117,21 @@ class ProductDetail extends React.Component {
 
   handleAddToCart = (data, quantity) => {
 
+    console.log('data from addtocart: ' , data)
+    const slug = data.slug
+
     // console.log('quanityt from handleaddtocart: ', quantity)
     this.setState({ loading: true });
     const {formData} = this.state;
     //filters  the data into the correct format fot the backend
-    const variations = this.handleFormatData(formData);
-    // console.log('variations from handleaddtocart : ', variations)
+    const variations = [] //this.handleFormatData(formData);
+
+    //console.log('variations from handleaddtocart : ', variations)
+
     this.props.addItemToCart(data, quantity, variations)
 
     this.setState({loading: false});
 
-    // const productID = this.props.match.params.productID;
-    // axios
-    //   .get( productDetailURL(productID) )
-    //   .then(res => {
-    //     this.props.addItemToCart(produc)
-    //     this.setState({data: res.data, loading: false});
-    //     console.log('response data: ', )
-    //   })
-    //   .catch(err =>{
-    //     this.setState({error: err, loading: false});
-    //   });
-
-    // axios
-    // .post( addToCartURL , { slug, variations, quantity} )
-    // .then(res => {
-    //   //console.log(res.data, addToCartURL, "add to cart succeeded");
-    //   this.props.fetchCart();
-    //   this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
-    // })
-    // .catch(err => {
-    //   this.setState({ error: err, loading: false });
-    //   console.log(err.message , 'add-to-cart failed ');
-    // });
   }
 
 
@@ -507,7 +490,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch(fetchCart()),
+    mergeCartOnLogin: () => dispatch(mergeCartOnLogin()),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
   }
 }

@@ -16,10 +16,11 @@ import {
 } from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import { Link, Redirect, withRouter} from 'react-router-dom';
+import ls from 'local-storage';
 
 
 import {
-    fetchCart,
+    mergeCartOnLogin,
     addItemToCart,
     removeItemFromCart,
     decreaseItemQuantity,
@@ -53,9 +54,10 @@ class OrderSummary extends React.Component {
       increased: false
     }
 
-    componentDidMount(){
-
-    }
+    // componentDidMount(){
+    //   this.props.mergeCartOnLogin();
+    //
+    // }
 
 
 
@@ -100,7 +102,9 @@ class OrderSummary extends React.Component {
     //made at https://youtu.be/8UEZsm4tCpY?t=150
     handleRemoveItem = (itemID) => {
       this.setState({loading : true})
+
       this.props.removeItemFromCart(itemID)
+
       this.setState({loading : false})
     }
 
@@ -302,7 +306,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch( fetchCart() ),
+    mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
     removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
     decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),

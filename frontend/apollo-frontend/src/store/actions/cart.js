@@ -77,12 +77,20 @@ export const mergeCart = (data) => {
 
 
 
-
 //what we call when the app is loaded. fetches whatever is in the cart at load and can be called again to update the display with the contents of the cart
-export const fetchCart = () => {
+export const mergeCartOnLogin = (token) => {
+
   return dispatch => {
     dispatch(cartStart());
-    authAxios
+    //this is basically just authAxios from utils.js...
+    //when calling margeCartOnLogin() in authLogin, it wouldn't get the updated token from local storage so i had to change this so that it takes in the token as a parameter
+    axios
+      .create({
+        baseURL: 'http://127.0.0.1:8000/api' ,
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      })
       .get(orderSummaryURL)
       .then(res => {
         //dispatches the cartSuccess method with the response data

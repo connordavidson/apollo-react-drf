@@ -9,6 +9,11 @@ import {
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
+
+import {
+  mergeCartOnLogin
+} from '../store/actions/cart';
+
 import { authLogin } from "../store/actions/auth";
 
 
@@ -28,14 +33,21 @@ class LoginForm extends React.Component {
     this.props.login(username, password);
   };
 
+
+  // componentWillUnmount() {
+  //   this.props.mergeCartOnLogin();
+  // }
+
   render() {
     const { error, loading, token } = this.props;
     const { username, password } = this.state;
 
-    //redirects to the home page after the user is logged in
+    // //redirects to the home page after the user is logged in
     if (token) {
-      return <Redirect to="/" />;
+      return <Redirect to="/" />
     }
+
+
 
     return (
       <Grid
@@ -97,13 +109,15 @@ const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    token: state.auth.token
+    token: state.auth.token,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (username, password) => dispatch(authLogin(username, password))
+    login: (username, password) => dispatch(authLogin(username, password)),
+    mergeCartOnLogin: () => dispatch(mergeCartOnLogin()),
+
   };
 };
 

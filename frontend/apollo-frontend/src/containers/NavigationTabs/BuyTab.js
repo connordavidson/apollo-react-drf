@@ -27,7 +27,7 @@ import {connect} from 'react-redux';
 
 
 import {
-    fetchCart,
+    mergeCartOnLogin,
     addItemToCart
   } from '../../store/actions/cart';
 
@@ -106,7 +106,7 @@ class BuyTab extends React.Component {
     //filters  the data into the correct format fot the backend
     const variations = []
 
-    this.props.addItemToCart(data, 1, variations)
+    this.props.addItemToCart(data, quantity, variations)
 
     this.setState({loading: false});
 
@@ -116,7 +116,7 @@ class BuyTab extends React.Component {
     // .post( addToCartURL , { slug, variations, quantity} )
     // .then(res => {
     //   //console.log(res.data, addToCartURL, "add to cart succeeded");
-    //   this.props.fetchCart();
+    //   this.props.mergeCartOnLogin();
     //   this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
     // })
     // .catch(err => {
@@ -475,7 +475,7 @@ class BuyTab extends React.Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch(fetchCart()),
+    mergeCartOnLogin: () => dispatch(mergeCartOnLogin()),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
 
   }

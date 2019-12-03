@@ -9,6 +9,13 @@ import {
 } from "../actions/actionTypes";
 import { updateObject } from "../utility";
 import ls from 'local-storage';
+import {
+    productListURL,
+    addToCartURL,
+    productSearchListURL
+  } from '../../constants';
+
+import {authAxios} from '../../utils';
 
 
 
@@ -62,6 +69,7 @@ const cartFail = (state, action) => {
 const addToCart = (state, action) => {
   //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
   //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
+  console.log('action.data from addToCart in Reducers', action.data)
   let containsItem = false
   let itemIndex = 0
   let cart = state.shoppingCart
@@ -88,20 +96,6 @@ const addToCart = (state, action) => {
   })
   cart.total = Number(cartTotal.toFixed(2))
 
-  // //logic for adding the item into the database if the user is logged in
-  // if(ls.get('token') !== null){
-  //   authAxios
-  //     .post( addToCartURL , {slug}  )
-  //     .then(res => {
-  //       // console.log(res.data, addToCartURL, "add to cart succeeded");
-  //       this.props.fetchCart();
-  //       this.setState({ loading: false });
-  //     })
-  //     .catch(err => {
-  //       this.setState({ error: err, loading: false });
-  //       // console.log(err , 'add-to-cart failed ');
-  //     });
-  // }
 
   return updateObject(state, {
     shoppingCart: cart,
@@ -163,6 +157,7 @@ const decreaseQuantity = (state, action) => {
   })
   cart.total = Number(cartTotal.toFixed(2))
 
+
   return updateObject(state, {
     shoppingCart: cart,
     error: null,
@@ -177,8 +172,7 @@ const decreaseQuantity = (state, action) => {
 //savedCart is a cart that gets pulled from the database when the user logs in. this should contain items.
 const mergeCart = (state, action) => {
 
-  console.log("action.data MERGECART: " , action.data)
-
+  // console.log("action.data MERGECART: " , action.data)
 
   //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
   //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array

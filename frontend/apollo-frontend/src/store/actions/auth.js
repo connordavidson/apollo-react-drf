@@ -1,6 +1,18 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
-import {fetchCart} from "./cart";
+import {
+  mergeCartOnLogin,
+  cartStart,
+  mergeCart,
+  cartFail,
+
+} from "./cart";
+import {authAxios} from '../../utils';
+import {
+  orderSummaryURL,
+} from '../../constants';
+
+
 
 export const authStart = () => {
   return {
@@ -53,8 +65,9 @@ export const authLogin = (username, password) => {
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(10000));
-        
 
+        //merges the cart when the user logs in. mergeCartOnLogin is located in actions/cart.js
+        dispatch( mergeCartOnLogin(token) )
 
       })
       .catch(err => {

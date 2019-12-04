@@ -2,15 +2,8 @@ import axios from "axios";
 import * as actionTypes from "./actionTypes";
 import {
   mergeCartOnLogin,
-  cartStart,
-  mergeCart,
-  cartFail,
-
+  removeCartOnLogout,
 } from "./cart";
-import {authAxios} from '../../utils';
-import {
-  orderSummaryURL,
-} from '../../constants';
 
 
 
@@ -35,12 +28,11 @@ export const authFail = error => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("expirationDate");
   return {
     type: actionTypes.AUTH_LOGOUT
   };
 };
+
 
 export const checkAuthTimeout = (expirationTime) => {
   return dispatch => {
@@ -49,6 +41,7 @@ export const checkAuthTimeout = (expirationTime) => {
     }, expirationTime * 1000);
   };
 };
+
 
 export const authLogin = (username, password) => {
   return dispatch => {
@@ -103,7 +96,6 @@ export const authSignup = (username, email, password1, password2) => {
 
 //added username to the authSuccess part and in the parameters of the function on 11/5/19
 export const authCheckState = (username) => {
-
   return dispatch => {
     const token = localStorage.getItem("token");
     if (token === undefined) {
@@ -123,3 +115,20 @@ export const authCheckState = (username) => {
     }
   };
 };
+
+
+
+
+export const logoutRemoveCart = () => {
+  const token = localStorage.getItem('token')
+  //removes the token and expiration date from local storage
+  localStorage.removeItem("token");
+  localStorage.removeItem("expirationDate");
+
+  console.log('TOKEN: ', token)
+  return dispatch => {
+    //calls removeCartOnLogout() from actions/cart.js
+    dispatch( removeCartOnLogout(token) )
+    dispatch( logout() )
+  }
+}

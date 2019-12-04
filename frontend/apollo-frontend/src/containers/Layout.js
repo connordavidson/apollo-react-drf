@@ -22,14 +22,14 @@ import ls from 'local-storage';
 
 
 import {
-  mergeCartOnLogin,
+  // mergeCartOnLogin,
   addItemToCart,
   removeItemFromCart,
   decreaseItemQuantity,
 
  } from "../store/actions/cart";
 
-import { logout } from "../store/actions/auth";
+import { logoutRemoveCart } from "../store/actions/auth";
 import { authAxios } from '../utils';
 import {
   orderItemDeleteURL,
@@ -126,12 +126,6 @@ class CustomLayout extends React.Component {
   render() {
     //instantiates constants from the props
     const { authenticated, cart, loading, username } = this.props;
-
-    //console.log('cart from customlayout render(): ', this.props.cart)
-    // {
-    //   authenticated &&
-    //   this.props.mergeCartOnLogin();
-    // }
     return (
       <div>
         <Menu color='blue' inverted size='huge'>
@@ -151,7 +145,7 @@ class CustomLayout extends React.Component {
                 <Dropdown
                     icon='cart'
                     loading= {loading}
-                    text= { `${ cart!== null && cart.order_items.length > 0 ? cart.order_items.length : 0} ` }
+                    text= { `${ cart !== null && cart.order_items.length > 0 ? cart.order_items.length : 0} ` }
                     pointing
                     className='link item'
                     direction='left'
@@ -186,6 +180,9 @@ class CustomLayout extends React.Component {
                                     </Message.Header>
                                     <p>
 
+
+
+
                                       <Label>
                                         <Icon
                                           name='minus'
@@ -199,6 +196,7 @@ class CustomLayout extends React.Component {
 
                                         <Label.Detail>
                                           <Icon
+
                                             name='plus'
                                             color='green'
                                             style={{cursor: 'pointer'}}
@@ -254,7 +252,7 @@ class CustomLayout extends React.Component {
                 <Menu.Item onClick={() => this.props.history.push(`/profile`)}>
                   Account
                 </Menu.Item>
-                <Menu.Item onClick={ () => logout() }>
+                <Menu.Item onClick={ () => this.props.logoutRemoveCart() }>
                   Logout
                 </Menu.Item>
               </React.Fragment>
@@ -356,14 +354,14 @@ const mapStateToProps = (state) => {
     loading: state.cart.loading,
   };
 };
-
+//
 const mapDispatchToProps = (dispatch) => {
   return {
-    mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
+    //mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
     removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
     decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),
-
+    logoutRemoveCart: (token) => dispatch(logoutRemoveCart(token))
   };
 };
 

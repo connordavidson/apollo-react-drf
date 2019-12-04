@@ -1,5 +1,9 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
+import {
+  removeCartOnLogout,
+} from "../actions/cart";
+
 
 const initialState = {
   token: null,
@@ -15,7 +19,7 @@ const authStart = (state, action) => {
   });
 };
 
-//added username
+
 const authSuccess = (state, action) => {
 
   return updateObject(state, {
@@ -34,6 +38,7 @@ const authFail = (state, action) => {
 };
 
 const authLogout = (state, action) => {
+  
   return updateObject(state, {
     token: null
   });

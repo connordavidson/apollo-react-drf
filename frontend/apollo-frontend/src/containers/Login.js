@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
 
 import {
-  mergeCartOnLogin
+  // mergeCartOnLogin
 } from '../store/actions/cart';
 
 import { authLogin } from "../store/actions/auth";
@@ -32,11 +32,6 @@ class LoginForm extends React.Component {
     const { username, password } = this.state;
     this.props.login(username, password);
   };
-
-
-  // componentWillUnmount() {
-  //   this.props.mergeCartOnLogin();
-  // }
 
   render() {
     const { error, loading, token } = this.props;
@@ -116,7 +111,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     login: (username, password) => dispatch(authLogin(username, password)),
-    mergeCartOnLogin: () => dispatch(mergeCartOnLogin()),
+    // mergeCartOnLogin: () => dispatch(mergeCartOnLogin()),
 
   };
 };

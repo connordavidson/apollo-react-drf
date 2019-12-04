@@ -6,30 +6,35 @@ import {
   REMOVE_FROM_CART,
   DECREASE_QUANTITY,
   MERGE_CART,
+  REMOVE_CART,
+
 } from "../actions/actionTypes";
+import axios from "axios";
+
 import { updateObject } from "../utility";
 import ls from 'local-storage';
 import {
     productListURL,
     addToCartURL,
-    productSearchListURL
-  } from '../../constants';
+    productSearchListURL,
+    orderSummaryURL,
+    orderItemDeleteURL,
 
+  } from '../../constants';
 import {authAxios} from '../../utils';
 
+const cartTemplate = {
+    'coupon' : null,
+    'id' : 0,
+    'order_items' : [],
+    'total': 0
+  }
 
 
 const initialState = {
   //assigns shoppingCart to 'cart' in the local storage,
   //  or assigns it to the basic outline that the DB is expecting (if they have never been to the site before )
-  shoppingCart: ls.get('cart') ||
-    {
-      'coupon' : null,
-      'id' : 0,
-      'order_items' : [],
-      'total': 0
-    },
-
+  shoppingCart: ls.get('cart') || cartTemplate,
   error: null,
   loading: false,
 }
@@ -171,9 +176,6 @@ const decreaseQuantity = (state, action) => {
 //stateCart is the cart that is already saved in the state when the user logged in. this may be a "blank template" of the cart, or it may contain items that the user added to their cart before they logged in
 //savedCart is a cart that gets pulled from the database when the user logs in. this should contain items.
 const mergeCart = (state, action) => {
-
-  // console.log("action.data MERGECART: " , action.data)
-
   //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
   //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
   let containsItem = false
@@ -235,42 +237,102 @@ const mergeCart = (state, action) => {
     error: null,
     loading: false
   });
-
-
-  // //loop through every item that is in the cart now and check if it is the item that is being added to the cart
-  // //doing this so that if the item is already there, the quantity will just be increased instead of adding a redundant item
-  // for(itemIndex ; itemIndex < cart.order_items.length ; itemIndex++ ){
-  //   if( cart.order_items[itemIndex].item.id == action.data.item.id ){
-  //     containsItem = true;
-  //     break;
-  //   }
-  // }
-  // //if it contains the item, increase the quantity of the item that is already in the array if it doesn't, add it to the array
-  // if(containsItem){
-  //   cart.order_items[itemIndex].quantity += action.data.quantity
-  //   cart.order_items[itemIndex].final_price += (action.data.quantity * (action.data.item.discount_price !== null ? action.data.item.discount_price : action.data.item.price) )
-  // }else {
-  //   cart.order_items = cart.order_items.concat(action.data)
-  // }
-  //
-  // //loops through the order_items and determines what the new total of the  cart is, and assigns that value to cart.total
-  // cart.order_items.map( item => {
-  //   cartTotal += item.final_price
-  // })
-  // cart.total = Number(cartTotal.toFixed(2))
-  //
-  // return updateObject(state, {
-  //   shoppingCart: cart,
-  //   error: null,
-  //   loading: false
-  // });
-  //
-
 }
 
 
 
 
+
+
+const removeCart = (state, action) => {
+  // console.log('action from reducers/cart/removecart: ', action)
+  // console.log('state from reducers/cart/removecart: ', state)
+  // /*
+  // insert logic for adding/removing items from the database to reflect the current state
+  // */
+  // let savedCart = action.data
+  // let stateCart = state.shoppingCart
+  // let containsItem = false
+  // let stateCartItemIndex = 0
+  // let savedCartItemIndex = 0
+  //
+  // const token = action.data
+  // //gets the cart that is stored in the Database
+  // console.log('ACTION.DATA IN REDUCERS/CART/REMOVECART : ', action.data)
+  //
+  //
+  // console.log('STATECART: ', stateCart)
+  // console.log('SAVED CART: ', savedCart)
+  //
+  //
+  // //if there are order_items in the stateCart, compare the stateCart order_items to the savedCart order_items and add/remove where necessary
+  // if(stateCart.order_items.length > 0){
+  //   //loop through the stateCart and the savedCart and compare the two items, if they are the same, containsItem = True
+  //
+  //   for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
+  //
+  //     //creates a label (titled stateCart) for this loop. this is used for breaking out of just this loop. without the label, the break statement breaks out of both loops
+  //     savedCart:
+  //     //this loop is used to loop through the current cart saved in the database and to find out if the state Cart item is already in the DB.
+  //     for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
+  //       //without this being set to false, it will only += the quantity of the first alike item, and will just repeatedly add the other items from the DB cart to the state cart
+  //       containsItem = false
+  //       if( stateCart.order_items[stateCartItemIndex].item.id == savedCart.order_items[savedCartItemIndex].item.id ){
+  //         console.log('contains item: ', stateCart.order_items[stateCartItemIndex].item)
+  //         containsItem = true;
+  //         break savedCart;
+  //       }
+  //     }
+  //
+  //
+  //     //if the savedCart contains the item in the stateCart
+  //     if(!containsItem){
+  //       console.log('DOES NOT CONTAIN ITEM ' )
+  //
+  //       return function(dispatch){
+  //         console.log('inside thunk return function')
+  //         let slug = (stateCart.order_items[savedCartItemIndex].item.slug)
+  //         //do something with this... figure out the correct way to do this
+  //         return
+  //           authAxios
+  //           .post( addToCartURL , {  slug  } ) //second parameter is the variations... leaving is at [] for now
+  //           .then(res => {
+  //             console.log(res.data, addToCartURL, "add to cart succeeded");
+  //             //this.handleFetchOrder();
+  //             // this.setState({ loading: false });
+  //           })
+  //           .catch(err => {
+  //             // this.setState({ error: err, loading: false });
+  //             console.log(err , 'add-to-cart failed ');
+  //           });
+  //       }
+  //
+  //
+  //     }
+  //     //If the savedCart contains the item, add it
+  //     else{
+  //       //if it does not contains the item, do nothing
+  //       //WILL NEED TO DOUBLE CHECK THE QUANTITIES LATER
+  //       console.log('containsItem === TRUE')
+  //     }
+  //   }
+  // }
+  // //if there are no order_items in the stateCart, remove all the order_items from the savedCart
+  // else{
+  //   //loop through the savedCart and delete all the order items
+  //
+  // }
+
+
+
+  //sets the 'cart' in local storage to the cartTemplate, and does the samething to the cart in the state
+  ls.set('cart', cartTemplate)
+  return updateObject(state, {
+    shoppingCart: cartTemplate,
+    error: null,
+    loading: false
+  });
+}
 
 
 const reducer = (state = initialState, action) => {
@@ -289,6 +351,8 @@ const reducer = (state = initialState, action) => {
       return decreaseQuantity(state, action);
     case MERGE_CART:
       return mergeCart(state, action);
+    case REMOVE_CART:
+      return removeCart(state, action);
     default:
       return state;
   }

@@ -17,8 +17,17 @@ import {
   orderSummaryURL,
   productDetailURL,
   addToCartURL,
+  orderItemDeleteURL,
 
 } from '../../constants';
+
+
+
+/*
+**TO DO**
+need to reqork removeCartOnLogout() to be more efficient and Human-Readable
+*/
+
 
 
 export const cartStart = () => {
@@ -166,22 +175,30 @@ export const addItemToCart = (data, quantity, variations) => {
 
 
 
+
+
+/* seems to work as expected.. for now (12/5/19)
+This function is kind of sloppy and will definitely need revision in the future.
+Premise of this function:
+  when the user logs out, the cart that they have in their state needs to be added to the Database, so that it can be loaded next time they Login
+To achieve this goal, I decided to retrieve the cart from the database and compare it to the Cart currently in the State.
+  when comparing them, it creates two Arrays. One for the items that are you unique to the Database Cart and one for items that are Unique to the State Cart
+  If the user has something saved in the Database Cart but it is not in their State CArt (namely, they deleted it from their cart after they logged in)
+    then delete that item
+  If the user has something in their State Cart that is not in the database (namely, they added it after they logged in)
+    then add that item to the database
+*/
 export const removeCartOnLogout = (token) => {
   return (dispatch, getState) => {
 
     //getState gets the state from the Redux Store
     const stateCart = getState().cart.shoppingCart
     let savedCart = null
-      // {
-      //   'coupon' : null,
-      //   'id' : 0,
-      //   'order_items' : [],
-      //   'total': 0
-      // }
-    let containsItem = false
+    let itemsMatch = false
     let stateCartItemIndex = 0
     let savedCartItemIndex = 0
-
+    let uniqueToDatabase = []
+    let uniqueToState = []
 
     axios
       .create({
@@ -201,32 +218,33 @@ export const removeCartOnLogout = (token) => {
       console.log('error inside axios in actions/cart/removeCartOnLogout : ' , error )
     })
 
+
+
+    //sets a timeout in order to give time for a response in the axios.get() above
     setTimeout( () => {
-
-      //there are items in the State Cart compare every item from the Saved Cart and the State Cart.
-      //if the item is not already saved in the DB, insert it. if it is already in the db, ignore it
-      if(stateCart.order_items.length > 0){
-
-        for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
-          console.log('STATE CART ITEM ID: ', stateCart.order_items[stateCartItemIndex].item.id)
-          //creates a label (titled stateCart) for this loop. this is used for breaking out of just this loop. without the label, the break statement breaks out of both loops
-          savedCart:
-          //this loop is used to loop through the current cart saved in the database and to find out if the state Cart item is already in the DB.
-          for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
-            console.log('SAVED CART ITEM ID: ', stateCart.order_items[stateCartItemIndex].item.id)
-            //without this being set to false, it will only += the quantity of the first alike item, and will just repeatedly add the other items from the DB cart to the state cart
-            containsItem = false
-            if( stateCart.order_items[stateCartItemIndex].item.id === savedCart.order_items[savedCartItemIndex].item.id ){
-              console.log('contains item: ', stateCart.order_items[stateCartItemIndex].item)
-              containsItem = true;
-              break savedCart;
+        //if the item is not already saved in the DB, insert it if it is already in the db, ignore it
+        //these nested loops are used to find the order_items that are unique to the Cart stored in the database.
+        //it starts by looping through every item in the State Cart and comparing it to every item in the Saved Cart.
+        //if they are not the same, it stores the index of the item in the uniqueToDatabase array
+        if(stateCart.order_items.length > 0){
+          for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
+            for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
+              itemsMatch = false
+              if( stateCart.order_items[stateCartItemIndex].item.id === savedCart.order_items[savedCartItemIndex].item.id ){
+                itemsMatch = true;
+              }
+              //if the items don't match, add the index of the item from the DB into the uniqueToDatabase array
+              if(!itemsMatch){
+                uniqueToDatabase.push(savedCartItemIndex)
+              }
             }
           }
-
-          console.log('NEW STATE CART ITEM')
-          //if the DB Cart doesn't contain the item from the state, insert it into the DB
-          if(!containsItem){
-            const slug = stateCart.order_items[stateCartItemIndex].item.slug
+        }
+        //if the length of the State Cart is 0..
+        else{
+          //if there is nothing in the State Cart, remove all the items from the Saved Cart
+          for(let i = 0 ; i < savedCart.order_items.length ; i++){
+            //console.log('savedCart.order_items[uniqueToDatabase[i]].id inside DELETE: ', savedCart.order_items[uniqueToDatabase[i]].id)
             axios
               .create({
                 baseURL: 'http://127.0.0.1:8000/api' ,
@@ -234,12 +252,29 @@ export const removeCartOnLogout = (token) => {
                   Authorization: `Token ${token}`
                 }
               })
-              .post( addToCartURL , { slug } )
-              .then(res => {
-                console.log("add to cart succeeded");
-                // this.handleFetchOrder();
-                // this.setState({ loading: false });
+              .delete( orderItemDeleteURL( savedCart.order_items[i].id) )
+              //.delete( addToCartURL , { slug } )
+              .catch(err => {
+                // this.setState({ error: err, loading: false });
+                console.log(err , 'add-to-cart failed ');
+              });
+          }
+        }
+        console.log('uniqueToDatabase array: ', uniqueToDatabase)
+        //loops through the uniqueToDatabase array and removes the item from the Saved Cart in the database
+        //"if there is something in the Database that isn't in the state, remove it"
+        if(uniqueToDatabase.length > 0){
+          for(let i = 0 ; i < uniqueToDatabase.length ; i++){
+            console.log('savedCart.order_items[uniqueToDatabase[i]].id inside DELETE: ', savedCart.order_items[uniqueToDatabase[i]].id)
+            axios
+              .create({
+                baseURL: 'http://127.0.0.1:8000/api' ,
+                headers: {
+                  Authorization: `Token ${token}`
+                }
               })
+              .delete( orderItemDeleteURL( savedCart.order_items[uniqueToDatabase[i]].id) )
+              //.delete( addToCartURL , { slug } )
               .catch(err => {
                 // this.setState({ error: err, loading: false });
                 console.log(err , 'add-to-cart failed ');
@@ -248,28 +283,71 @@ export const removeCartOnLogout = (token) => {
         }
 
 
+      setTimeout( () => {
+        //this if uses very similar logic the the If above it
+        //this checks to make sure that the database doesn't have any items that are not in the state
+        if( savedCart.order_items.length > 0 ){
+          stateCartItemIndex = 0
+          savedCartItemIndex = 0
+          for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
+            for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
+              itemsMatch = false
+              if( stateCart.order_items[stateCartItemIndex].item.id === savedCart.order_items[savedCartItemIndex].item.id ){
+                itemsMatch = true;
+              }
+              if(!itemsMatch){
+                uniqueToState.push(stateCartItemIndex)
+              }
+            }
+          }
+          console.log('uniqueToState array : ', uniqueToState)
 
-      }
-      //if there are no items in the State Cart, remove everything from the db
-      else {
-        /*
-        LOOP THROUGH THE SAVED CART AND DELETE EVERY ITEM
-        for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
-          authAxios
-          .delete( orderItemDeleteURL( savedCart.order_items[savedCartItemIndex].item.id ) )
-          .then(res => {
-            //callback
-            this.handleFetchOrder();
-          })
-          .catch(err => {
-              this.setState( {error: err} );
-          });
         }
-        */
-      }
+        else {
+          //this loops goes through the State Cart and adds all the items to the Saved Cart
+          for(let i = 0 ; i < stateCart.order_items.length ; i++){
+            //console.log('savedCart.order_items[uniqueToDatabase[i]].id inside DELETE: ', savedCart.order_items[uniqueToDatabase[i]].id)
+            const slug = stateCart.order_items[i].item.slug
+            axios
+              .create({
+                baseURL: 'http://127.0.0.1:8000/api' ,
+                headers: {
+                  Authorization: `Token ${token}`
+                }
+              })
+              .post( addToCartURL , { slug } )
+              .catch(err => {
+                // this.setState({ error: err, loading: false });
+                console.log(err , 'add-to-cart failed ');
+              });
+          }
+        }
 
-    }, 100)
+        if(uniqueToState.length > 0 ) {
+          //loops through the uniqueToDatabase array and adds the item to the Saved Cart in the database
+          for(let i = 0 ; i < uniqueToState.length ; i++){
+            const slug = stateCart.order_items[uniqueToState[i]].item.slug
+            axios
+              .create({
+                baseURL: 'http://127.0.0.1:8000/api' ,
+                headers: {
+                  Authorization: `Token ${token}`
+                }
+              })
+              .post( addToCartURL , { slug } )
+              .catch(err => {
+                // this.setState({ error: err, loading: false });
+                console.log(err , 'add-to-cart failed ');
+              });
+          }
+        }
 
+      //a delay of 1 second
+      }, 1000)
+    //a delay of 1 second
+    }, 1000)
+
+    //clears the cart out of the state and out of the local storage
     dispatch( removeCart())
   }
 

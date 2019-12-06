@@ -31,6 +31,18 @@ const cartTemplate = {
   }
 
 
+
+/*
+***TO DO***
+need to fix removeFromCart() so that it doesn't mutate the state directly.
+  mutating the state directly renders containers/IncreaseDecreaseQuantity Component useless because it cannot update the state for it's parent components to use (in this case, the Parents are OrderSummary & Dropdown)
+
+
+*/
+
+
+
+
 const initialState = {
   //assigns shoppingCart to 'cart' in the local storage,
   //  or assigns it to the basic outline that the DB is expecting (if they have never been to the site before )
@@ -74,7 +86,6 @@ const cartFail = (state, action) => {
 const addToCart = (state, action) => {
   //if there are items in the order then determine if the current "added item" is already in the array, if it isn't, add it. if it is, increase the quantity of the item already in the array
   //if there are no items in the order (ie, cart = 0) then just add the item to the order_items array
-  console.log('action.data from addToCart in Reducers', action.data)
   let containsItem = false
   let itemIndex = 0
   let cart = state.shoppingCart
@@ -112,11 +123,13 @@ const addToCart = (state, action) => {
 
 
 
-
+//need to change this becuase it directly mutates the state.
+//  this is causing an issue
 const removeFromCart = (state, action) => {
+  //action.data is the itemID that needs to get removed
   let cart = state.shoppingCart
-
-  //loops through the cart and subtracts that item's final_price, then removes the item if it is equal to the given itemID
+  console.log('removeFromCart action: ', action)
+  //loops through the cart and subtracts that item's final_price from the Cart Total, then removes the item if it is equal to the given itemID
   for( let itemIndex=0 ; itemIndex < cart.order_items.length ; itemIndex++ ){
     if( cart.order_items[itemIndex].item.id === action.data ){
       cart.total -=  Number(cart.order_items[itemIndex].final_price.toFixed(2))
@@ -124,6 +137,7 @@ const removeFromCart = (state, action) => {
       break;
     }
   }
+
   //sets the cart in the local storage.
   //if the new cart isn't set in local storage, the cart isn't updated on page refresh (the item will reappear on the screen)
   ls.set('cart', cart)
@@ -245,85 +259,6 @@ const mergeCart = (state, action) => {
 
 
 const removeCart = (state, action) => {
-  // console.log('action from reducers/cart/removecart: ', action)
-  // console.log('state from reducers/cart/removecart: ', state)
-  // /*
-  // insert logic for adding/removing items from the database to reflect the current state
-  // */
-  // let savedCart = action.data
-  // let stateCart = state.shoppingCart
-  // let containsItem = false
-  // let stateCartItemIndex = 0
-  // let savedCartItemIndex = 0
-  //
-  // const token = action.data
-  // //gets the cart that is stored in the Database
-  // console.log('ACTION.DATA IN REDUCERS/CART/REMOVECART : ', action.data)
-  //
-  //
-  // console.log('STATECART: ', stateCart)
-  // console.log('SAVED CART: ', savedCart)
-  //
-  //
-  // //if there are order_items in the stateCart, compare the stateCart order_items to the savedCart order_items and add/remove where necessary
-  // if(stateCart.order_items.length > 0){
-  //   //loop through the stateCart and the savedCart and compare the two items, if they are the same, containsItem = True
-  //
-  //   for(stateCartItemIndex ; stateCartItemIndex < stateCart.order_items.length; stateCartItemIndex++){
-  //
-  //     //creates a label (titled stateCart) for this loop. this is used for breaking out of just this loop. without the label, the break statement breaks out of both loops
-  //     savedCart:
-  //     //this loop is used to loop through the current cart saved in the database and to find out if the state Cart item is already in the DB.
-  //     for(savedCartItemIndex ; savedCartItemIndex < savedCart.order_items.length ; savedCartItemIndex++ ){
-  //       //without this being set to false, it will only += the quantity of the first alike item, and will just repeatedly add the other items from the DB cart to the state cart
-  //       containsItem = false
-  //       if( stateCart.order_items[stateCartItemIndex].item.id == savedCart.order_items[savedCartItemIndex].item.id ){
-  //         console.log('contains item: ', stateCart.order_items[stateCartItemIndex].item)
-  //         containsItem = true;
-  //         break savedCart;
-  //       }
-  //     }
-  //
-  //
-  //     //if the savedCart contains the item in the stateCart
-  //     if(!containsItem){
-  //       console.log('DOES NOT CONTAIN ITEM ' )
-  //
-  //       return function(dispatch){
-  //         console.log('inside thunk return function')
-  //         let slug = (stateCart.order_items[savedCartItemIndex].item.slug)
-  //         //do something with this... figure out the correct way to do this
-  //         return
-  //           authAxios
-  //           .post( addToCartURL , {  slug  } ) //second parameter is the variations... leaving is at [] for now
-  //           .then(res => {
-  //             console.log(res.data, addToCartURL, "add to cart succeeded");
-  //             //this.handleFetchOrder();
-  //             // this.setState({ loading: false });
-  //           })
-  //           .catch(err => {
-  //             // this.setState({ error: err, loading: false });
-  //             console.log(err , 'add-to-cart failed ');
-  //           });
-  //       }
-  //
-  //
-  //     }
-  //     //If the savedCart contains the item, add it
-  //     else{
-  //       //if it does not contains the item, do nothing
-  //       //WILL NEED TO DOUBLE CHECK THE QUANTITIES LATER
-  //       console.log('containsItem === TRUE')
-  //     }
-  //   }
-  // }
-  // //if there are no order_items in the stateCart, remove all the order_items from the savedCart
-  // else{
-  //   //loop through the savedCart and delete all the order items
-  //
-  // }
-
-
 
   //sets the 'cart' in local storage to the cartTemplate, and does the samething to the cart in the state
   ls.set('cart', cartTemplate)

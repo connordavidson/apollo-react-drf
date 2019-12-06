@@ -20,7 +20,6 @@ import ls from 'local-storage';
 
 
 import {
-    mergeCartOnLogin,
     addItemToCart,
     removeItemFromCart,
     decreaseItemQuantity,
@@ -35,11 +34,11 @@ import {
 
  } from '../constants';
 
+import IncreaseDecreaseQuantity from './IncreaseDecreaseQuantity';
 
 
  /*
  fix issue where page refresh redirects to home.js on page refresh. has something to do with authentication
- fix issue where the page will display even if there are no items in the cart... need to find sizeof(order) in OrderQuantityUpdateView and then delete the order when it is 0
 
  */
 
@@ -47,18 +46,11 @@ import {
 class OrderSummary extends React.Component {
 
     state = {
-      data: null,
       error: null,
       loading: false,
       decreased: false,
       increased: false
     }
-
-    // componentDidMount(){
-    //   this.props.mergeCartOnLogin();
-    //
-    // }
-
 
 
     //created at https://youtu.be/qJN1_2ZwqeA?t=2160
@@ -94,19 +86,23 @@ class OrderSummary extends React.Component {
       if(quantity > 1){
         this.props.decreaseItemQuantity(itemID)
       } else {
-        this.handleRemoveItem(itemID)
+        this.props.removeItemFromCart(itemID)
       }
       this.setState({ loading: false });
     }
 
-    //made at https://youtu.be/8UEZsm4tCpY?t=150
     handleRemoveItem = (itemID) => {
       this.setState({loading : true})
-
       this.props.removeItemFromCart(itemID)
-
       this.setState({loading : false})
     }
+
+
+    updateCart = (oldCart, newCart) => {
+      oldCart = newCart;
+    }
+
+
 
 
     render(){
@@ -130,7 +126,7 @@ class OrderSummary extends React.Component {
       //   console.log("you were redirected becuase you were not authenticated");
       // }
 
-      console.log("data: ", cart);
+      //console.log("data: ", cart);
 
       return(
         <React.Fragment>
@@ -173,14 +169,18 @@ class OrderSummary extends React.Component {
           </div>
 
           {
-            cart &&
+
+          cart &&
+
             <React.Fragment>
 
               <Container>
 
                 <Header as='h1'>Review your cart</Header>
                 <Divider />
-                {/*based on the layout of checkout.js*/}
+                {console.log('cart.order_items : ' , cart.order_items)
+                /*based on the layout of checkout.js*/
+              }
                 <Grid>
                     <Grid.Column width={12}>
                       { cart.order_items.length > 0 ?
@@ -219,6 +219,13 @@ class OrderSummary extends React.Component {
                                     }
 
                                     <Card.Description >
+
+                                      <IncreaseDecreaseQuantity
+                                        item={item}
+                                        //updateCart={this.updateCart}
+                                      />
+
+
                                       <Label>
                                         <Icon
                                           name='minus'
@@ -243,12 +250,18 @@ class OrderSummary extends React.Component {
                                           />
                                         </Label.Detail>
                                       </Label>
+
+
+
+
                                       <Icon
                                         name='trash'
                                         color='red'
                                         style={{float: 'right', cursor: 'pointer'}}
                                         onClick={ () => this.handleRemoveItem(item.item.id) }
                                       />
+
+
                                     </Card.Description>
 
                                   </Card.Content>
@@ -306,7 +319,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
+    //mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),
     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
     removeItemFromCart: (itemID) => dispatch( removeItemFromCart(itemID) ),
     decreaseItemQuantity: (itemID) => dispatch( decreaseItemQuantity(itemID) ),

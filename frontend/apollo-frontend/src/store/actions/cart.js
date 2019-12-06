@@ -25,7 +25,7 @@ import {
 
 /*
 **TO DO**
-need to reqork removeCartOnLogout() to be more efficient and Human-Readable
+need to rework removeCartOnLogout() to be more efficient and Human-Readable
 */
 
 
@@ -165,7 +165,6 @@ export const addItemToCart = (data, quantity, variations) => {
     'quantity' : Number(quantity)
   }
 
-  console.log('newOrderItem from cart actions: ', )
   return dispatch => {
     dispatch(cartStart());
     dispatch( addToCart(newOrderItem) )

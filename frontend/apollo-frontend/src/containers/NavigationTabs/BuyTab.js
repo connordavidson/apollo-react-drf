@@ -16,6 +16,8 @@ import {
   Checkbox,
   Icon,
   Message,
+  Dropdown,
+  Container,
 
 } from 'semantic-ui-react';
 import axios from 'axios';
@@ -243,6 +245,19 @@ class BuyTab extends React.Component {
           <Grid.Column width={5}>
             <Input
               fluid
+              label={
+                <Dropdown
+                  defaultValue='all'
+                  options={[
+                    { key: '0', text: 'All Categories', value: 'all' },
+                    { key: '1', text: 'Outdoors', value: 'Outdoors' },
+                    { key: '2', text: 'Apparel', value: 'Apparel' },
+                    { key: '3', text: 'Books', value: 'Books' },
+                    { key: '4', text: 'Miscelaneous', value: 'Miscelaneous' },
+                    { key: '5', text: 'Technology', value: 'Technology' },
+                  ]}
+                />
+              }
               icon='search'
               placeholder='Search for an item...'
               onKeyPress={this.handleSearchEnterPress}
@@ -254,6 +269,36 @@ class BuyTab extends React.Component {
               }
             />
           </Grid.Column>
+
+
+            {/*ths inline Style is what makes the items align horizontally*/}
+            <Container
+              style={{display: 'flex', alignItems: 'center'}}
+            >
+              <Header as='h4'>
+               All Categories:
+              </Header>
+              <Label as='a' basic >
+                Featured
+              </Label>
+              <Label as='a' basic>
+                Outdoors
+              </Label>
+              <Label as='a' basic>
+                Apparel
+              </Label>
+              <Label as='a' basic>
+                Books
+              </Label>
+              <Label as='a' basic>
+                Miscelaneous
+              </Label>
+              <Label as='a' basic>
+                Technology
+              </Label>
+            </Container>
+
+
         </Grid.Row>
 
 

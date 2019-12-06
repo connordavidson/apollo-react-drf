@@ -128,7 +128,12 @@ class CustomLayout extends React.Component {
     const { authenticated, cart, loading, username } = this.props;
     return (
       <div>
-        <Menu color='blue' inverted size='huge'>
+        <Menu
+
+          style={{backgroundColor:'#34a1eb'}}
+          inverted
+          size='huge'
+        >
 
             <Link to="/">
               <Menu.Item header>

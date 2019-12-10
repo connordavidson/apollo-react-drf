@@ -18,6 +18,7 @@ import MyOrders from './containers/Profile/MyOrders';
 const BaseRouter = () => (
   <Hoc>
 
+    {/*for searching, use syntax similar to ProductDetail Route below.. access the parameters inside the component */} 
     <Route exact path="/buyTab" component={BuyTab} />
     <Route exact path="/order-summary" component={OrderSummary} />
     <Route exact path="/checkout" component={Checkout} />

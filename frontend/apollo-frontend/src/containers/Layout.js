@@ -179,7 +179,7 @@ class CustomLayout extends React.Component {
                                       {
                                         //trims titles that are longer than 22 characters... so that the dropdown isn't obnoxiously wide
                                         order_item.item.title.length > 22 ?
-                                        order_item.item.title.substring(0, 22) + '...' :
+                                        order_item.item.title.substring(0, 22) + '...'  :
                                         order_item.item.title
                                       }
                                     </Message.Header>

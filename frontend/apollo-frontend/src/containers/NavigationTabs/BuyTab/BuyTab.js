@@ -58,60 +58,21 @@ class BuyTab extends React.Component {
     loading: false,
     error: null,
     data: [],
-    displayingCategories: [],
-    value: '',
-    productsTitle: 'Featured Items',
-    filterTitle: '',
-    filterCategory: '',
-    filteredData : [],
 
     allCategories: [],
-    activeDisplayItemsByCategory: 'featured'
+    activeDisplayItemsByCategory: 'Featured'
   }
 
 
   componentDidMount() {
-    // this.setState({
-    //   loading: true
-    // });
-    // this.handleGetProducts();
+    this.setState({
+      loading: true
+    });
+
     this.handleGetCategories();
 
   };
 
-
-
-  // handleGetProducts = () => {
-  //   //gets the products from the database and stores them in the state or it returns the error
-  //   axios
-  //   .get(productListURL)
-  //   .then(response => {
-  //     //gets the individual categories from the response data
-  //     let cats = []
-  //     response.data.map( (item) => {
-  //       if(!cats.includes(item.category)){
-  //         cats = cats.concat(item.category)
-  //       }
-  //     })
-  //     this.setState({data: response.data, loading: false, displayingCategories: cats});
-  //   })
-  //   .catch(error => {
-  //     this.setState({error: error, loading: false});
-  //   })
-  // }
-
-
-
-
-  // handleAddToCart = (data, quantity) => {
-  //   this.setState({ loading: true });
-  //   const {formData} = this.state;
-  //   //filters  the data into the correct format fot the backend
-  //   const variations = []
-  //   this.props.addItemToCart(data, quantity, variations)
-  //   this.setState({loading: false});
-  //
-  // }
 
 
 
@@ -156,7 +117,6 @@ class BuyTab extends React.Component {
           loading: false
         });
       })
-      // console.log('enter pressed');
     }
   }
 
@@ -172,42 +132,12 @@ class BuyTab extends React.Component {
   }
 
 
-  handleFilterDisplayCategoryButtonPressed = (e, data) => {
-    console.log('onclick data: ', data)
-    if(data.checked){
-      //filterCategory is how the checkboxes uncheck when another is checked (the logic is in the 'checked' prop in the checkbox (category === checkedCategory))
-      this.setState({
-        filterCategory : data.name,
-      })
-      console.log('handleFilterButtonPressed data.name: ', data.name)
-      //creates an array to handleFilterDisplayCategoryButtonPressed the filtered items, and loops through the state.data and compares it to the selected checkbox, if they match it is added to  the filteredData array
-      let filteredItems = []
-      this.state.data.map( item => {
-        if(item.category === data.name){
-          filteredItems = filteredItems.concat(item)
-        }
-      })
-      console.log('handleFilterDisplayCategoryButtonPressed filtereditems: ', filteredItems)
-      //filterTitle just displays the name of the filter category.. gets appended to the end of the products title on the page
-      this.setState({
-        filteredData: filteredItems ,
-        filterTitle: `, filtered by "${data.name}"`
-      })
-    }else if (!data.checked){
-      //sets the filter category to a blank string (this is incase the user checks the same box again )
-      this.setState({
-        filterCategory: '',
-        filterTitle: ''
-      })
-    }
-  }
-
 
   handleDisplayViewItemsByCategory = (e, data) => {
     let cat = ''
     switch (data.content){
       case 'Featured':
-
+        break;
       case 'Technology':
         cat = 'T'
         break;
@@ -257,16 +187,23 @@ class BuyTab extends React.Component {
 
 
 
-
-
-
-  //this should be a component to create an item. make this so that it will display the product item, should get put in a loop when displaying the current items
-  makeProductItem = (item) => {
-    console.log('makeproductitem item: ' , item)
+  displayCategory = () => {
+    switch(this.state.activeDisplayItemsByCategory){
+      case 'Featured':
+        return(
+          <FeaturedItems />
+        )
+        break;
+      case 'Outdoors':
+        return(
+          <div>
+            OUTDOORS
+          </div>
+        )
+      default:
+        console.log('something went wrong when selecting a category')
+    }
   }
-
-
-
 
 
   render(){
@@ -275,12 +212,7 @@ class BuyTab extends React.Component {
       data,
       error,
       loading,
-      displayingCategories,
-      value,
-      productsTitle,
-      filterCategory,
-      filteredData,
-      filterTitle,
+
       allCategories,
       activeDisplayItemsByCategory,
 
@@ -318,75 +250,59 @@ class BuyTab extends React.Component {
               }
             />
           </Grid.Column>
-
-          {/*this is for the "all categories" button group*/}
-
-            {/*ths inline Style is what makes the items align horizontally*/}
-            <Container
-              style={{display: 'flex', alignItems: 'center'}}
-            >
-              <Button basic compact >
-               All Categories:
-              </Button>
-
-              <Button.Group>
-                <Button
-                  compact
-                  content='Featured'
-                  active={activeDisplayItemsByCategory === 'featured'}
-                  onClick={(e, data) => {
-                    this.handleDisplayViewItemsByCategory(e, data)
-                  }}
-                />
-
-                {
-                  allCategories.map(category => {
-                    return(
-                      <Button
-                        compact
-                        content={category.category}
-                        active={activeDisplayItemsByCategory === category.category}
-                        onClick={(e, data) => {
-                          this.handleDisplayViewItemsByCategory(e, data)
-                        }}
-                      />
-                    )
-                  })
-                }
-              </Button.Group>
-            </Container>
-
-
         </Grid.Row>
 
 
-        <FeaturedItems />
 
+        {/*this is for the "all categories" button group*/}
+        <Grid.Row>
+          <Grid.Column>
+            <Button compact basic >
+             View by Category:
+            </Button>
+
+            <Button.Group>
+              <Button
+                compact
+                content='Featured'
+                active={activeDisplayItemsByCategory === 'Featured'}
+                onClick={(e, data) => {
+                  this.handleDisplayViewItemsByCategory(e, data)
+                }}
+              />
+
+              {
+                allCategories.map(category => {
+                  return(
+                    <Button
+                      compact
+                      content={category.category}
+                      active={activeDisplayItemsByCategory === category.category}
+                      onClick={(e, data) => {
+                        this.handleDisplayViewItemsByCategory(e, data)
+                      }}
+                    />
+                  )
+                })
+              }
+            </Button.Group>
+          </Grid.Column>
+        </Grid.Row>
+        <Divider />
+
+
+        <Grid.Row>
+          {
+            this.displayCategory()
+          }
+          {/*this is the FeaturedItems Component*/}
+
+        </Grid.Row>
       </Grid>
     //ends the return statement
     )
   }
 }
-
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     addItemToCart: (data, quantity) => dispatch(addItemToCart(data, quantity)),
-//
-//   }
-// }
-
-
-
-
-// export default
-//   withRouter(
-//     connect(
-//       null,
-//       mapDispatchToProps
-//     )
-//     (BuyTab)
-//   );
 
 
 export default BuyTab

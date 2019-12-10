@@ -11,7 +11,7 @@ import OrderSummary from './containers/OrderSummary';
 import Checkout from './containers/Checkout/Checkout';
 import ProductDetail from './containers/ProductDetail';
 import Profile from './containers/Profile/Profile';
-import BuyTab from './containers/NavigationTabs/BuyTab';
+import BuyTab from './containers/NavigationTabs/BuyTab/BuyTab';
 import MyOrders from './containers/Profile/MyOrders';
 
 

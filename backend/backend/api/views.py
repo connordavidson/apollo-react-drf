@@ -22,6 +22,7 @@ from .serializers import (
     OrderSerializer,
     ItemReviewsSerializer,
     AllOrdersSerializer,
+    ItemCategorySerializer,
 
 )
 
@@ -35,7 +36,7 @@ from .models import (
     ItemVariation,
     Coupon,
     ItemReview,
-
+    ItemCategory,
 )
 
 # Create your views here.
@@ -53,12 +54,38 @@ class ItemSearchListView(ListAPIView):
     queryset = Item.objects.all()
 
 
-#doesn't neccesarily need to return all the different variations, just needs to know if the item has one.
-#change in future pls
+#this is called when the user is in the Buy Tab and clicks "view by category"..
+# is used to display all items in the selected category
+class ItemViewByCategoryListView(ListAPIView):
+
+    #category = 'featured' #request.data.get('category', None)
+    model = Item
+    serializer_class = ItemSerializer
+    #queryset = Item.objects.all() #.filter(category=category)
+
+    def get_queryset(self):
+        #made big changes to this at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=3030
+        category = self.request.query_params.get('category', None)
+        category.lower()
+        print('category outside if: ' + category)
+        qs = Item.objects.all()
+        if category is None:
+            print('category inside if: ' + category)
+            return qs
+        return qs.filter(category=category)
+
+
+
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all().filter(featured=True)
+
+
+class CategoryListView(ListAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = ItemCategorySerializer
+    queryset = ItemCategory.objects.all()
 
 
 

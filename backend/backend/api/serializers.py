@@ -12,10 +12,20 @@ from .models import (
     Payment,
     Coupon,
     ItemReview,
+    ItemCategory,
 
 )
 
 from django_countries.serializer_fields import CountryField
+
+
+class ItemCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCategory
+        fields = (
+            'category',
+
+        )
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -50,6 +60,7 @@ class ItemSerializer(serializers.ModelSerializer):
         #gets all the variations for this specific item (ex. returns 'size', 'color', 'other_variation' for the 't-shirt' item )
         return VariationSerializer(obj.variation_set.all(), many=True).data
 
+
 class ItemReviewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemReview
@@ -59,7 +70,6 @@ class ItemReviewsSerializer(serializers.ModelSerializer):
             'review_content',
             'date',
         )
-
 
 
 #made at https://youtu.be/Zg-bzjZuRa0?t=1317
@@ -250,7 +260,7 @@ class AllOrdersSerializer(serializers.ModelSerializer):
             'received',
             'ordered',
             'ordered_date',
-            
+
         )
 
     def get_order_items(self, obj):

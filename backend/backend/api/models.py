@@ -11,7 +11,7 @@ CATEGORY_CHOICES = (
     ('OD', 'Outdoors'),
     ('A', 'Apparel'),
     ('B', 'Books'),
-    ('M', 'Miscelaneous'),
+    ('M', 'Miscellaneous'),
 
 
 )
@@ -31,6 +31,20 @@ class UserProfile(models.Model):
     email = models.CharField(max_length=30, null=True)
     def __str__(self):
         return self.user.username
+
+
+#will need to have a "subcategory" model. "Electronics" will have "TVs", "Computers", and "Phones" all as subcategories
+#will need to add a "category specific info" field (and probaby will need this in the Subcategory Model).
+## so that it can render the Item Page differently based on category.. i.e. , display "tech specs" for a Laptop Computer, but display "absorbability" for paper towels (this will probably need to be done by storing a JSON object in the item's row.. {'screen sizes': {42, 48, 52} , 'color': {'black', 'grey', 'white'}, 'secondaryDescription': 'blah blah blah'}, etc)
+## may also want to render the Buy Tab page differently based on category when using the the "display by category" button
+class ItemCategory(models.Model):
+    category = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.category
 
 
 
@@ -171,7 +185,7 @@ class Order(models.Model):
     coupon = models.ForeignKey(
         'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     being_delivered = models.BooleanField(default=False)
-    tracking_number = models.CharField(null=True, max_length=24)
+    tracking_number = models.CharField(default=None, max_length=24)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)

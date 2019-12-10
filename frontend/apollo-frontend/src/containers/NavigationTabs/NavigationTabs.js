@@ -7,7 +7,7 @@ import {withRouter} from 'react-router';
 import ls from 'local-storage';
 
 import HomeTab from './HomeTab'
-import BuyTab from './BuyTab';
+import BuyTab from './BuyTab/BuyTab';
 import FundTab from './FundTab';
 
 

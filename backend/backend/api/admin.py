@@ -12,7 +12,8 @@ from .models import (
         Coupon,
         Payment,
         ItemReview,
-        OrderItem
+        OrderItem,
+        ItemCategory
 )
 
 
@@ -130,3 +131,4 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Payment)
 admin.site.register(Address, AddressAdmin)
 admin.site.register(Coupon)
+admin.site.register(ItemCategory)

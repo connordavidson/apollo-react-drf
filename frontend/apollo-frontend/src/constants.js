@@ -64,3 +64,9 @@ export const paymentListURL = 'http://127.0.0.1:8000/api/payments/';
 export const productReviewListURL = (id) => `http://127.0.0.1:8000/api/products/${id}/reviews`;
 
 export const productSearchListURL = 'http://127.0.0.1:8000/api/products/search';
+
+
+
+export const categoryListURL = 'http://127.0.0.1:8000/api/categories/';
+
+export const productSearchByCategoryURL = 'http://127.0.0.1:8000/api/product-search-by-category'

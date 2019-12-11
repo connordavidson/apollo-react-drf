@@ -129,7 +129,6 @@ class CustomLayout extends React.Component {
     return (
       <div>
         <Menu
-
           style={{backgroundColor:'#34a1eb'}}
           inverted
           size='huge'
@@ -142,11 +141,9 @@ class CustomLayout extends React.Component {
             </Link>
 
             <Menu.Menu position='right' >
-
               {/*
                 displays the cart dropdown
               */}
-
                 <Dropdown
                     icon='cart'
                     loading= {loading}
@@ -249,8 +246,6 @@ class CustomLayout extends React.Component {
                     }
                   </Dropdown.Menu>
               </Dropdown>
-
-
             {/*displays the logout button if the user is logged in*/}
             {authenticated ? (
               <React.Fragment>
@@ -274,10 +269,7 @@ class CustomLayout extends React.Component {
 
               </React.Fragment>
               )}
-
-
             </Menu.Menu>
-
         </Menu>
 
         {
@@ -359,7 +351,7 @@ const mapStateToProps = (state) => {
     loading: state.cart.loading,
   };
 };
-//
+
 const mapDispatchToProps = (dispatch) => {
   return {
     //mergeCartOnLogin: () => dispatch( mergeCartOnLogin() ),

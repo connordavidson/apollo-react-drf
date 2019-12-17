@@ -23,6 +23,7 @@ from .serializers import (
     ItemReviewsSerializer,
     AllOrdersSerializer,
     ItemCategorySerializer,
+    ItemSubCategorySerializer,
 
 )
 
@@ -56,8 +57,8 @@ class ItemSearchListView(ListAPIView):
 
 #this is called when the user is in the Buy Tab and clicks "view by category"..
 # is used to display all items in the selected category
+# returns all the items with the Category that is passed into it
 class ItemViewByCategoryListView(ListAPIView):
-
     #category = 'featured' #request.data.get('category', None)
     model = Item
     serializer_class = ItemSerializer
@@ -66,7 +67,7 @@ class ItemViewByCategoryListView(ListAPIView):
     def get_queryset(self):
         #made big changes to this at https://youtu.be/c54wYYIXZ-A?list=PLLRM7ROnmA9Hp8j_1NRCK6pNVFfSf4G7a&t=3030
         category = self.request.query_params.get('category', None)
-        category.lower()
+        # category.lower()
         print('category outside if: ' + category)
         qs = Item.objects.all()
         if category is None:
@@ -89,6 +90,21 @@ class CategoryListView(ListAPIView):
 
 
 
+class SubCategoryListView(ListAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = ItemSubCategorySerializer
+
+    def get_queryset(self):
+        category= self.request.query_params.get('category', None)
+        qs = ItemCategory.objects.all()
+
+        if category is None:
+            return 'ERROR: CATEGORY IS NONE (SubCategoryListView)'
+        return qs.filter(category=category)
+
+
+
+
 class UserIDView(APIView):
     def get(self, request, *args, **kwargs):
         return Response({'userID': request.user.id }, status=HTTP_200_OK)
@@ -99,6 +115,10 @@ class ItemDetailView(RetrieveAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemDetailSerializer
     queryset = Item.objects.all()
+
+
+
+
 
 
 

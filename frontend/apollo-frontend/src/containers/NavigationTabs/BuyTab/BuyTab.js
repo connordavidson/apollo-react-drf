@@ -42,7 +42,7 @@ import {
   } from '../../../constants';
 
 import FeaturedItems from './FeaturedItems'
-
+import CategoryItems from './CategoryItems'
 /*
 WORK TO BE DONE:
   make a 'product item' component so that it can just get passed into the loops that create all the active items, instead of having all that code twice
@@ -135,33 +135,10 @@ class BuyTab extends React.Component {
 
 
   handleDisplayViewItemsByCategory = (e, data) => {
-    let cat = ''
-    switch (data.content){
-      case 'Featured':
-        break;
-      case 'Technology':
-        cat = 'T'
-        break;
-      case 'Outdoors':
-        cat = 'OD'
-        break;
-      case 'Apparel':
-        cat = 'A'
-        break;
-      case 'Books':
-        cat = 'B'
-        break;
-      case 'Miscellaneous':
-        cat = 'M'
-        break;
-      default:
-        return 'error'
-
-    }
     axios
     .get(productSearchByCategoryURL, {
       params: {
-        category: cat
+        category: data.content
         }
       })
     .then(response => {
@@ -188,8 +165,8 @@ class BuyTab extends React.Component {
 
 
 
-  displayCategory = () => {
-    switch(this.state.activeDisplayItemsByCategory){
+  displayCategory = (activeDisplayItemsByCategory) => {
+    switch(activeDisplayItemsByCategory){
       case 'Featured':
         return(
           <FeaturedItems />
@@ -197,9 +174,23 @@ class BuyTab extends React.Component {
         break;
       case 'Outdoors':
         return(
-          <div>
-            OUTDOORS
-          </div>
+          <CategoryItems category='Outdoors' />
+        )
+      case 'Apparel':
+        return(
+          <CategoryItems category='Apparel' />
+        )
+      case 'Books':
+        return(
+          <CategoryItems category='Books' />
+        )
+      case 'Miscellaneous':
+        return(
+          <CategoryItems category='Miscellaneous' />
+        )
+      case 'Electronics':
+        return(
+          <CategoryItems category='Electronics' />
         )
       default:
         console.log('something went wrong when selecting a category')
@@ -294,7 +285,7 @@ class BuyTab extends React.Component {
 
         <Grid.Row>
           {
-            this.displayCategory()
+            this.displayCategory(activeDisplayItemsByCategory)
           }
           {/*this is the FeaturedItems Component*/}
 

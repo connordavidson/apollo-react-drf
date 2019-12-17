@@ -16,6 +16,7 @@ from .views import (
     AddToCartView,
     CategoryListView,
     ItemViewByCategoryListView,
+    SubCategoryListView,
 
 )
 
@@ -36,4 +37,5 @@ urlpatterns = [
     path( 'countries/', CountryListView.as_view(), name='country-list' ),
     path( 'products/<pk>/reviews', ItemReviewsView.as_view(), name='product-reviews' ),
     path( 'product-search-by-category', ItemViewByCategoryListView.as_view(), name='product-search-by-category' ),
+    path( 'subcategories/', SubCategoryListView.as_view(), name='subcategories' ),
 ]

@@ -28,6 +28,7 @@ import {
     productSearchListURL,
     categoryListURL,
     productSearchByCategoryURL,
+    subcategoryURL,
 
   } from '../../../constants';
 
@@ -37,7 +38,7 @@ import {
 
 
 
-class FeaturedItems extends React.Component {
+class CategoryItems extends React.Component {
 
   state = {
     loading: false,
@@ -45,13 +46,14 @@ class FeaturedItems extends React.Component {
     data: [],
 
     featuredCategories : [],
-    featuredProductsTitle: 'Featured Items',
+    // featuredProductsTitle: 'Featured Items',
+
     filterTitle: '',
     filterCategory: '',
     filteredData: [],
 
     activeItemIndex: 0,
-
+    subCategories: []
   }
 
   componentDidMount(){
@@ -59,6 +61,7 @@ class FeaturedItems extends React.Component {
       loading: true
     });
     this.handleGetProducts();
+    this.handleGetSubCategories();
   }
 
 
@@ -68,6 +71,22 @@ class FeaturedItems extends React.Component {
   }
 
 
+  handleGetSubCategories = () => {
+    axios
+    .get( subcategoryURL , {
+      params: {
+        category: this.props.category
+        }
+      })
+    .then(response => {
+      console.log('response.data from getSubCategories: ', response.data)
+      this.setState({subCategories:response.data , loading: false})
+    })
+    .catch(error => {
+      this.setState({error: error, loading: false})
+    })
+
+  }
 
 
   handleGetProducts = () => {
@@ -75,15 +94,14 @@ class FeaturedItems extends React.Component {
     axios
     .get(productListURL)
     .then(response => {
-      //gets the individual categories from the response data
-      let cats = []
-      response.data.map( (item) => {
-        if(!cats.includes(item.category)){
-          cats = cats.concat(item.category)
-        }
-      })
-      console.log('response.data from handleGetProducts: ', response.data)
-      this.setState({data: response.data, loading: false, featuredCategories: cats});
+      // //gets the individual categories from the response data
+      // let cats = []
+      // response.data.map( (item) => {
+      //   if(!cats.includes(item.category)){
+      //     cats = cats.concat(item.category)
+      //   }
+      // })
+      this.setState({data: response.data, loading: false }) //, featuredCategories: cats});
     })
     .catch(error => {
       this.setState({error: error, loading: false});
@@ -133,6 +151,7 @@ class FeaturedItems extends React.Component {
 
   //for the carousel
   changeActiveItem = (activeItemIndex) => this.setState({ activeItemIndex });
+
   render(){
     const {
       loading,
@@ -147,11 +166,18 @@ class FeaturedItems extends React.Component {
 
     } = this.state
 
-    console.log('featuredCategories: ', featuredCategories)
+    const {
+      category
+    } = this.props
 
+    // console.log('this.props: ', this.props)
+
+    //used for slicing up the data from the db... just for "demo" purposes
     let carouselItems = data.slice(0,7)
     let recommendedItems = data.slice(3,5)
     let basedOnSearches = data.slice(5,8)
+
+
     return (
 
       <React.Fragment>
@@ -166,14 +192,9 @@ class FeaturedItems extends React.Component {
 
           <React.Fragment>
             <Grid.Column width={2}>
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20px' }}
-              >
-                {/*displays the active categories.. styling needs work*/}
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>categories (deprec) </Card.Header>
-                  </Card.Content>
+              <Header as='h3'>SubCategories here</Header>
+              {/*displays the active categories.. styling needs work*/}
+              <Card>
                   {//prints all the categories
                   featuredCategories.map(featuredCategories => {
                     return(
@@ -191,61 +212,8 @@ class FeaturedItems extends React.Component {
                       </Card.Content>
                     )
                   })}
-                </Card>
-              </div>
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
-              >
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
-                  </Card.Content>
-                  {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
-                    return(
-                      <Card.Content >
-                        <Checkbox
-                          label={featuredCategories}
-                          float='middle'
-                          onClick={(e, data) => {
-                            this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
-                          }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
-                        />
-                      </Card.Content>
-                    )
-                  })}
-                </Card>
-              </div>
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%'}}
-              >
+              </Card>
 
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
-                  </Card.Content>
-                  {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
-                    return(
-                      <Card.Content >
-                        <Checkbox
-                          label={featuredCategories}
-                          float='middle'
-                          onClick={(e, data) => {
-                            this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
-                          }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
-                        />
-                      </Card.Content>
-                    )
-                  })}
-                </Card>
-              </div>
             </Grid.Column>
 
 
@@ -253,10 +221,11 @@ class FeaturedItems extends React.Component {
 
             <Grid.Column width={12}>
               <React.Fragment>
-                <Header as='h1'>{featuredProductsTitle}{filterTitle}</Header>
+                <Header as='h1'>{category}</Header>
 
                 <Divider />
 
+                <Header as='h3'>Featured {category} Items</Header>
                 <div
                   style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
                 >
@@ -274,12 +243,14 @@ class FeaturedItems extends React.Component {
                     requestToChangeActive={this.changeActiveItem}
                     activeItemIndex={activeItemIndex}
 
+
                     chevronWidth={24}
                     rightChevron={<Icon size='large' name='chevron right'/>}
                     leftChevron={<Icon size='large' name='chevron left'/>}
                     outsideChevron={true}
                   >
                     {
+
                       carouselItems.map(item => {
                         // console.log('item from products: ' , item)
                         return (
@@ -361,6 +332,7 @@ class FeaturedItems extends React.Component {
                   </ItemsCarousel>
                 </div>
                 <Divider />
+
 
                 <Grid>
 
@@ -480,7 +452,7 @@ class FeaturedItems extends React.Component {
                     >
 
                       <Header as='h2'  >
-                        Hot Right Now
+                        Our Best {category} Deals (discounted items)
                       </Header>
                       <Divider />
 
@@ -557,326 +529,6 @@ class FeaturedItems extends React.Component {
 
                 <Divider />
 
-                {/*loop through all the categories and display an ItemsCarousel with the "featured items" from every category*/}
-                <Header as='h2'> Featured Outdoors items </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
-
-
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
-
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
-                                      }
-                                    }
-                                    >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
-                <Divider />
-
-                <Header as='h2'> Featured Apparel items </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
-
-
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
-
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
-                                      }
-                                    }
-                                    >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
-
-                <Divider />
-
-                <Header as='h2'> Featured Books </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
-
-
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
-
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
-                                      }
-                                    }
-                                    >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
-
-                <Divider />
 
                 <Header as='h2'>
                   All Featured Items
@@ -978,5 +630,5 @@ export default
       null,
       mapDispatchToProps
     )
-    (FeaturedItems)
+    (CategoryItems)
   );

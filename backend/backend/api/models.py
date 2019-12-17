@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 
 #these tuples are from django-react-boilerplate-master
 CATEGORY_CHOICES = (
-    ('T', 'Technology'),
+    ('E', 'Electronics'),
     ('OD', 'Outdoors'),
     ('A', 'Apparel'),
     ('B', 'Books'),
@@ -38,7 +38,7 @@ class UserProfile(models.Model):
 ## so that it can render the Item Page differently based on category.. i.e. , display "tech specs" for a Laptop Computer, but display "absorbability" for paper towels (this will probably need to be done by storing a JSON object in the item's row.. {'screen sizes': {42, 48, 52} , 'color': {'black', 'grey', 'white'}, 'secondaryDescription': 'blah blah blah'}, etc)
 ## may also want to render the Buy Tab page differently based on category when using the the "display by category" button
 class ItemCategory(models.Model):
-    category = models.CharField(max_length=100)
+    category = models.CharField(max_length=100, null=True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -47,13 +47,25 @@ class ItemCategory(models.Model):
         return self.category
 
 
+class ItemSubCategory(models.Model):
+    subCategory = models.CharField(max_length=100)
+    parentCategory = models.ForeignKey(ItemCategory, on_delete=models.CASCADE,  null=True, default=None)
+
+    class Meta:
+        verbose_name_plural = "Subcategories"
+
+    def __str__(self):
+        return self.subCategory
+
+
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null=True, default=None)
+    subCategory = models.ForeignKey(ItemSubCategory, on_delete=models.CASCADE, null=True, default=None)
+    # label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField()

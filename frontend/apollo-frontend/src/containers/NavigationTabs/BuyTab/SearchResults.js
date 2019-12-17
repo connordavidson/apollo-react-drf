@@ -78,32 +78,93 @@ class SearchResults extends React.Component {
           <React.Fragment>
 
             <Grid.Column width={2}>
+              <div
+                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
+              >
+              {/*displays the active categories.. styling needs work*/}
+
+                <Card>
+                  <Card.Content>
+                    <Card.Header as='h3'>Categories </Card.Header>
+                  </Card.Content>
+                  {//prints all the categories
+                  featuredCategories.map(featuredCategories => {
+                    return(
+                      <Card.Content >
+                        <Checkbox
+                          label={featuredCategories}
+                          float='middle'
+                          onClick={(e, data) => {
+                            this.handleFilterDisplayCategoryButtonPressed(e, data)
+                            console.log('category: ', featuredCategories)
+                          }}
+                          name={featuredCategories}
+                          checked={featuredCategories === filterCategory}
+                        />
+                      </Card.Content>
+                    )
+                  })}
+                </Card>
+              </div>
+              <div
+                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
+              >
+                {/*
+                  Loop through all the variations from all the items returned from backend and make a card for each type of variation... and then filter. the same way that it can currently filter by Category
+                */}
+
+                <Card>
+                  <Card.Content>
+                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
+                  </Card.Content>
+                  {//prints all the categories
+                  featuredCategories.map(featuredCategories => {
+                    return(
+                      <Card.Content >
+                        <Checkbox
+                          label={featuredCategories}
+                          float='middle'
+                          onClick={(e, data) => {
+                            this.handleFilterDisplayCategoryButtonPressed(e, data)
+                            console.log('category: ', featuredCategories)
+                          }}
+                          name={featuredCategories}
+                          checked={featuredCategories === filterCategory}
+                        />
+                      </Card.Content>
+                    )
+                  })}
+                </Card>
+              </div>
 
 
-              <Header as='h3'>Categories</Header>
+              <div
+                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
+              >
+                <Card>
+                  <Card.Content>
+                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
+                  </Card.Content>
+                  {//prints all the categories
+                  featuredCategories.map(featuredCategories => {
+                    return(
+                      <Card.Content >
+                        <Checkbox
+                          label={featuredCategories}
+                          float='middle'
+                          onClick={(e, data) => {
+                            this.handleFilterDisplayCategoryButtonPressed(e, data)
+                            console.log('category: ', featuredCategories)
+                          }}
+                          name={featuredCategories}
+                          checked={featuredCategories === filterCategory}
+                        />
+                      </Card.Content>
+                    )
+                  })}
+                </Card>
+              </div>
 
-                  {/*displays the active categories.. styling needs work*/}
-                  <Card.Group>
-                    <Card>
-                        {//prints all the categories
-                        featuredCategories.map(featuredCategories => {
-                          return(
-                            <Card.Content >
-                              <Checkbox
-                                label={featuredCategories}
-                                float='middle'
-                                onClick={(e, data) => {
-                                  this.handleFilterDisplayCategoryButtonPressed(e, data)
-                                  console.log('category: ', featuredCategories)
-                                }}
-                                name={featuredCategories}
-                                checked={featuredCategories === filterCategory}
-                              />
-                            </Card.Content>
-                          )
-                        })}
-                    </Card>
-                  </Card.Group>
 
             </Grid.Column>
 

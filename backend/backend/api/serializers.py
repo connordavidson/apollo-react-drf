@@ -23,33 +23,21 @@ from django_countries.serializer_fields import CountryField
 
 
 class ItemSubCategorySerializer(serializers.ModelSerializer):
-    # gets the sub categories for the given category ---->>>>> ItemSubCategorySerializer( obj.itemsubcategory_set.all(),  many=True ).data
     class Meta:
         model = ItemSubCategory
         fields = (
-        'subCategory',
-        'parentCategory'
+            'sub_category',
         )
 
+
 class ItemCategorySerializer(serializers.ModelSerializer):
-    subCategories = serializers.SerializerMethodField()
 
     class Meta:
         model = ItemCategory
         fields = (
             'category',
-            'subCategories'
         )
 
-    def get_subCategories(self, obj):
-        print('subcategory serializer data  : ', str(ItemSubCategorySerializer( obj.itemsubcategory_set.all(),  many=True ).data ) )
-        print('')
-        print('')
-        print('')
-        print('')
-
-        #returns all the subcategories relating to the ItemCategory (From the db)
-        return 'yes'#ItemSubCategorySerializer(obj).data['parentCategory']
 
 class ItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
@@ -71,6 +59,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         category = ItemCategorySerializer(obj).data.get('category', None)
+        print('category from get_category: ' + str(category))
         if category is None:
             return 'err'
         return category
@@ -129,7 +118,6 @@ class VariationSerializer(serializers.ModelSerializer):
 #put simply: this returns all the variations for a given item. VariationSerializer, ItemVariationSerializer, and ItemVariationSerializer, all get funneled through this to be sent to the front end
 class ItemDetailSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
-    label = serializers.SerializerMethodField()
     #gets the variations linked to this specific item
     variations = serializers.SerializerMethodField()
 
@@ -141,7 +129,6 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'price',
             'discount_price',
             'category',
-            'label',
             'slug',
             'description',
             'image',
@@ -150,10 +137,11 @@ class ItemDetailSerializer(serializers.ModelSerializer):
         )
 
     def get_category(self, obj):
-        return obj.get_category_display()
-
-    def get_label(self, obj):
-        return obj.get_label_display()
+        category = ItemCategorySerializer(obj).data.get('category', None)
+        print('category from get_category: ' + str(category))
+        if category is None:
+            return 'err'
+        return category
 
     def get_variations(self, obj):
         #gets all the variations for this specific item (ex. returns 'size', 'color', 'other_variation' for the 't-shirt' item )

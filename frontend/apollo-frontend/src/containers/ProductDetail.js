@@ -84,6 +84,7 @@ class ProductDetail extends React.Component {
     axios
       .get( productDetailURL(productID) )
       .then(res => {
+        console.log('item data: ', res.data)
         this.setState({data: res.data, loading: false});
         // console.log('handlefetchitem productDetail response data : ', res.data)
       })
@@ -91,26 +92,6 @@ class ProductDetail extends React.Component {
         this.setState({error: err, loading: false});
       });
   }
-
-
-    // handleAddToCart = (slug, quantity) => {
-    //   this.setState({ loading: true });
-    //   const {formData} = this.state;
-    //   //filters  the data into the correct format fot the backend
-    //   const variations = this.handleFormatData(formData);
-    //   //authAxios makes sure that the user is signed in before adding to cart... just use axios for adding to cart while signed out
-    //   authAxios
-    //   .post( addToCartURL , { slug, variations, quantity} )
-    //   .then(res => {
-    //     //console.log(res.data, addToCartURL, "add to cart succeeded");
-    //     this.props.mergeCartOnLogin();
-    //     this.setState({ loading: false, submitted: `${this.state.data.title} added to cart` });
-    //   })
-    //   .catch(err => {
-    //     this.setState({ error: err, loading: false });
-    //     console.log(err.message , 'add-to-cart failed ');
-    //   });
-    // }
 
 
 

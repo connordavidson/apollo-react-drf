@@ -38,6 +38,8 @@ from .models import (
     Coupon,
     ItemReview,
     ItemCategory,
+    ItemSubCategory,
+
 )
 
 # Create your views here.
@@ -73,11 +75,11 @@ class ItemViewByCategoryListView(ListAPIView):
         if category is None:
             print('category inside if: ' + category)
             return qs
-        return qs.filter(category=category)
+        return qs.filter(category__category=category)
 
 
 
-class ItemListView(ListAPIView):
+class FeaturedItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all().filter(featured=True)
@@ -96,11 +98,18 @@ class SubCategoryListView(ListAPIView):
 
     def get_queryset(self):
         category= self.request.query_params.get('category', None)
-        qs = ItemCategory.objects.all()
+        #gets the SubCategories with 'category' as their parentCategory
+        qs = ItemSubCategory.objects.filter(parent_category__category__exact=category)
+
+        subcategories = []
+        for subcat in qs:
+            subcategories.append(subcat.sub_category)
 
         if category is None:
             return 'ERROR: CATEGORY IS NONE (SubCategoryListView)'
-        return qs.filter(category=category)
+
+
+        return qs
 
 
 

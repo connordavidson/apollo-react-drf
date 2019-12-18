@@ -82,7 +82,7 @@ class FeaturedItems extends React.Component {
           cats = cats.concat(item.category)
         }
       })
-      console.log('response.data from handleGetProducts: ', response.data)
+      //console.log('response.data from handleGetProducts: ', response.data)
       this.setState({data: response.data, loading: false, featuredCategories: cats});
     })
     .catch(error => {
@@ -147,7 +147,7 @@ class FeaturedItems extends React.Component {
 
     } = this.state
 
-    console.log('featuredCategories: ', featuredCategories)
+    // console.log('featuredCategories: ', featuredCategories)
 
     let carouselItems = data.slice(0,7)
     let recommendedItems = data.slice(3,5)
@@ -166,6 +166,7 @@ class FeaturedItems extends React.Component {
 
           <React.Fragment>
             <Grid.Column width={2}>
+              FOR SEARCH RESULTS vvvv
               <div
                 style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20px' }}
               >

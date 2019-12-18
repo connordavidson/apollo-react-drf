@@ -135,29 +135,30 @@ class BuyTab extends React.Component {
 
 
   handleDisplayViewItemsByCategory = (e, data) => {
-    axios
-    .get(productSearchByCategoryURL, {
-      params: {
-        category: data.content
-        }
-      })
-    .then(response => {
-      console.log('response.data: :' , response.data,)
-      this.setState({
-          data: response.data,
-          loading: false,
-          //productsTitle: `Search results for "${search}" [${response.data.length}]`}
-        });
+    // axios
+    // .get(productSearchByCategoryURL, {
+    //   params: {
+    //     category: data.content
+    //     }
+    //   })
+    // .then(response => {
+    //   console.log('response.data: :' , response.data,)
+    //   this.setState({
+    //       data: response.data,
+    //       loading: false,
+    //       //productsTitle: `Search results for "${search}" [${response.data.length}]`}
+    //     });
+    //
+    // })
+    // .catch(error => {
+    //   this.setState({
+    //     error: error,
+    //     loading: false
+    //   });
+    // })
 
-    })
-    .catch(error => {
-      this.setState({
-        error: error,
-        loading: false
-      });
-    })
-
-    console.log('data: ', data)
+    //sets the state.activeDisplayItemsByCategory to be the name of the button that was clicked
+    console.log('data.content: ', data)
     this.setState({
       activeDisplayItemsByCategory: data.content
     })
@@ -166,34 +167,15 @@ class BuyTab extends React.Component {
 
 
   displayCategory = (activeDisplayItemsByCategory) => {
-    switch(activeDisplayItemsByCategory){
-      case 'Featured':
-        return(
-          <FeaturedItems />
-        )
-        break;
-      case 'Outdoors':
-        return(
-          <CategoryItems category='Outdoors' />
-        )
-      case 'Apparel':
-        return(
-          <CategoryItems category='Apparel' />
-        )
-      case 'Books':
-        return(
-          <CategoryItems category='Books' />
-        )
-      case 'Miscellaneous':
-        return(
-          <CategoryItems category='Miscellaneous' />
-        )
-      case 'Electronics':
-        return(
-          <CategoryItems category='Electronics' />
-        )
-      default:
-        console.log('something went wrong when selecting a category')
+
+    if(activeDisplayItemsByCategory === 'Featured'){
+      return(
+        <FeaturedItems />
+      )
+    }else{
+      return(
+        <CategoryItems category={activeDisplayItemsByCategory} />
+      )
     }
   }
 
@@ -265,6 +247,7 @@ class BuyTab extends React.Component {
 
               {
                 allCategories.map(category => {
+                  //console.log('category' , category)
                   return(
                     <Button
                       compact
@@ -287,8 +270,6 @@ class BuyTab extends React.Component {
           {
             this.displayCategory(activeDisplayItemsByCategory)
           }
-          {/*this is the FeaturedItems Component*/}
-
         </Grid.Row>
       </Grid>
     //ends the return statement

@@ -56,13 +56,31 @@ class CategoryItems extends React.Component {
     subCategories: []
   }
 
+
+
   componentDidMount(){
     this.setState({
       loading: true
     });
-    this.handleGetProducts();
-    this.handleGetSubCategories();
+    this.handleGetProductsInCategory(this.props.category);
+    this.handleGetSubCategories(this.props.category);
   }
+
+
+  //this checks if the component updated (read: if the user changed 'view by category' tabs)
+  componentDidUpdate(prevProps){
+    //if the previous category is different, get the new subcategories
+    if(this.props.category !== prevProps.category){
+      this.setState({
+        loading: true
+      });
+      this.handleGetProductsInCategory(this.props.category)
+      this.handleGetSubCategories(this.props.category)
+
+    }
+  }
+
+
 
 
   //this should be a component to create an item (it's a placeholder to remember to make the component). make this so that it will display the product item, should get put in a loop when displaying the current items
@@ -71,15 +89,14 @@ class CategoryItems extends React.Component {
   }
 
 
-  handleGetSubCategories = () => {
+  handleGetSubCategories = (category) => {
     axios
     .get( subcategoryURL , {
       params: {
-        category: this.props.category
+        category: category
         }
       })
     .then(response => {
-      console.log('response.data from getSubCategories: ', response.data)
       this.setState({subCategories:response.data , loading: false})
     })
     .catch(error => {
@@ -89,23 +106,46 @@ class CategoryItems extends React.Component {
   }
 
 
-  handleGetProducts = () => {
+  handleGetProductsInCategory = (category) => {
     //gets the products from the database and stores them in the state or it returns the error
     axios
-    .get(productListURL)
+    .get(productSearchByCategoryURL, {
+      params: {
+        category: category
+        }
+      })
     .then(response => {
-      // //gets the individual categories from the response data
-      // let cats = []
-      // response.data.map( (item) => {
-      //   if(!cats.includes(item.category)){
-      //     cats = cats.concat(item.category)
-      //   }
-      // })
-      this.setState({data: response.data, loading: false }) //, featuredCategories: cats});
+      console.log('response.data: :' , response.data,)
+      this.setState({
+          data: response.data,
+          loading: false,
+          //productsTitle: `Search results for "${search}" [${response.data.length}]`}
+        });
+
     })
     .catch(error => {
-      this.setState({error: error, loading: false});
+      this.setState({
+        error: error,
+        loading: false
+      });
     })
+
+    // axios
+    // .get(productListURL)
+    // .then(response => {
+    //   // //gets the individual categories from the response data
+    //   // let cats = []
+    //   // response.data.map( (item) => {
+    //   //   if(!cats.includes(item.category)){
+    //   //     cats = cats.concat(item.category)
+    //   //   }
+    //   // })
+    //   this.setState({data: response.data, loading: false }) //, featuredCategories: cats});
+    // })
+    // .catch(error => {
+    //   this.setState({error: error, loading: false});
+    // })
+
   }
 
 
@@ -164,6 +204,8 @@ class CategoryItems extends React.Component {
       filteredData,
       activeItemIndex,
 
+      subCategories,
+
     } = this.state
 
     const {
@@ -196,18 +238,18 @@ class CategoryItems extends React.Component {
               {/*displays the active categories.. styling needs work*/}
               <Card>
                   {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
+                  subCategories.map(subCategory => {
                     return(
                       <Card.Content >
                         <Checkbox
-                          label={featuredCategories}
+                          label={subCategory.sub_category}
                           float='middle'
                           onClick={(e, data) => {
                             this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
+                            console.log('category: ', subCategory)
                           }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
+                          name={subCategory}
+                          checked={subCategory.sub_category === filterCategory}
                         />
                       </Card.Content>
                     )

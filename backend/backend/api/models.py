@@ -48,14 +48,14 @@ class ItemCategory(models.Model):
 
 
 class ItemSubCategory(models.Model):
-    subCategory = models.CharField(max_length=100)
-    parentCategory = models.ForeignKey(ItemCategory, on_delete=models.CASCADE,  null=True, default=None)
+    sub_category = models.CharField(max_length=100)
+    parent_category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE,  null=True, default=None)
 
     class Meta:
         verbose_name_plural = "Subcategories"
 
     def __str__(self):
-        return self.subCategory
+        return self.sub_category
 
 
 

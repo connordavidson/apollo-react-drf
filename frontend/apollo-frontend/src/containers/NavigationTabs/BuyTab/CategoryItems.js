@@ -69,7 +69,7 @@ class CategoryItems extends React.Component {
 
   //this checks if the component updated (read: if the user changed 'view by category' tabs)
   componentDidUpdate(prevProps){
-    //if the previous category is different, get the new subcategories
+    //if the previous category is different, get the new subcategories and the new items from those categories
     if(this.props.category !== prevProps.category){
       this.setState({
         loading: true
@@ -234,7 +234,7 @@ class CategoryItems extends React.Component {
 
           <React.Fragment>
             <Grid.Column width={2}>
-              <Header as='h3'>SubCategories here</Header>
+              <Header as='h3'>More {category}</Header>
               {/*displays the active categories.. styling needs work*/}
               <Card>
                   {//prints all the categories
@@ -573,7 +573,7 @@ class CategoryItems extends React.Component {
 
 
                 <Header as='h2'>
-                  All Featured Items
+                  All Featured {this.props.category} Items
                 </Header>
                 <Divider />
                 <Item.Group divided>

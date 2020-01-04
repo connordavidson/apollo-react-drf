@@ -135,27 +135,6 @@ class BuyTab extends React.Component {
 
 
   handleDisplayViewItemsByCategory = (e, data) => {
-    // axios
-    // .get(productSearchByCategoryURL, {
-    //   params: {
-    //     category: data.content
-    //     }
-    //   })
-    // .then(response => {
-    //   console.log('response.data: :' , response.data,)
-    //   this.setState({
-    //       data: response.data,
-    //       loading: false,
-    //       //productsTitle: `Search results for "${search}" [${response.data.length}]`}
-    //     });
-    //
-    // })
-    // .catch(error => {
-    //   this.setState({
-    //     error: error,
-    //     loading: false
-    //   });
-    // })
 
     //sets the state.activeDisplayItemsByCategory to be the name of the button that was clicked
     console.log('data.content: ', data)
@@ -166,11 +145,11 @@ class BuyTab extends React.Component {
 
 
 
-  displayCategory = (activeDisplayItemsByCategory) => {
+  displayCategory = (activeDisplayItemsByCategory, allCategories) => {
 
     if(activeDisplayItemsByCategory === 'Featured'){
       return(
-        <FeaturedItems />
+        <FeaturedItems allCategories={allCategories}/>
       )
     }else{
       return(
@@ -268,7 +247,7 @@ class BuyTab extends React.Component {
 
         <Grid.Row>
           {
-            this.displayCategory(activeDisplayItemsByCategory)
+            this.displayCategory(activeDisplayItemsByCategory, allCategories)
           }
         </Grid.Row>
       </Grid>

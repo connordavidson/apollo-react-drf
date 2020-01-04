@@ -46,7 +46,7 @@ class NavigationTabs extends React.Component {
       },
       { menuItem: 'Personal Items', render: () =>
         <Tab.Pane>
-          Tab 3 Content
+          This is where people will be able to buy personal items from other people. similar to craiglist or ebay.. need to decide exactly what direction to take.
         </Tab.Pane>
       },
 

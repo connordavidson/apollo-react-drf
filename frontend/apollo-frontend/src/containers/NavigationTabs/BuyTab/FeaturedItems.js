@@ -147,11 +147,18 @@ class FeaturedItems extends React.Component {
 
     } = this.state
 
+    const {
+      allCategories,
+      authenticated
+    } = this.props
+
+
+    console.log('categories: ', allCategories)
     // console.log('featuredCategories: ', featuredCategories)
 
     let carouselItems = data.slice(0,7)
     let recommendedItems = data.slice(3,5)
-    let basedOnSearches = data.slice(5,8)
+    let hotRightNow = data.slice(5,8)
     return (
 
       <React.Fragment>
@@ -254,7 +261,7 @@ class FeaturedItems extends React.Component {
 
             <Grid.Column width={12}>
               <React.Fragment>
-                <Header as='h1'>{featuredProductsTitle}{filterTitle}</Header>
+                <Header as='h1'>{featuredProductsTitle}</Header>
 
                 <Divider />
 
@@ -367,104 +374,231 @@ class FeaturedItems extends React.Component {
 
                   <Grid.Column width={8}>
 
-                    <div
-                      style={{
-                        border: '1px solid lightgrey' ,
-                        padding: '5% 3% 3% 3%' ,
-                        marginTop:'30px',
-                        borderRadius: '5px'
-                      }}
-                    >
-                      <Header as='h2' >
-                        Recommended for you
-                      </Header>
+                  {
+                    authenticated ?
 
-                      <Divider />
 
-                      <Item.Group divided>
+                        <React.Fragment>
+                          {/* maybe this should have a button to click down (almost like the carousel, but vertical*/}
+                          <div
+                            style={{
+                              border: '1px solid lightgrey' ,
+                              padding: '5% 3% 3% 3%' ,
+                              marginTop:'30px',
+                              borderRadius: '5px'
+                            }}
+                          >
 
-                        { //prints out all the items
-                          recommendedItems.map(item => {
-                            // console.log('item from products: ' , item)
-                            return (
-                              <Item key={item.id} link>
-                                <Item.Image
-                                  src={item.image}
-                                  onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                  style={{cursor: 'pointer'}}
-                                />
+                            <Header as='h2' >
+                              Recommended for you
+                            </Header>
 
-                                <Item.Content>
+                            <Divider />
 
-                                  <Item.Header
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer'}}
-                                  >
-                                    {
-                                        //trims the item title to create uniformity among the cards
-                                        item.title.length > 46 ?
-                                        item.title.substring(0,46) + '...' :
-                                        item.title
-                                    }
-                                  </Item.Header>
+                            <Item.Group divided>
 
-                                  <Item.Meta
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer'}}
-                                  >
-                                    {
-                                      item.discount_price !== null ?
-                                      <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                      <span className='cinema'>${item.price}</span>
-                                    }
+                              { //prints out all the items
+                                recommendedItems.map(item => {
+                                  // console.log('item from products: ' , item)
+                                  return (
+                                    <Item key={item.id} link>
+                                      <Item.Image
+                                        src={item.image}
+                                        onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                        style={{cursor: 'pointer'}}
+                                      />
 
-                                  </Item.Meta>
+                                      <Item.Content>
 
-                                  <Item.Description
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer'}}
-                                  >
-                                      {
-                                        //trims the length of the description so that the cards aren't awkwardly long
-                                        item.description.length > 125 ?
-                                        item.description.substring(0, 125) + '...':
-                                        item.description
-                                      }
-                                  </Item.Description>
-
-                                  <Item.Extra>
-                                    {
-                                      item.variations.length === 0 ?
-                                        <Button
-                                          primary
-                                          floated='right'
-                                          icon
-                                          onClick={ () => {
-                                            this.handleAddToCart(item, 1 )
-                                            }
-                                          }
-                                          >
-                                          Quick Add
-                                          <Icon name='cart plus' floated='right' />
-                                        </Button>
-                                        :
-                                        <Label
-                                          primary
-                                          icon
+                                        <Item.Header
                                           onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                          style={{cursor: 'pointer' , float : 'right' }}
+                                          style={{cursor: 'pointer'}}
                                         >
-                                          You need to select a {item.variations[0].name} option before you can order this
-                                        </Label>
-                                    }
-                                  </Item.Extra>
-                                </Item.Content>
-                              </Item>
-                            )
-                          })
-                        }
-                      </Item.Group>
-                    </div>
+                                          {
+                                              //trims the item title to create uniformity among the cards
+                                              item.title.length > 46 ?
+                                              item.title.substring(0,46) + '...' :
+                                              item.title
+                                          }
+                                        </Item.Header>
+
+                                        <Item.Meta
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer'}}
+                                        >
+                                          {
+                                            item.discount_price !== null ?
+                                            <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                                            <span className='cinema'>${item.price}</span>
+                                          }
+
+                                        </Item.Meta>
+
+                                        <Item.Description
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer'}}
+                                        >
+                                            {
+                                              //trims the length of the description so that the cards aren't awkwardly long
+                                              item.description.length > 125 ?
+                                              item.description.substring(0, 125) + '...':
+                                              item.description
+                                            }
+                                        </Item.Description>
+
+                                        <Item.Extra>
+                                          {
+                                            item.variations.length === 0 ?
+                                              <Button
+                                                primary
+                                                floated='right'
+                                                icon
+                                                onClick={ () => {
+                                                  this.handleAddToCart(item, 1 )
+                                                  }
+                                                }
+                                                >
+                                                Quick Add
+                                                <Icon name='cart plus' floated='right' />
+                                              </Button>
+                                              :
+                                              <Label
+                                                primary
+                                                icon
+                                                onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                                style={{cursor: 'pointer' , float : 'right' }}
+                                              >
+                                                You need to select a {item.variations[0].name} option before you can order this
+                                              </Label>
+                                          }
+                                        </Item.Extra>
+                                      </Item.Content>
+                                    </Item>
+                                  )
+                                })
+                              }
+                            </Item.Group>
+
+                            <Divider />
+
+                            <a href='#' > All recommended items </a>
+
+                          </div>
+                        </React.Fragment>
+
+                      :
+
+                        <React.Fragment>
+                          {/* maybe this should have a button to click down (almost like the carousel, but vertical*/}
+                          <div
+                            style={{
+                              border: '1px solid lightgrey' ,
+                              padding: '5% 3% 3% 3%' ,
+                              marginTop:'30px',
+                              borderRadius: '5px'
+                            }}
+                          >
+
+                            <Header as='h2' >
+                              Trendy Header for things
+                            </Header>
+
+                            <Divider />
+
+                            <Item.Group divided>
+
+                              { //prints out all the items
+                                recommendedItems.map(item => {
+                                  // console.log('item from products: ' , item)
+                                  return (
+                                    <Item key={item.id} link>
+                                      <Item.Image
+                                        src={item.image}
+                                        onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                        style={{cursor: 'pointer'}}
+                                      />
+
+                                      <Item.Content>
+
+                                        <Item.Header
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer'}}
+                                        >
+                                          {
+                                              //trims the item title to create uniformity among the cards
+                                              item.title.length > 46 ?
+                                              item.title.substring(0,46) + '...' :
+                                              item.title
+                                          }
+                                        </Item.Header>
+
+                                        <Item.Meta
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer'}}
+                                        >
+                                          {
+                                            item.discount_price !== null ?
+                                            <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                                            <span className='cinema'>${item.price}</span>
+                                          }
+
+                                        </Item.Meta>
+
+                                        <Item.Description
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer'}}
+                                        >
+                                            {
+                                              //trims the length of the description so that the cards aren't awkwardly long
+                                              item.description.length > 125 ?
+                                              item.description.substring(0, 125) + '...':
+                                              item.description
+                                            }
+                                        </Item.Description>
+
+                                        <Item.Extra>
+                                          {
+                                            item.variations.length === 0 ?
+                                              <Button
+                                                primary
+                                                floated='right'
+                                                icon
+                                                onClick={ () => {
+                                                  this.handleAddToCart(item, 1 )
+                                                  }
+                                                }
+                                                >
+                                                Quick Add
+                                                <Icon name='cart plus' floated='right' />
+                                              </Button>
+                                              :
+                                              <Label
+                                                primary
+                                                icon
+                                                onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                                style={{cursor: 'pointer' , float : 'right' }}
+                                              >
+                                                You need to select a {item.variations[0].name} option before you can order this
+                                              </Label>
+                                          }
+                                        </Item.Extra>
+                                      </Item.Content>
+                                    </Item>
+                                  )
+                                })
+                              }
+                            </Item.Group>
+
+                            <Divider />
+
+                            <a href='#' > All trendy items </a>
+
+                          </div>
+
+                        </React.Fragment>
+
+
+                    }
                   </Grid.Column>
 
 
@@ -481,13 +615,13 @@ class FeaturedItems extends React.Component {
                     >
 
                       <Header as='h2'  >
-                        Hot Right Now
+                        Best Deals Right Now
                       </Header>
                       <Divider />
 
                       <Item.Group divided>
                         {
-                          basedOnSearches.map(item => {
+                          hotRightNow.map(item => {
                             return(
                               <Item>
                                 <Item.Image
@@ -551,6 +685,10 @@ class FeaturedItems extends React.Component {
                           })
                         }
                       </Item.Group>
+
+                      <Divider />
+
+                      <a href='#' > All of our best deals </a>
                     </div>
                   </Grid.Column>
                 </Grid>
@@ -558,326 +696,137 @@ class FeaturedItems extends React.Component {
 
                 <Divider />
 
-                {/*loop through all the categories and display an ItemsCarousel with the "featured items" from every category*/}
-                <Header as='h2'> Featured Outdoors items </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
 
 
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
+                {//gets all of the categories and displays the featured items from each
 
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
-                                      }
-                                    }
+                  allCategories.map(category => {
+                    return(
+                      <React.Fragment>
+                      {/*loop through all the categories and display an ItemsCarousel with the "featured items" from every category*/}
+
+                      <div
+                        style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
+                      >
+
+                        <Header
+                          as='h2'
+                          style={{margin:'16px 16px 16px'}}
+                        >
+                          Featured in {category.category}
+                        </Header>
+
+                        <Divider />
+                        <ItemsCarousel
+
+                          infiniteLoop={true}
+                          freeScrolling={true}
+
+                          numberOfCards={4}
+                          gutter={12}
+                          showSlither={true}
+                          firstAndLastGutter={true}
+
+
+                          requestToChangeActive={this.changeActiveItem}
+                          activeItemIndex={activeItemIndex}
+
+                          chevronWidth={24}
+                          rightChevron={<Icon size='large' name='chevron right'/>}
+                          leftChevron={<Icon size='large' name='chevron left'/>}
+                          outsideChevron={true}
+                        >
+                          {
+                            carouselItems.map(item => {
+                              // console.log('item from products: ' , item)
+                              return (
+                                <Card
+                                  key={item.id}
+                                  link
+                                  style={{marginTop: '15px', marginBotton: '15px'}}
+                                  raised
+                                >
+                                  <Card.Content>
+                                    <Image
+                                      floated='right'
+                                      size='mini'
+                                      src={item.image}
+                                    />
+                                    <Card.Header
+                                      onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                      style={{cursor: 'pointer'}}
                                     >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
-                <Divider />
-
-                <Header as='h2'> Featured Apparel items </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
-
-
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
-
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
+                                      {
+                                        //trims the item title to create uniformity among the cards
+                                        item.title.length > 22 ?
+                                        item.title.substring(0,22) + '...' :
+                                        item.title
                                       }
-                                    }
+                                    </Card.Header>
+                                    <Card.Meta
+                                      onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                      style={{cursor: 'pointer'}}
                                     >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
-
-                <Divider />
-
-                <Header as='h2'> Featured Books </Header>
-                <div
-                  style={{border: '1px solid lightgrey' , borderRadius: '5px' }}
-                >
-                  <ItemsCarousel
-
-                    infiniteLoop={true}
-                    freeScrolling={true}
-
-                    numberOfCards={4}
-                    gutter={12}
-                    showSlither={true}
-                    firstAndLastGutter={true}
-
-
-                    requestToChangeActive={this.changeActiveItem}
-                    activeItemIndex={activeItemIndex}
-
-                    chevronWidth={24}
-                    rightChevron={<Icon size='large' name='chevron right'/>}
-                    leftChevron={<Icon size='large' name='chevron left'/>}
-                    outsideChevron={true}
-                  >
-                    {
-                      carouselItems.map(item => {
-                        // console.log('item from products: ' , item)
-                        return (
-                          <Card
-                            key={item.id}
-                            link
-                            style={{marginTop: '15px', marginBotton: '15px'}}
-                            raised
-                          >
-                            <Card.Content>
-                              <Image
-                                floated='right'
-                                size='mini'
-                                src={item.image}
-                              />
-                              <Card.Header
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the item title to create uniformity among the cards
-                                  item.title.length > 22 ?
-                                  item.title.substring(0,22) + '...' :
-                                  item.title
-                                }
-                              </Card.Header>
-                              <Card.Meta
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  item.discount_price !== null ?
-                                  <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
-                                  <span className='cinema'>${item.price}</span>
-                                }
-                              </Card.Meta>
-                              <Card.Description
-                                onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                style={{cursor: 'pointer'}}
-                              >
-                                {
-                                  //trims the length of the description so that the cards aren't awkwardly long
-                                  item.description.length > 75 ?
-                                  item.description.substring(0, 75) + '...':
-                                  item.description
-                                }
-                              </Card.Description>
-                            </Card.Content>
-                            <Card.Content extra>
-                              {
-                                item.variations.length === 0 ?
-                                  <Button
-                                    primary
-                                    floated='right'
-                                    icon
-                                    onClick={ () => {
-                                      this.handleAddToCart(item, 1 )
+                                      {
+                                        item.discount_price !== null ?
+                                        <span className='cinema'><s>${item.price}</s> ${item.discount_price}</span> :
+                                        <span className='cinema'>${item.price}</span>
                                       }
-                                    }
+                                    </Card.Meta>
+                                    <Card.Description
+                                      onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                      style={{cursor: 'pointer'}}
                                     >
-                                    Quick Add
-                                    <Icon name='cart plus' floated='right' />
-                                  </Button>
-                                  :
-                                  <Label
-                                    primary
-                                    icon
-                                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                                    style={{cursor: 'pointer' , float : 'right' }}
-                                  >
-                                    You need to select a {item.variations[0].name} option before you can order this
-                                  </Label>
-                              }
-                            </Card.Content>
-                          </Card>
-                        )
-                      })
-                    }
-                  </ItemsCarousel>
-                </div>
+                                      {
+                                        //trims the length of the description so that the cards aren't awkwardly long
+                                        item.description.length > 75 ?
+                                        item.description.substring(0, 75) + '...':
+                                        item.description
+                                      }
+                                    </Card.Description>
+                                  </Card.Content>
+                                  <Card.Content extra>
+                                    {
+                                      item.variations.length === 0 ?
+                                        <Button
+                                          primary
+                                          floated='right'
+                                          icon
+                                          onClick={ () => {
+                                            this.handleAddToCart(item, 1 )
+                                            }
+                                          }
+                                          >
+                                          Quick Add
+                                          <Icon name='cart plus' floated='right' />
+                                        </Button>
+                                        :
+                                        <Label
+                                          primary
+                                          icon
+                                          onClick={() => this.props.history.push(`/products/${item.id}`)}
+                                          style={{cursor: 'pointer' , float : 'right' }}
+                                        >
+                                          You need to select a {item.variations[0].name} option before you can order this
+                                        </Label>
+                                    }
+                                  </Card.Content>
+                                </Card>
+                              )
+                            })
+                          }
+                        </ItemsCarousel>
+                      </div>
 
-                <Divider />
+
+                      <Divider />
+
+                      </React.Fragment>
+
+
+                    )
+                  })
+                }
 
                 <Header as='h2'>
                   All Featured Items
@@ -965,6 +914,12 @@ class FeaturedItems extends React.Component {
   }
 }
 
+
+const mapStateToProps = state => {
+  return {
+    authenticated: state.auth.token !== null,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {

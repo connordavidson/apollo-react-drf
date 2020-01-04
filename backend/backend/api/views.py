@@ -99,6 +99,7 @@ class SubCategoryListView(ListAPIView):
     def get_queryset(self):
         category= self.request.query_params.get('category', None)
         #gets the SubCategories with 'category' as their parentCategory
+        #called a field lookup... see more @ https://docs.djangoproject.com/en/3.0/topics/db/queries/#field-lookups
         qs = ItemSubCategory.objects.filter(parent_category__category__exact=category)
 
         subcategories = []

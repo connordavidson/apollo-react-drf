@@ -165,7 +165,7 @@ class BuyTab extends React.Component {
   //creates the array that the searchbar dropdown reads from
   makeCategoryArray = (categories) => {
     let formattedCategories = [
-      { key: '0', text: 'All Categories', value: 'all' }
+      { key: 0, text: 'All Categories', value: 'all' }
     ]
 
     for(let i = 0 ; i < categories.length ; i++){
@@ -173,7 +173,7 @@ class BuyTab extends React.Component {
       formattedCategories.push({key: i , text: categories[i].category , value: categories[i].category})
     }
 
-  
+
     this.setState({categoryArrayForSearchBar: formattedCategories , loading: false})
 
   }
@@ -217,7 +217,7 @@ class BuyTab extends React.Component {
                 />
               }
               icon='search'
-              placeholder='Search for an item... '
+              placeholder='search...'
               onKeyPress={this.handleSearchEnterPress}
               onChange={
                 //sets the search value into the value in the state
@@ -228,7 +228,6 @@ class BuyTab extends React.Component {
             />
           </Grid.Column>
         </Grid.Row>
-
 
 
         {/*this is for the "all categories" button group*/}

@@ -61,7 +61,10 @@ class BuyTab extends React.Component {
     data: [],
 
     allCategories: [],
-    activeDisplayItemsByCategory: 'Featured'
+    activeDisplayItemsByCategory: 'Featured',
+    categoryArrayForSearchBar : [],
+
+    activeSearchBarCategory : 'All'
   }
 
 
@@ -126,6 +129,7 @@ class BuyTab extends React.Component {
     .get(categoryListURL)
     .then( response => {
       this.setState({allCategories: response.data, loading: false})
+      this.makeCategoryArray(response.data)
     })
     .catch(error => {
       this.setState({error: error , loading: false})
@@ -158,6 +162,30 @@ class BuyTab extends React.Component {
     }
   }
 
+  //creates the array that the searchbar dropdown reads from
+  makeCategoryArray = (categories) => {
+    let formattedCategories = [
+      { key: '0', text: 'All Categories', value: 'all' }
+    ]
+
+    for(let i = 0 ; i < categories.length ; i++){
+      console.log('categories[i].category: ', categories[i].category)
+      formattedCategories.push({key: i , text: categories[i].category , value: categories[i].category})
+    }
+
+  
+    this.setState({categoryArrayForSearchBar: formattedCategories , loading: false})
+
+  }
+
+
+
+  handleSearchDropdownChange = (e, { value }) => {
+    this.setState({loading: true})
+    console.log(value);
+    this.setState({activeSearchBarCategory : value , loading: false })
+  }
+
 
   render(){
 
@@ -168,7 +196,9 @@ class BuyTab extends React.Component {
 
       allCategories,
       activeDisplayItemsByCategory,
+      categoryArrayForSearchBar,
 
+      activeSearchBarCategory
      } = this.state;
 
 
@@ -181,19 +211,13 @@ class BuyTab extends React.Component {
               fluid
               label={
                 <Dropdown
+                  onChange={this.handleSearchDropdownChange}
                   defaultValue='all'
-                  options={[
-                    { key: '0', text: 'All Categories', value: 'all' },
-                    { key: '1', text: 'Outdoors', value: 'Outdoors' },
-                    { key: '2', text: 'Apparel', value: 'Apparel' },
-                    { key: '3', text: 'Books', value: 'Books' },
-                    { key: '4', text: 'Miscelaneous', value: 'Miscelaneous' },
-                    { key: '5', text: 'Technology', value: 'Technology' },
-                  ]}
+                  options={categoryArrayForSearchBar}
                 />
               }
               icon='search'
-              placeholder='Search for an item...'
+              placeholder='Search for an item... '
               onKeyPress={this.handleSearchEnterPress}
               onChange={
                 //sets the search value into the value in the state

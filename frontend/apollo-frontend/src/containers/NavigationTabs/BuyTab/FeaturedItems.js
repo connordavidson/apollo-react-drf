@@ -153,9 +153,7 @@ class FeaturedItems extends React.Component {
     } = this.props
 
 
-    console.log('categories: ', allCategories)
-    // console.log('featuredCategories: ', featuredCategories)
-
+  
     let carouselItems = data.slice(0,7)
     let recommendedItems = data.slice(3,5)
     let hotRightNow = data.slice(5,8)

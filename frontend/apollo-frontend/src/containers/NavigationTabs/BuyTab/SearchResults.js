@@ -106,6 +106,63 @@ class SearchResults extends React.Component {
                   })}
                 </Card>
               </div>
+
+              <div
+                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
+              >
+                <Card>
+                  <Card.Content>
+                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
+                  </Card.Content>
+                  {//prints all the categories
+                  featuredCategories.map(featuredCategories => {
+                    return(
+                      <Card.Content >
+                        <Checkbox
+                          label={featuredCategories}
+                          float='middle'
+                          onClick={(e, data) => {
+                            this.handleFilterDisplayCategoryButtonPressed(e, data)
+                            console.log('category: ', featuredCategories)
+                          }}
+                          name={featuredCategories}
+                          checked={featuredCategories === filterCategory}
+                        />
+                      </Card.Content>
+                    )
+                  })}
+                </Card>
+              </div>
+              <div
+                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%'}}
+              >
+
+                <Card>
+                  <Card.Content>
+                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
+                  </Card.Content>
+                  {//prints all the categories
+                  featuredCategories.map(featuredCategories => {
+                    return(
+                      <Card.Content >
+                        <Checkbox
+                          label={featuredCategories}
+                          float='middle'
+                          onClick={(e, data) => {
+                            this.handleFilterDisplayCategoryButtonPressed(e, data)
+                            console.log('category: ', featuredCategories)
+                          }}
+                          name={featuredCategories}
+                          checked={featuredCategories === filterCategory}
+                        />
+                      </Card.Content>
+                    )
+                  })}
+                </Card>
+              </div>
+              
+
+
               <div
                 style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
               >

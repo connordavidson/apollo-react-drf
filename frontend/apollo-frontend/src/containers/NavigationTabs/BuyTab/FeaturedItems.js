@@ -153,7 +153,7 @@ class FeaturedItems extends React.Component {
     } = this.props
 
 
-  
+
     let carouselItems = data.slice(0,7)
     let recommendedItems = data.slice(3,5)
     let hotRightNow = data.slice(5,8)
@@ -171,87 +171,7 @@ class FeaturedItems extends React.Component {
 
           <React.Fragment>
             <Grid.Column width={2}>
-              FOR SEARCH RESULTS vvvv
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20px' }}
-              >
-                {/*displays the active categories.. styling needs work*/}
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>categories (deprec) </Card.Header>
-                  </Card.Content>
-                  {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
-                    return(
-                      <Card.Content >
-                        <Checkbox
-                          label={featuredCategories}
-                          float='middle'
-                          onClick={(e, data) => {
-                            this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
-                          }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
-                        />
-                      </Card.Content>
-                    )
-                  })}
-                </Card>
-              </div>
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%' }}
-              >
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
-                  </Card.Content>
-                  {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
-                    return(
-                      <Card.Content >
-                        <Checkbox
-                          label={featuredCategories}
-                          float='middle'
-                          onClick={(e, data) => {
-                            this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
-                          }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
-                        />
-                      </Card.Content>
-                    )
-                  })}
-                </Card>
-              </div>
-              <div
-                style={{border: '1px solid lightgrey' , borderRadius: '5px', marginBottom:'20%'}}
-              >
-
-                <Card>
-                  <Card.Content>
-                    <Card.Header as='h3'>filter by (insert variation) </Card.Header>
-                  </Card.Content>
-                  {//prints all the categories
-                  featuredCategories.map(featuredCategories => {
-                    return(
-                      <Card.Content >
-                        <Checkbox
-                          label={featuredCategories}
-                          float='middle'
-                          onClick={(e, data) => {
-                            this.handleFilterDisplayCategoryButtonPressed(e, data)
-                            console.log('category: ', featuredCategories)
-                          }}
-                          name={featuredCategories}
-                          checked={featuredCategories === filterCategory}
-                        />
-                      </Card.Content>
-                    )
-                  })}
-                </Card>
-              </div>
+            
             </Grid.Column>
 
 

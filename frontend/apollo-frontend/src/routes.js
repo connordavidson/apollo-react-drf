@@ -20,10 +20,10 @@ const BaseRouter = () => (
 
     {/*for searching, use syntax similar to ProductDetail Route below.. access the parameters inside the component */}
     <Route exact path="/buyTab" component={BuyTab} />
-  
+
     <Route exact path="/order-summary" component={OrderSummary} />
     <Route exact path="/checkout" component={Checkout} />
-
+    
 
 
     <Route exact path="/products/:productID" component={ProductDetail} />

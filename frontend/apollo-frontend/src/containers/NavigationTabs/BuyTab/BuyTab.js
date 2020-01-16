@@ -38,6 +38,7 @@ import {
     productSearchListURL,
     categoryListURL,
     productSearchByCategoryURL,
+    subcategoryURL,
 
   } from '../../../constants';
 
@@ -167,10 +168,32 @@ class BuyTab extends React.Component {
     let formattedCategories = [
       { key: 0, text: 'All Categories', value: 'all' }
     ]
+    let subCategories = []
 
     for(let i = 0 ; i < categories.length ; i++){
+
+
       console.log('categories[i].category: ', categories[i].category)
-      formattedCategories.push({key: i , text: categories[i].category , value: categories[i].category})
+      formattedCategories.push({ text: categories[i].category , value: categories[i].category})
+
+      //gets the subcategories based on the category that it is looking at right now
+      axios
+      .get( subcategoryURL , {
+        params: {
+          category: categories[i].category
+          }
+        })
+      .then(response => {
+
+        for(let j = 0 ; j < response.data.length ; j++){
+          formattedCategories.push({ text: "   " + response.data[j].sub_category , value: response.data[j].sub_category})
+        }
+
+      })
+      .catch(error => {
+        this.setState({error: error, loading: false})
+      })
+
     }
 
 
